@@ -49,9 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'merito';
-$db['default']['password'] = 'rermerito';
-$db['default']['database'] = 'merito';
+$db['default']['username'] = 'dp';
+$db['default']['password'] = 'cip3ciop';
+$db['default']['database'] = 'merito_debug';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

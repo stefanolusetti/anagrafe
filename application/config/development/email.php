@@ -3,7 +3,7 @@
  * Email configuration file
  * http://codeigniter.com/user_guide/libraries/email.html
  */
- 
+
 #$config['protocol'] = 'sendmail';
 #$config['mailpath'] = '/usr/sbin/sendmail';
 #$config['charset'] = 'iso-8859-1';
@@ -28,8 +28,8 @@
 $config['protocol'] = 'smtp';
 $config['smtp_host'] = 'ssl://smtp.gmail.com';
 $config['smtp_port'] = '465';
-$config['smtp_user'] = 'stefano.lusetti@certhidea.it';
-$config['smtp_pass'] = 'Yamigulli100%';
+$config['smtp_user'] = 'daniele.pignedoli@certhidea.it';
+$config['smtp_pass'] = 'danmyc001';
 $config[ 'mailtype'] = 'html';
 $config['charset'] = 'utf-8';
 $config['wordwrap'] = TRUE;
