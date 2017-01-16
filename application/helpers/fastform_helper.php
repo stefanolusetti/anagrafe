@@ -9,7 +9,7 @@ function f_text($campo, $etichetta, $args=NULL)
 	echo 	"<div class='{$opzioni['field']}'><label for='{$id}'>{$etichetta}</label>".
 			"<input type='text' name='{$campo}' value='{$valore}' {$opzioni['input']}/>";
 	echo mostra_errore($campo);
-	echo "</div>";  
+	echo "</div>";
 }
 
 
@@ -23,7 +23,7 @@ function f_password($campo, $etichetta, $args=NULL)
     echo    "<div class='{$opzioni['field']}'><label for='{$id}'>{$etichetta}</label>".
             "<input type='password' name='{$campo}' value='{$valore}' {$opzioni['input']}/>";
     echo mostra_errore($campo);
-    echo "</div>";  
+    echo "</div>";
 }
 
 
@@ -55,7 +55,7 @@ function f_checkbox($campo, $etichetta, $args=NULL)
 		echo form_checkbox($campo, 'Yes', FALSE, $opzioni['input']);
     }
 	mostra_errore($campo);
-    echo "</div>";  
+    echo "</div>";
 }
 
 function f_radio($campo, $etichetta, $args=NULL)
@@ -72,7 +72,7 @@ function f_radio($campo, $etichetta, $args=NULL)
         echo form_radio($campo, 'Yes', FALSE, $opzioni['input']);
     }
     mostra_errore($campo);
-    echo "</div>";  
+    echo "</div>";
 }
 
 function extract_args($args, $campo=NULL)
@@ -83,8 +83,8 @@ function extract_args($args, $campo=NULL)
 	if($campo){
 		$result['input'] = "id='{$campo}' ";
 	}
-		
-	if (is_array($args)) 
+
+	if (is_array($args))
 	{
 		if (array_key_exists('field', $args)) {
 			foreach($args['field'] as $value)
@@ -124,7 +124,7 @@ function list_fields()
 	$CI =& get_instance();
 	$fields = $CI->db->list_fields('dichiaraziones');
 	foreach ($fields as $key => $value) {
-		if (preg_match('/^id/', $value)) 
+		if (preg_match('/^id/', $value))
 		{
 			unset($fields[$key]);
 		}
@@ -139,7 +139,7 @@ function list_fields()
 }
 
 function parse_date($date)
-{   
+{
 	$format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
 	preg_match($format, $date, $dateInfo);
 	$mysql_datetime = "";
@@ -168,8 +168,8 @@ function format_date($date)
     {
        $datetime = strtotime($date);
        $mysqldate = date("d/m/Y", $datetime);
-       return $mysqldate; 
-    }   
+       return $mysqldate;
+    }
 }
 
 function get_year($date)
@@ -190,7 +190,7 @@ function opzioni_provincie(){
 }
 
 function opzioni_ateco () {
-	
+
 	$CI =& get_instance();
     $base = array();
     $base[""] = "-";
@@ -201,7 +201,7 @@ function opzioni_ateco () {
 }
 
 function opzioni_soa () {
-	
+
 	$CI =& get_instance();
     $base = array();
     $base[""] = "-";
@@ -215,7 +215,7 @@ function opzioni_soa () {
 function mostra_errore($campo){
     if($msg = form_error($campo)){
         echo "<label for='{$campo}' class='errormsg'>{$msg}</label>";
-    } 
+    }
 }
 
 function last_value($campo){
@@ -229,8 +229,8 @@ function last_value($campo){
        if($valore){
             if(array_key_exists($nome[2], $valore)){
                 return $valore[$nome[2]];
-            }   
-       }         
+            }
+       }
     } else {
      $valore = $CI -> input -> post($campo);
      if(empty($valore)){
@@ -238,4 +238,23 @@ function last_value($campo){
     }
      return $valore;
     }
+}
+
+/*
+██████  ██    ██  ██████  ██      ██
+██   ██ ██    ██ ██    ██ ██      ██
+██████  ██    ██ ██    ██ ██      ██
+██   ██ ██    ██ ██    ██ ██      ██
+██   ██  ██████   ██████  ███████ ██
+
+ █████  ███    ██  █████   ██████  ██████   █████  ███████ ██  ██████ ██   ██ ███████
+██   ██ ████   ██ ██   ██ ██       ██   ██ ██   ██ ██      ██ ██      ██   ██ ██
+███████ ██ ██  ██ ███████ ██   ███ ██████  ███████ █████   ██ ██      ███████ █████
+██   ██ ██  ██ ██ ██   ██ ██    ██ ██   ██ ██   ██ ██      ██ ██      ██   ██ ██
+██   ██ ██   ████ ██   ██  ██████  ██   ██ ██   ██ ██      ██  ██████ ██   ██ ███████
+*/
+function opzioni_ruoli_anagrafiche($type = null){
+  $CI =& get_instance();
+  $options = $CI->dichiarazione_model->get_roles($type);
+  return $options;
 }
