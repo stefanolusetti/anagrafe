@@ -50,7 +50,7 @@ $route['404_override'] = '';*/
 
 
 $route['default_controller'] = 'domanda';
-$route['comune/(:any)'] = 'domanda/comune/$1';
+$route['comune/([^/]+)'] = 'domanda/comune/$1';
 #$route['(:any)'] = 'pages/view/$1';
 
 

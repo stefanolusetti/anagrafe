@@ -45,14 +45,17 @@
 | the active record class
 */
 
+
+
 $active_group = 'default';
-$active_record = TRUE;
+//$active_record = TRUE;
+$query_builder = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'dp';
-$db['default']['password'] = 'cip3ciop';
-$db['default']['database'] = 'merito_debug';
-$db['default']['dbdriver'] = 'mysql';
+$db['default']['username'] = 'merito';
+$db['default']['password'] = 'rermerito';
+$db['default']['database'] = 'merito';
+$db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
 $db['default']['db_debug'] = TRUE;
