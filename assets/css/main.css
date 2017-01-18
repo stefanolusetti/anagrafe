@@ -166,7 +166,7 @@ h2, h4, h3 {
 }
 
 h2 {
-	font-size: 1.125em;	
+	font-size: 1.125em;
 }
 
 h4 {
@@ -234,7 +234,7 @@ form .field.due {width: 46.5%;}
 	padding: 5px 1% 5px;
 	background: #F0F0F0;
 	border: 1px solid blue;
-	
+
 }
 
 .errors p {
@@ -273,7 +273,7 @@ input.errormsg {
 	text-decoration: underline;
 }
 
-/* 
+/*
  * sezione privacy */
 
 .field.fixed {
@@ -383,7 +383,7 @@ table.elenco tr th {
 	text-transform: uppercase;
 	font-weight: 600;
 	text-align: left;
-	
+
 }
 
 table.elenco ul {
@@ -412,7 +412,7 @@ table.elenco th a.selected {
 	background-color: #000;
 	color: #fff;
 	padding: 0 5px;
-	
+
 }
 
 .fieldarea {
@@ -674,11 +674,11 @@ width:auto;
 
 .riferimento{
 width:100px;
-word-wrap: break-word;  
+word-wrap: break-word;
 }
 .azienda {
 width:120px;
-word-wrap: break-word;  
+word-wrap: break-word;
 }
 
 
@@ -708,7 +708,7 @@ text-align:center;
 form .field_antimafia {
 margin-top:40px;
 margin-bottom:60px;
-position:relative;	
+position:relative;
 float:left;
 width:100%;
 }
@@ -723,7 +723,7 @@ width:100%;
     padding:55px;
     color:#eee;
   }
-  
+
 .tooltip p {
 color:white;
 margin-top:50px;
@@ -745,4 +745,36 @@ padding-bottom:8px;
 padding-left:10px;
 padding-bottom:15px;
 font-size:13px;
+}
+
+
+.hidden{
+  display: none;
+}
+
+.resizer{
+  clear: both;
+}
+
+form .field.w50{
+  width: 46%;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+
+.office.container{
+  margin-bottom: 17px;
+}
+
+.box-familiare{
+
+  margin-left: 50px;
+}
+
+.anagrafica-box{
+  border-style: solid;
+  border-color: #150c5f;
+  border-width: 1px;
+  margin-bottom: 17px;
 }

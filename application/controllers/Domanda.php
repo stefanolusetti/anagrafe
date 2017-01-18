@@ -48,35 +48,60 @@ class Domanda extends CI_Controller
         if (($this->form_validation->run('domanda') == false)) {
             //&& ($this->form_validation->run('cassa_edile') == FALSE)) {
 
-            $this->session->set_userdata('start', '1');
-            $data['soas'] = $this->dichiarazione_model->get_soas();
-            $data['atecos'] = $this->dichiarazione_model->get_atecos();
-            $data['antimafias'] = false;
+          $this->session->set_userdata('start', '1');
+          //$data['soas'] = $this->dichiarazione_model->get_soas();
+          //$data['atecos'] = $this->dichiarazione_model->get_atecos();
+          $data['antimafias'] = false;
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/headbar');
-            $this->parser->parse('domanda/new', $data);
-            $this->load->view('templates/footer');
-        } elseif (array_key_exists('start', $sessione)) {
-            $id = $this->dichiarazione_model->set_statement();
-            $stato = send_pdf($this->dichiarazione_model->get_items($id));
-
-            $data['mittente'] = $this->input->post('titolare_nome');
-            $data['sl_pec'] = $this->input->post('sl_pec');
-
-            $this->session->unset_userdata('start');
-
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/headbar');
-            if (!$stato) {
-                $data['errore'] = ENVIRONMENT == 'development' ? $this->email->print_debugger() : 'si &egrave; verificato un errore nella spedizione del messaggio';
-                $this->parser->parse('domanda/errore_invio', $data);
-            } else {
-                $this->parser->parse('domanda/sent', $data);
+          $offices = $this->input->post('office');
+          $data['offices'] = array();
+          if (!empty($offices) AND is_array($offices)) {
+            foreach ($offices as $ok => $office_details) {
+              $data['offices'][$ok] = array(
+                'office_name' => $office_details['name'],
+                'office_cf' => $office_details['cf'],
+                'office_piva' => $office_details['vat'],
+              );
             }
-            $this->load->view('templates/footer');
-        } else {
-            redirect('/domanda/nuova', 'refresh');
+          }
+          else {
+            $data['offices'] = array(
+              array(
+                'office_name' => '',
+                'office_cf' => '',
+                'office_piva' => '',
+              )
+            );
+          }
+          $data['submitted'] = false;
+          $this->load->view('templates/header', $data);
+          $this->load->view('templates/headbar');
+          $this->parser->parse('domanda/new', $data);
+          $this->load->view('templates/footer');
+        }
+        elseif (array_key_exists('start', $sessione)) {
+          $id = $this->dichiarazione_model->set_statement();
+          $data['submitted'] = true;
+          $stato = send_pdf($this->dichiarazione_model->get_items($id));
+
+          $data['mittente'] = $this->input->post('titolare_nome');
+          $data['sl_pec'] = $this->input->post('sl_pec');
+
+          $this->session->unset_userdata('start');
+
+          $this->load->view('templates/header', $data);
+          $this->load->view('templates/headbar');
+          if (!$stato) {
+              $data['errore'] = ENVIRONMENT == 'development' ? $this->email->print_debugger() : 'si &egrave; verificato un errore nella spedizione del messaggio';
+              $this->parser->parse('domanda/errore_invio', $data);
+          } else {
+              $this->parser->parse('domanda/sent', $data);
+          }
+          $this->load->view('templates/footer');
+        }
+        else {
+          //redirect('/domanda/nuova', 'refresh');
+          redirect('/domanda/nuovamentequitato', 'refresh');
         }
     }
 

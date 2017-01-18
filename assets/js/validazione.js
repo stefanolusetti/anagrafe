@@ -167,10 +167,9 @@ $(document).ready(function() {
       }
     });
 
-    autocompleta_cache('titolare_comune_nascita', 'titolare_prov_nascita');
-    autocompleta_cache('titolare_comune_residenza', 'titolare_prov_residenza');
-    autocompleta_cache('sl_comune', 'sl_prov');
-    autocompleta_cache('so_comune', 'so_provincia');
+    autocompleta_cache('birth_locality', 'birth_province');
+    autocompleta_cache('residence_locality', 'residence_province');
+    autocompleta_cache('company_locality', 'company_province');
 });
 
 function check_ateco() {

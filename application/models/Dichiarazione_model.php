@@ -12,14 +12,17 @@ class Dichiarazione_model extends CI_Model
   }
 
   public function get_items($id = false) {
-    if ($id === false) {
-      $query = $this->db->get('dichiaraziones');
-
+    if (false === $id) {
+      $query = $this->db->get('docs');
       return $query->result_array();
     }
+    return $this->get_item($id);
+  }
 
-    $query = $this->db->get_where('dichiaraziones', array('id' => $id));
-    $item = $query->row_array();
+  public function get_item($id) {
+    $qhr = $this->db->get_where('docs', array('did' => $id));
+    return $query->row_array();
+    /*
     $item['ateco_lista'] = build_other_fields($item['id'], 'ateco', 0);
     $item['ateco_lista_r'] = build_other_fields($item['id'], 'ateco', 1);
     $item['soa_lista'] = build_other_fields($item['id'], 'soa', null);
@@ -28,20 +31,21 @@ class Dichiarazione_model extends CI_Model
     $item['id_anno'] = get_year($item['data_firma']);
     $item['data_firma'] = format_date($item['data_firma']);
     $item['id_progressivo'] = $item['id'];
-
     return $item;
+    */
   }
 
   public function get_items_antimafia($id = false) {
-    if ($id === false) {
+    if (false === $id) {
       $query = $this->db->get('anagrafiche_antimafia');
-
       return $query->result_array();
     }
+    return $this->get_item_antimafia($id);
+  }
 
-    $query_antimafia = $this->db->get_where('anagrafiche_antimafia', array('dichiarazione_id' => $id));
+  public function get_item_antimafia($id) {
+    $query_antimafia = $this->db->get_where('anagrafiche_antimafia', array('did' => $id));
     $item_antimafia = $query_antimafia->result_array();
-
     return $item_antimafia;
   }
 
@@ -141,6 +145,11 @@ class Dichiarazione_model extends CI_Model
     else {
       $query = $this->db->where('type', (int)$type)->get('ruolo_anagrafiche');
     }
+    return $query->result_array();
+  }
+
+  public function get_company_shapes() {
+    $query = $this->db->get('company_shapes');
     return $query->result_array();
   }
 
