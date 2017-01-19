@@ -56,6 +56,17 @@ $(document).ready(function() {
     "Il codice fiscale deve contenere 16 caratteri, oppure 11 nel caso coincida con la partita iva"
   );
 
+  $.validator.addMethod("cfp", function(value, element) {
+      if (value.length == 16) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    "Il codice fiscale deve contenere 16 caratteri"
+  );
+
     $.validator.addMethod("piva", function(value, element) {
         if (value.length == 11) {
           return true

@@ -46,24 +46,26 @@ class Domanda extends CI_Controller
         $sessione = $this->session->all_userdata();
 
         if (($this->form_validation->run('domanda') == false)) {
-            //&& ($this->form_validation->run('cassa_edile') == FALSE)) {
-
+          $errors = $this->form_validation->error_array();
           $this->session->set_userdata('start', '1');
-          //$data['soas'] = $this->dichiarazione_model->get_soas();
-          //$data['atecos'] = $this->dichiarazione_model->get_atecos();
+
+          // Hidden conditional things.
+          $data['show_other_shape'] = 'Altro' == $this->input->post('company_shape') ? true : false;
+          $data['choosen_shape'] = $this->input->post('company_shape');
+          $data['sake_service_type_class'] = 'Yes' == $this->input->post('sake_service_flag') ? '' : 'hidden';
+          $data['sake_work_type_class'] = 'Yes' == $this->input->post('sake_work_flag') ? '' : 'hidden';
+          $data['sake_supply_type_class'] = 'Yes' == $this->input->post('sake_supply_flag') ? '' : 'hidden';
+          $data['sake_fix_type_class'] = 'Yes' == $this->input->post('sake_fix_flag') ? '' : 'hidden';
+
           $data['antimafias'] = false;
 
           $offices = $this->input->post('office');
-          $data['offices'] = array();
-          if (!empty($offices) AND is_array($offices)) {
-            foreach ($offices as $ok => $office_details) {
-              $data['offices'][$ok] = array(
-                'office_name' => $office_details['name'],
-                'office_cf' => $office_details['cf'],
-                'office_piva' => $office_details['vat'],
-              );
-            }
-          }
+          $data['stmt_wl_class'] = 'Yes' == $this->input->post('stmt_wl') ? '' : 'hidden';
+
+          $data['company_role_more_class'] = $this->input->post('company_role') == 'Altro' ? '' : 'hidden';
+
+          $data['offices'] = $this->input->post('office');
+          /*
           else {
             $data['offices'] = array(
               array(
@@ -73,6 +75,9 @@ class Domanda extends CI_Controller
               )
             );
           }
+          */
+          $data['anagrafiche'] = $this->input->post('anagrafica');
+
           $data['submitted'] = false;
           $this->load->view('templates/header', $data);
           $this->load->view('templates/headbar');
@@ -81,6 +86,7 @@ class Domanda extends CI_Controller
         }
         elseif (array_key_exists('start', $sessione)) {
           $id = $this->dichiarazione_model->set_statement();
+          /*
           $data['submitted'] = true;
           $stato = send_pdf($this->dichiarazione_model->get_items($id));
 
@@ -98,6 +104,7 @@ class Domanda extends CI_Controller
               $this->parser->parse('domanda/sent', $data);
           }
           $this->load->view('templates/footer');
+          */
         }
         else {
           //redirect('/domanda/nuova', 'refresh');
@@ -167,7 +174,13 @@ class Domanda extends CI_Controller
             $this->load->view('templates/footer');
         }
     }
-
+/*
+███████  ██████  ██████  ███    ███      ██████  █████  ██      ██      ██████   █████   ██████ ██   ██ ███████
+██      ██    ██ ██   ██ ████  ████     ██      ██   ██ ██      ██      ██   ██ ██   ██ ██      ██  ██  ██
+█████   ██    ██ ██████  ██ ████ ██     ██      ███████ ██      ██      ██████  ███████ ██      █████   ███████
+██      ██    ██ ██   ██ ██  ██  ██     ██      ██   ██ ██      ██      ██   ██ ██   ██ ██      ██  ██       ██
+██       ██████  ██   ██ ██      ██      ██████ ██   ██ ███████ ███████ ██████  ██   ██  ██████ ██   ██ ███████
+*/
     public function _controlla_data($str)
     {
         $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
@@ -179,7 +192,20 @@ class Domanda extends CI_Controller
             return true;
         }
     }
+    public function _controlla_data_opzionale($str)
+    {
+      if(empty($str)){
+        return true;
+      }
+      $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
+      if (preg_match($format, $str) == false) {
+          $this->form_validation->set_message('_controlla_data', 'Il campo <em>%s</em> deve contenere una data nel formato gg/mm/yyyy');
 
+          return false;
+      } else {
+          return true;
+      }
+    }
     public function _controlla_soa($str)
     {
         $esito = true;
@@ -197,6 +223,50 @@ class Domanda extends CI_Controller
         }
 
         return $esito;
+    }
+
+    public function _sake(){
+      $sakes = array('work' => 'Lavori', 'service' => 'Servizi', 'supply' => 'Forniture', 'fix' => 'Interventi di immediata riparazione');
+      $els = array('type', 'amount');
+
+      $__post = $this->input->post();
+      $abemus_data = false;
+      foreach ($sakes as $sake_type => $sake_label) {
+        $correct_data = true;
+
+        if(isset($__post['sake_' . $sake_type . '_flag']) && 'Yes' == $__post['sake_' . $sake_type . '_flag']) {
+          $abemus_data = true;
+          foreach($els AS $el){
+            if (empty($__post['sake_' . $sake_type . '_' . $el])){
+              $this->form_validation->set_message('_sake', 'Il campo <em>'.$sake_label.'</em> contiene campi vuoti.');
+              $correct_data = false;
+              return false;
+            }
+            if(!is_numeric($__post['sake_' . $sake_type . '_amount'])){
+              $this->form_validation->set_message('_sake', 'L\'importo deve essere numerico.');
+              $correct_data = false;
+              return false;
+            }
+          }
+        }
+      }
+
+      if(false == $abemus_data){
+        $this->form_validation->set_message('_sake', 'Il campo <em>%s</em> &egrave; vuoto. Deve essere compilato <em>almeno un campo</em>.');
+      }
+      if(false == $correct_data){
+        return false;
+      }
+      return true;
+    }
+
+    public function _company_type_more(){
+      $shape = $this->input->post('company_shape');
+      if ('Altro' == $shape && empty($this->input->post('company_type_more'))){
+        $this->form_validation->set_message('_company_type_more', 'Se indicato <em>Altro</em>, inserire il valore.');
+        return false;
+      }
+      return true;
     }
 
     public function _controlla_impiegati()

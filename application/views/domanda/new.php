@@ -56,13 +56,15 @@ echo form_open('domanda/nuova');
   f_text('residence_locality', 'Comune di residenza*',
     array('input' => array('class' => 'required maxlen'))
   );
-  f_select('residence_province', 'Provincia di nascita*',
+  f_select('residence_province', 'Provincia di residenza*',
     opzioni_provincie(),
     array('input' => array('class' => 'required maxlen'))
   );
+  /*
   f_text('residence_city', 'Città di residenza*',
     array('input' => array('class' => 'required maxlen'))
   );
+  */
   f_text('residence_street', 'Via/Piazza*',
     array('input' => array('class' => 'required maxlen'))
   );
@@ -95,13 +97,25 @@ echo form_open('domanda/nuova');
    rea_subscription
    rea_number
 */
-/*
+
   f_select(
     'company_role',
     'Tipo di rappresentanza',
-    array('Legale rappresentante' => 'Legale rappresentante', 'Procuratore' => 'Procuratore')
+    array(
+      'Legale rappresentante' => 'Legale rappresentante',
+      'Titolare' => 'Titolare',
+      'Altro' => 'Altro'
+    )
   );
-  */
+
+
+  echo '<div id="company_role_more" class="' . $company_role_more_class . '">';
+  f_text(
+    'ruolo_richiedente',
+    'se selezionato <b>Altro</b> specificare:',
+    array('field' => array('class' => 'indent'))
+  );
+  echo '</div>';
 
 
   f_text('company_name', 'Ragione sociale*',
@@ -109,15 +123,26 @@ echo form_open('domanda/nuova');
   );
 
   f_text(
-    'company_birthdate',
-    'Data costituzione società (nel formato gg/mm/aaaa)*',
-    array('input' => array('class' => 'data'))
+    'company_vat',
+    'Partita IVA*',
+    array('input' => array('class' => 'required piva'))
+  );
+  f_text(
+    'company_cf',
+    'Codice Fiscale*',
+    array('input' => array('class' => 'required cf'))
   );
 
+
+  $shapes = opzioni_company_shape();
+
+  //array_unshift($shapes, ' - - - SELEZIONARE - - - ');
+  // Inject 'Altro' value.
+  $shapes['Altro'] = 'Altro';
   f_select(
     'company_shape',
     "Forma giuridica dell'impresa",
-    opzioni_company_shape());
+    $shapes, $choosen_shape);
 
   /*
   f_select(
@@ -138,10 +163,16 @@ echo form_open('domanda/nuova');
     array('input' => array('class' => 'required'))
   );
   */
-  echo '<div class="hidden controlla_tipo_impresa">';
+  if($show_other_shape){
+    echo '<div class="controlla_tipo_impresa">';
+  }
+  else {
+    echo '<div class="hidden controlla_tipo_impresa">';
+  }
   f_text(
     'company_type_more',
-    'se selezionato Altro specificare'
+    'se selezionato <b>Altro</b> specificare:',
+    array('field' => array('class' => 'indent'))
   );
   echo '</div>';
   ?>
@@ -207,11 +238,7 @@ echo form_open('domanda/nuova');
   f_text('company_mobile', 'Tel. mobile');
   f_text('company_fax', 'Fax');
 
-  f_text(
-    'company_vat',
-    'Partita IVA*',
-    array('input' => array('class' => 'required piva'))
-  );
+
 
   f_textarea(
     'company_offices',
@@ -219,11 +246,7 @@ echo form_open('domanda/nuova');
     array('input' => array('style' => 'width: 100%', 'rows' => 3))
   );
 
-  f_text(
-    'company_cf',
-    'Codice Fiscale*',
-    array('input' => array('class' => 'required cf'))
-  );
+
 
   f_text(
     'company_mail',
@@ -237,7 +260,49 @@ echo form_open('domanda/nuova');
     array('input' => array('class' => 'required email'))
   );
 
-
+  echo '<h4>Iscrizione nel Registro delle Imprese presso la C.C.I.A.A.</h4>';
+  f_text('rea_location', 'Registro delle Imprese *', array('input' => array('class' => 'required maxlen')));
+  f_text('rea_subscription', 'Numero di iscrizione*', array('input' => array('class' => 'required maxlen')));
+  f_text('rea_number', 'Numero di R.E.A.*', array('input' => array('class' => 'required maxlen')));
+  f_text(
+    'company_birthdate',
+    'Data costituzione società (nel formato gg/mm/aaaa)*',
+    array('input' => array('class' => 'data'))
+  );
+  f_textarea(
+    'company_social_subject',
+    'Oggetto Sociale',
+    array('input' => array('style' => 'width:100%', 'rows' => 4))
+  );
+?>
+<h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2>
+<a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a>
+<div class="offices">
+<?php
+if (isset($offices) AND !empty($offices)) {
+  foreach ($offices as $key => $office) {
+    echo '<div class="office container" id="ofel-0">';
+    f_text(
+      'office[' . $key . '][name]',
+      'Ragione Sociale impresa partecipata <a href="#" data-elid="0" class="removeOffice" data-victim="ofel-0">Rimuovi Impresa</a>',
+      array('input' => array('class' => 'required maxlen'))
+    );
+    f_text(
+      'office[' . $key . '][vat]',
+      'Partita IVA impresa partecipata',
+      array('input' => array('class' => 'required maxlen'))
+    );
+    f_text(
+      'office[' . $key . '][cf]',
+      'Codice Fiscale impresa partecipata',
+      array('input' => array('class' => 'required maxlen'))
+    );
+    echo '<div class="resizer"></div></div>';
+  }
+}
+?>
+</div>
+<?php
   echo '<h4>Consiglio di amministrazione</h4>';
   f_text(
     'company_num_admins',
@@ -263,27 +328,26 @@ echo form_open('domanda/nuova');
     'Numero sindaci supplenti',
     array('input' => array())
   );
-  echo '<h4>Iscrizione nel Registro delle Imprese presso la C.C.I.A.A.</h4>';
-  f_text('rea_location', 'Registro delle Imprese *', array('input' => array('class' => 'required maxlen')));
-  f_text('rea_subscription', 'Numero di iscrizione*', array('input' => array('class' => 'required maxlen')));
-  f_text('rea_number', 'Numero di R.E.A.*', array('input' => array('class' => 'required maxlen')));
-  echo '<h4>Oggetto Sociale</h4>';
-  f_textarea(
-    'company_social_subject',
-    '',
-    array('input' => array('style' => 'width:100%', 'rows' => 4))
-  );
 
 
-  echo '<h2>Attività</h2>';
+
+/*
+   █████  ████████ ████████ ██ ██    ██ ██ ████████  █████
+  ██   ██    ██       ██    ██ ██    ██ ██    ██    ██   ██
+  ███████    ██       ██    ██ ██    ██ ██    ██    ███████
+  ██   ██    ██       ██    ██  ██  ██  ██    ██    ██   ██
+  ██   ██    ██       ██    ██   ████   ██    ██    ██   ██
+*/
+  echo '<h2>Interessato allo svolgimento delle seguenti attività (è necessario selezionare almeno una voce)</h2>';
+  echo f_hidden('stmt_wl_interest');
+  // Work
   echo '<div id="stmt_wl_interest_more" class="">';
-
   f_checkbox(
     'sake_work_flag',
     '<b>Lavori</b>',
     array('input' => array('class' => 'elToggler ', 'data-el' => 'sake_work_wrapper'))
   );
-  echo '<div id="sake_work_wrapper" class="hidden">';
+  echo '<div id="sake_work_wrapper" class="' . $sake_work_type_class . '">';
   f_text(
     'sake_work_type',
     'Tipologia',
@@ -296,12 +360,13 @@ echo form_open('domanda/nuova');
   );
   echo '</div>';
 
+  // Service
   f_checkbox(
     'sake_service_flag',
     '<b>Servizi</b>',
     array('input' => array('class' => 'elToggler ', 'data-el' => 'sake_service_wrapper'))
   );
-  echo '<div id="sake_service_wrapper" class="hidden">';
+  echo '<div id="sake_service_wrapper" class="' . $sake_service_type_class . '">';
   f_text(
     'sake_service_type',
     'Tipologia',
@@ -314,12 +379,13 @@ echo form_open('domanda/nuova');
   );
   echo '</div>';
 
+  // Supply
   f_checkbox(
     'sake_supply_flag',
     '<b>Forniture</b>',
     array('input' => array('class' => 'elToggler ', 'data-el' => 'sake_supply_wrapper'))
   );
-  echo '<div id="sake_supply_wrapper" class="hidden">';
+  echo '<div id="sake_supply_wrapper" class="' . $sake_supply_type_class . '">';
   f_text(
     'sake_supply_type',
     'Tipologia',
@@ -332,12 +398,13 @@ echo form_open('domanda/nuova');
   );
   echo '</div>';
 
+  // Fix
   f_checkbox(
     'sake_fix_flag',
     '<b>Interventi di immediata riparazione ex art.8, commi 1 e 5 del decreto legge n.189/2016</b>',
     array('input' => array('class' => 'elToggler ', 'data-el' => 'sake_fix_wrapper'))
   );
-  echo '<div id="sake_fix_wrapper" class="hidden">';
+  echo '<div id="sake_fix_wrapper" class="' . $sake_fix_type_class . '">';
   f_text(
     'sake_fix_type',
     'Tipologia',
@@ -357,37 +424,8 @@ echo form_open('domanda/nuova');
     ██
   */
   echo '</div>';
-
-
-
   ?>
-  <h4>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h4>
-  <a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a>
-  <div class="offices">
-  <?php
-  if (isset($offices) AND !empty($offices)) {
-    foreach ($offices as $key => $office) {
-      echo '<div class="office container" id="ofel-0">';
-      f_text(
-        'office[' . $key . '][name]',
-        'Ragione Sociale impresa partecipata <a href="#" data-elid="0" class="removeOffice" data-victim="ofel-0">Rimuovi Impresa</a>',
-        array('input' => array('class' => 'required maxlen'))
-      );
-      f_text(
-        'office[' . $key . '][vat]',
-        'Partita IVA impresa partecipata',
-        array('input' => array('class' => 'required maxlen'))
-      );
-      f_text(
-        'office[' . $key . '][cf]',
-        'Codice Fiscale impresa partecipata',
-        array('input' => array('class' => 'required maxlen'))
-      );
-      echo '<div class="resizer"></div></div>';
-    }
-  }
-  ?>
-  </div>
+
 
 
     <div class="field_antimafia">
@@ -395,22 +433,157 @@ echo form_open('domanda/nuova');
   Inserire i dati richiesti per tutti i soggetti previsti dal DLgs. n. 159/2011 art.85 e ss.mm.ii.</h2>
 
 
-  <div class="field">
-    <label  title =" <?php
-  echo '<p>Per tutti i tipi di imprese, società, associazioni, anche prive di personalità
-  giuridica, la documentazione antimafia deve sempre riferirsi al <b>direttore tecnico</b>
-  ove previsto ed inoltre ai <b>membri del collegio sindacale</b> o, nei casi di cui all’art
-  2477 c.c, al <b>sindaco o ai soggetti che svolgono compiti di vigilanza</b> di cui all’art
-  6 comma 1 lettera b) del d.lgs 231 del 8 giugno 2001.
-  In aggiunta poi, sono soggetti a verifica le cariche indicate a fianco di ciascun tipo
-  di impresa.</p>';
-    echo'<table><tbody><tr><td>1-Imprese individuali</td><td>Titolare</td></tr><tr><td>2-Per le Società di capitali, anche consortili, le Società cooperative,Consorzi cooperativi, Consorzi di cui al Libro V, Titolo X, Capo II, Sezione II del c.c, Associazioni e società di qualunque tipo, anche prive di personalità giuridica </td><td>Legale rappresentante,ed eventuali altri Componenti organo di amministrazione, Ciascuno dei consorziati che nei consorzi e nelle società consortili detenga una partecipazione superiore al 10% oppure detenga una partecipazione inferiore al 10% e che abbia stipulato un patto parasociale riferibile a una partecipazione pari o superiore al 10%,ed ai Soci o consorziati per conto dei quali le società consortili o i consorzi operino in modo esclusivo nei confronti della pubblica amministrazione </td></tr><tr><td>3-Società di capitali </td><td>Socio di maggioranza in caso di società con un numero di soci pari o inferiore a quattro, ovvero al Socio in caso di società con socio unico </td></tr><tr><td>4-Consorzi di cui l’Art 2602 del c.c e per i Gruppi europei di interesse economico(GEIE) </td><td>Chi ne ha la rappresentanza ed agli Imprenditori o Società consorziate </td></tr><tr><td>5-Società semplice e in nome collettivo</td><td>Tutti i soci</td></tr><tr><td>6-Società in accomandita semplice</td><td>Soci accomandatari</td></tr><tr><td>7-Società estere con sede secondaria in territorio statale (Art 2508 c.c)</td><td>Coloro che rappresentano stabilmente nel territorio dello Stato</td></tr><tr><td>8-Società costituite all’estero,prive di una sede secondaria con rappresentanza stabile nel territorio statale</td><td>Coloro che esercitano poteri di amministrazione,di rappresentanza o di direzione dell’impresa</td></tr><tr><td>9-Raggruppamenti temporanei di imprese</td><td>Imprese costituenti il raggruppamento anche se aventi sede all’estero,di rappresentanza o di direzione dell’impresa</td></tr><tr><td>10-Società personali</td><td>Soci persone fisiche delle società personali o di capitali che ne siano socie</td></tr>  <tr><td>11-Società capitali concessionarie nel settore dei giochi pubblici di cui alle lettere b) e c) del comma 2 dell’ Art 85 del D.Lgs 159/2011</td><td>Oltre ai Soggetti indicati nei precedenti punti 2 e 3, ai Soci persone fisiche che detengono,anche indirettamente,una partecipazione al capitale o al patrimoniosuperiore al 2%,nonché ai Direttori generali e Soggetti responsabili delle sedi secondarie o delle stabili organizzazioni inItalia di soggetti non residenti. Nell’ipotesi in cui i soci persone fisiche detengano la partecipazione superiore alla predetta soglia mediante altre società di capitali,la documentazione deve riferirsi anche al legale rappresentante e agli eventuali componenti dell’organo di amministrazione della società socia,alle persone fisiche che,direttamente o indirettamente,controllano tale società,nonché ai direttori generali e ai soggetti responsabili delle sedi secondarie o delle stabili organizzazioni in Italia di soggetti non residenti. La documentazione di cui al periodo precedente deve riferirsi anche al coniuge non separato </td></tr></tbody></table>';
-    ?>" >Per avere maggiori informazioni</label></div><div class="container">
+<div class="container">
     <a name="anagrafiche"></a>
     <a href="#anagrafiche" class="add addAnagrafica">Aggiungi anagrafica</a> | <a href="#" class="reset resetAnagrafiche">Cancella tutto</a><br>
-    <div class="inputs">
-    <?php if (!$antimafias) {} ?>
-    </div>
+    <div class="inputs"><?php
+/*
+ █████  ███    ██  █████   ██████  ██████   █████  ███████ ██  ██████ ██   ██ ███████
+██   ██ ████   ██ ██   ██ ██       ██   ██ ██   ██ ██      ██ ██      ██   ██ ██
+███████ ██ ██  ██ ███████ ██   ███ ██████  ███████ █████   ██ ██      ███████ █████
+██   ██ ██  ██ ██ ██   ██ ██    ██ ██   ██ ██   ██ ██      ██ ██      ██   ██ ██
+██   ██ ██   ████ ██   ██  ██████  ██   ██ ██   ██ ██      ██  ██████ ██   ██ ███████
+*/
+
+if (isset($anagrafiche) AND !empty($anagrafiche)) {
+  $a_head = '<div id="anel-!!!" class="anagrafica anagrafica-box el-!!!" data-elid="!!!">
+    <h2>Anagrafica del componente</h2>';
+  $a_foot = '<a href="#anagrafiche" class="addFamiliar" data-elid="!!!">Aggiungi Componente Familiare</a> | <a href="#anagrafiche" class="removeFamiliar" data-victim="anel-!!!" data-elid="!!!">Rimuovi Anagrafica</a>
+  <div class="familiars" data-elid="!!!">';
+  $f_head = '<div class="box-familiare" id="fam-###-@@@"><hr />
+    <a href="#anagrafiche" class="removeThisFamiliar" data-victim="fam-###-@@@" data-elid="###" data-elfid="@@@">Rimuovi Componente Familiare</a>';
+  $f_foot = '<div class="resizer"></div></div>';
+
+  $options_key_users = opzioni_ruoli_anagrafiche(0);
+  $options_fam_users = opzioni_ruoli_anagrafiche(1);
+
+  foreach ($anagrafiche AS $i => $anagrafica) {
+    echo str_replace(
+      array('!!!'),
+      array($i),
+      $a_head
+    );
+    $prefix = 'anagrafica[' . $i . '][';
+
+    f_select(
+      $prefix . 'antimafia_role]',
+      'Ruolo*',
+      $options_key_users,
+      array('input' => array('class' => 'required'))
+    );
+    f_text(
+      $prefix . 'antimafia_nome]',
+      'Nome*',
+      array('input' => array('class' => 'required maxlen'))
+    );
+    f_text(
+      $prefix . 'antimafia_cognome]',
+      'Cognome*',
+      array('input' => array('class' => 'required maxlen'))
+    );
+    f_text(
+      $prefix . 'antimafia_data_nascita]',
+      'Data di nascita (nel formato gg/mm/aaaa)*',
+      array('input' => array('class' => 'required data'))
+    );
+    f_text(
+      $prefix . 'antimafia_comune_nascita]',
+      'Comune di nascita*',
+      array('input' => array('class' => 'required maxlen'))
+    );
+    f_select(
+      $prefix . 'antimafia_provincia_nascita]',
+      'Provincia di nascita*',
+      opzioni_provincie(),
+      array('input' => array('class' => 'required maxlen'))
+    );
+
+    f_text(
+      $prefix . 'antimafia_cf]',
+      'Codice Fiscale*',
+      array('input' => array('class' => 'required cfp'))
+    );
+
+    f_text(
+      $prefix . 'antimafia_comune_residenza]',
+      'Comune Residenza',
+      array('input' => array('class' => ''))
+    );
+    f_select(
+      $prefix . 'antimafia_provincia_residenza]',
+      'Provincia di residenza*',
+      opzioni_provincie(),
+      array('input' => array('class' => 'required maxlen'))
+    );
+    f_text(
+      $prefix . 'antimafia_via_residenza]',
+      'Via Residenza',
+      array('input' => array('class' => ''))
+    );
+    f_text(
+      $prefix . 'antimafia_civico_residenza]',
+      'Civico Rediernza',
+      array('input' => array('class' => ''))
+    );
+
+    echo str_replace(
+      array('!!!'),
+      array($i),
+      $a_foot
+    );
+    if(isset($anagrafica['f']) && !empty($anagrafica['f'])){
+      foreach($anagrafica['f'] AS $fi => $fam){
+        $fam_prefix = 'anagrafica['.$i.'][f]['.$fi.'][';
+        echo str_replace(
+          array('###', '@@@'),
+          array($i, $fi),
+          $f_head
+        );
+
+        f_select(
+          $fam_prefix . 'role]',
+          'Ruolo*',
+          $options_fam_users,
+          array('input' => array('class' => 'required'))
+        );
+        f_text(
+          $fam_prefix . 'name]',
+          'Nome*',
+          array('input' => array('class' => 'required maxlen'))
+        );
+        f_text(
+          $fam_prefix . 'lastname]',
+          'Cognome*',
+          array('input' => array('class' => 'required maxlen'))
+        );
+        f_text(
+          $fam_prefix . 'data_nascita]',
+          'Data di nascita (nel formato gg/mm/aaaa)*',
+          array('input' => array('class' => 'required data'))
+        );
+        f_text(
+          $fam_prefix . 'comune]',
+          'Comune di nascita*',
+          array('input' => array('class' => 'required maxlen'))
+        );
+
+        f_text(
+          $fam_prefix . 'cf]',
+          'Codice Fiscale*',
+          array('input' => array('class' => 'required cfp'))
+        );
+        echo str_replace(
+          array('###', '@@@'),
+          array($i, $fi),
+          $f_foot
+        );
+      }
+    }
+    // familiari
+    echo '</div></div>';
+  }
+}
+?></div>
   </div>
   </div>
 
@@ -442,22 +615,22 @@ echo form_open('domanda/nuova');
   stmt_eligible
 */
 
-  f_checkbox(
-    'stmt_wl',
-    'di essere iscritto alle white list della Prefettura',
-    array('input' => array('class' => 'elToggler', 'data-el' => 'stmt_wl_more'))
-  );
 
-  echo '<div id="stmt_wl_more" class="hidden">';
+
+  echo '<div class="checkbox field "><label for="stmt_wl_si">di essere iscritto alle white list della Prefettura</label><input type="radio" name="stmt_wl" value="Yes" id="stmt_wl_si">
+</div><div class="checkbox field "><label for="stmt_wl_no">di <b>NON</b> essere iscritto alle white list della Prefettura</label><input type="radio" name="stmt_wl" value="Yes" id="stmt_wl_no">
+</div>';
+
+  echo '<div id="stmt_wl_more" class="'.$stmt_wl_class.'">';
   f_text(
     'stmt_wl_name',
-    'Prefettura di',
-    array('input' => array('class' => 'maxlen'))
+    'Prefettura di*',
+    array('input' => array('class' => 'maxlen required'))
   );
   f_text(
     'stmt_wl_date',
-    'Data iscrizione (nel formato gg/mm/aaaa)',
-    array('input' => array('class' => 'data'))
+    'Data iscrizione (nel formato gg/mm/aaaa)*',
+    array('input' => array('class' => 'data required'))
   );
   echo '</div>';
 

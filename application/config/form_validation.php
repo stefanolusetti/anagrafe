@@ -28,7 +28,7 @@ $config = array(
     ),
     array(
       'field' => 'birth_date',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Data nascita dichiarante',
       'rules' => 'callback__controlla_data',
     ),
     array(
@@ -39,11 +39,6 @@ $config = array(
     array(
       'field' => 'residence_province',
       'label' => 'Provincia di residenza del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'residence_city',
-      'label' => 'Città di residenza del dichiarante',
       'rules' => 'required|max_length[200]',
     ),
     array(
@@ -73,83 +68,69 @@ $config = array(
     ),
     array(
       'field' => 'company_shape',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Forma giuridica dell\'impresa',
       'rules' => 'required|max_length[200]',
     ),
     array(
       'field' => 'company_type_more',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'label' => 'Altra forma giuridica',
+      'rules' => 'callback__company_type_more',
     ),
     array(
       'field' => 'company_locality',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Comune Sede Legale',
       'rules' => 'required|max_length[200]',
     ),
     array(
       'field' => 'company_province',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Provincia Sede Legale',
       'rules' => 'required|max_length[200]',
     ),
     array(
       'field' => 'company_zip',
-      'label' => 'Nome del dichiarante',
+      'label' => 'CAP  Sede Legale',
       'rules' => 'required|max_length[200]',
     ),
     array(
       'field' => 'company_street',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Indirizzo Sede Legale',
       'rules' => 'required|max_length[200]',
     ),
     array(
       'field' => 'company_num',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Civico Sede Legale',
       'rules' => 'required|max_length[200]',
     ),
     array(
       'field' => 'company_phone',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'company_mobile',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'company_fax',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Telefono Sede Legale',
       'rules' => 'required|max_length[200]',
     ),
     array(
       'field' => 'company_vat',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'company_offices',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'label' => 'Partita IVA Società',
+      'rules' => 'required|exact_length[11]',
     ),
     array(
       'field' => 'company_cf',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'label' => 'Codice Fiscale Società',
+      'rules' => 'required|max_length[16]|min_length[11]',
     ),
     array(
       'field' => 'company_mail',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'label'   => 'Email sede legale',
+      'rules'   => 'required|valid_email'
     ),
     array(
       'field' => 'company_pec',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'label'   => 'Email Certificata PEC sede legale',
+      'rules'   => 'required|valid_email'
     ),
+    /*
     array(
       'field' => 'company_num_admins',
       'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'rules' => 'callback__controllo_num_dipendenti',
     ),
     array(
       'field' => 'company_num_attorney',
@@ -166,104 +147,50 @@ $config = array(
       'label' => 'Nome del dichiarante',
       'rules' => 'required|max_length[200]',
     ),
+    */
     array(
       'field' => 'rea_location',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Ufficio Registro delle imprese',
       'rules' => 'required|max_length[200]',
     ),
     array(
       'field' => 'rea_subscription',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Numero di iscrizione registro delle imprese',
       'rules' => 'required|max_length[200]',
     ),
     array(
       'field' => 'rea_number',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Numero R.E.A.',
       'rules' => 'required|max_length[200]',
     ),
     array(
-      'field' => 'company_social_subject',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_work_flag',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_work_type',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_work_amount',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_service_flag',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_service_type',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_service_amount',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_supply_type',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_supply_amount',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_fix_type',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'sake_fix_amount',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
-    ),
-    array(
-      'field' => 'stmt_wl',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'field' => 'stmt_wl_interest',
+      'label' => 'Attività',
+      'rules' => 'callback__sake',
     ),
     array(
       'field' => 'stmt_wl_name',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'label' => 'Nome Prefettura',
+      'rules' => 'max_length[200]',
     ),
     array(
       'field' => 'stmt_wl_date',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'label' => 'Data iscrizione white list prefettura',
+      'rules' => 'callback__controlla_data_opzionale',
     ),
     array(
       'field' => 'stmt_eligible',
       'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'rules' => 'required',
     ),
     array(
       'field' => 'doc_date',
-      'label' => 'Nome del dichiarante',
-      'rules' => 'required|max_length[200]',
+      'label' => 'Data Documento',
+      'rules' => 'callback__controlla_data',
     ),
     array(
       'field' => 'doc_location',
-      'label' => 'Nome del dichiarante',
+      'label' => 'Luogo Documento',
       'rules' => 'required|max_length[200]',
     ),
   ),

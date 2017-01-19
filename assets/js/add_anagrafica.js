@@ -1,5 +1,10 @@
 jQuery(document).ready(function() {
+  _enableAutocomplete(
+    'doc_location',
+    ''
+  );
   mainEventHandlers();
+  subEventHandlers();
   subOfficeEventHandlers();
   window.ia = jQuery(".anagrafica.anagrafica-box").length;
   window.is = jQuery(".office.container").length;
@@ -28,6 +33,33 @@ function mainEventHandlers(){
   jQuery('a.addOffice').on('click', function(e){
     e.preventDefault();
     addOffice(e);
+  });
+
+  jQuery("[name=stmt_wl]").change(function(e){
+    if (jQuery('#stmt_wl_si').is(':checked')) {
+      jQuery('#stmt_wl_more').show();
+    }
+    else {
+      jQuery('#stmt_wl_more').hide();
+    }
+  });
+
+  jQuery("#company_role").change(function(e){
+    if ('Altro' == jQuery(e.target).val()) {
+      jQuery('#company_role_more').show();
+    }
+    else {
+      jQuery('#company_role_more').hide();
+    }
+  });
+
+  jQuery("#company_shape").change(function(e){
+    if ('Altro' == jQuery(e.target).val()) {
+      jQuery('.controlla_tipo_impresa').show();
+    }
+    else {
+      jQuery('.controlla_tipo_impresa').hide();
+    }
   });
 
   jQuery('.elToggler').change(function(e){
@@ -117,10 +149,9 @@ function addAnagrafica(e){
     }
     var roles_options = '';
     for (p in window._key_roles) {
-      roles_options += '<option value="'+window._key_roles[p].rid+'">' + window._key_roles[p].value + '</option>';
+      roles_options += '<option value="'+[p]+'">' + window._key_roles[p] + '</option>';
     }
     var template = '<div id="anel-###" class="anagrafica anagrafica-box el-###" data-elid="###"> \
-      <input type="hidden" name="anagrafica[]" value="anagrafica" id="anagrafica"> \
       <h2>Anagrafica del componente</h2> \
       <div class="field"> \
         <label for="antimafia_role">Ruolo</label> \
@@ -137,26 +168,32 @@ function addAnagrafica(e){
         <input type="text" name="anagrafica[###][antimafia_cognome]" value="" id="anagrafica_###_antimafia_cognome" class="required maxlen" /> \
       </div> \
       <div class="field"> \
+        <label for="antimafia_data_nascita">Data di nascita (nel formato gg/mm/aaaa)*</label> \
+        <input type="text" name="anagrafica[###][antimafia_data_nascita]" value="" id="anagrafica[###][antimafia_data_nascita]" class="required data" /> \
+      </div> \
+      <div class="field"> \
         <label for="antimafia_comune_nascita">Comune di nascita*</label> \
         <input type="text" name="anagrafica[###][antimafia_comune_nascita]" value="" id="anagrafica_###_antimafia_comune_nascita" class="required maxlen" /> \
+      </div> \
+      <div class="field"> \
+        <label for="antimafia_provincia_residenza">Provincia di nascita</label> \
+        <select name="anagrafica[###][antimafia_provincia_nascita]" id="anagrafica_###_antimafia_provincia_nascita"> \
+        ' + provincie_options + '\
+        </select>\
+      </div> \
+      <div class="field"> \
+        <label for="antimafia_cf">Codice Fiscale*</label> \
+        <input type="text" name="anagrafica[###][antimafia_cf]" value="" id="anagrafica[###][antimafia_cf]" class="required cfp" /> \
+      </div> \
+      <div class="field"> \
+        <label for="antimafia_comune_residenza">Comune di Residenza</label> \
+        <input type="text" name="anagrafica[###][antimafia_comune_residenza]" value="" id="anagrafica_###_antimafia_comune_residenza" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_provincia_residenza">Provincia di residenza</label> \
         <select name="anagrafica[###][antimafia_provincia_residenza]" id="anagrafica_###_antimafia_provincia_residenza"> \
         ' + provincie_options + '\
         </select>\
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_data_nascita">Data di nascita (nel formato gg/mm/aaaa)*</label> \
-        <input type="text" name="anagrafica[###][antimafia_data_nascita]" value="" id="anagrafica[###][antimafia_data_nascita]" class="required data" /> \
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_cf">Codice Fiscale*</label> \
-        <input type="text" name="anagrafica[###][antimafia_cf]" value="" id="anagrafica[###][antimafia_cf]" class="required cf" /> \
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_comune_residenza">Residente a</label> \
-        <input type="text" name="anagrafica[###][antimafia_comune_residenza]" value="" id="anagrafica[###][antimafia_comune_residenza]" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_via_residenza">Via</label> \
@@ -166,20 +203,34 @@ function addAnagrafica(e){
         <label for="antimafia_civico_residenza">Civico</label> \
         <input type="text" name="anagrafica[###][antimafia_civico_residenza]" value="" id="anagrafica[###][antimafia_civico_residenza]" /> \
       </div> \
-      <a href="#anagrafiche" class="addFamiliar" data-elid="###">Aggiungi Componente Familiare</a> | <a href="#anagrafiche" class="removeFamiliar" data-victim="anel-###" data-elid="###">Rimuovi Anagrafica</a> \
+      <a href="#anagrafiche" class="addFamiliar" data-elid="###">Aggiungi Familiare Convivente Maggiorenne</a> | <a href="#anagrafiche" class="removeFamiliar" data-victim="anel-###" data-elid="###">Rimuovi Anagrafica</a> \
       <div class="familiars" data-elid="###"></div> \
     </div>';
     var element = template.split('###').join(index);
     jQuery('.inputs').prepend(jQuery(element));
     subEventHandlers();
-    _enableAutocomplete('anagrafica_'+index+'_antimafia_comune_nascita', 'anagrafica_'+index+'_antimafia_provincia_residenza');
+    _enableAutocomplete(
+      'anagrafica_'+index+'_antimafia_comune_nascita',
+      'anagrafica_'+index+'_antimafia_provincia_nascita'
+    );
+    _enableAutocomplete(
+      'anagrafica_'+index+'_antimafia_comune_residenza',
+      'anagrafica_'+index+'_antimafia_provincia_residenza'
+    );
   })(window.ia);
   window.ia++;
 }
 
+/*
+ █████  ██████  ██████   ██████  ███████ ███████ ██  ██████ ███████
+██   ██ ██   ██ ██   ██ ██    ██ ██      ██      ██ ██      ██
+███████ ██   ██ ██   ██ ██    ██ █████   █████   ██ ██      █████
+██   ██ ██   ██ ██   ██ ██    ██ ██      ██      ██ ██      ██
+██   ██ ██████  ██████   ██████  ██      ██      ██  ██████ ███████
+*/
 function addOffice(e){
   (function(index){
-    var template = '<div class="office container" id="ofel-###"><div class="field "><label for="office###name">Ragione Sociale impresa partecipata <a href="#" data-elid="###" class="removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="office[###][name]" value="" id="office###name" class="required maxlen"></div><div class="field "><label for="office###vat">Partita IVA impresa partecipata</label><input type="text" name="office[###][vat]" value="" id="office###vat" class="required maxlen"></div><div class="field "><label for="office###cf">Codice Fiscale impresa partecipata</label><input type="text" name="office[###][cf]" value="" id="office###cf" class="required maxlen"></div><div class="resizer"></div></div>';
+    var template = '<div class="office container" id="ofel-###"><div class="field "><label for="office###name">Ragione Sociale impresa partecipata*<a href="#" data-elid="###" class="removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="office[###][name]" value="" id="office###name" class="required maxlen"></div><div class="field "><label for="office###vat">Partita IVA impresa partecipata</label><input type="text" name="office[###][vat]" value="" id="office###vat" class="required maxlen piva"></div><div class="field "><label for="office###cf">Codice Fiscale impresa partecipata</label><input type="text" name="office[###][cf]" value="" id="office###cf" class="required maxlen cf"></div><div class="resizer"></div></div>';
     var element = template.split('###').join(index);
     jQuery('.offices').prepend(jQuery(element));
     subOfficeEventHandlers();
@@ -204,7 +255,7 @@ function addFamiliar(e){
     var idv = parseInt(cidx) + 1;
     var roles_options = '';
     for (p in window._fam_roles) {
-      roles_options += '<option value="'+window._fam_roles[p].rid+'">' + window._fam_roles[p].value + '</option>';
+      roles_options += '<option value="'+p+'">' + window._fam_roles[p] + '</option>';
     }
     var provincie_options = '';
     for (p in window._provincie) {
@@ -214,7 +265,7 @@ function addFamiliar(e){
     // @@@ = numero Familiare
     // *** = numero familiare da visualizzare
     var template = '<div class="box-familiare" id="fam-###-@@@"><hr />\
-      <a href="#anagrafiche" class="removeThisFamiliar" data-victim="fam-###-@@@" data-elid="###" data-elfid="@@@">Rimuovi Componente Familiare</a> \
+      <a href="#anagrafiche" class="removeThisFamiliar" data-victim="fam-###-@@@" data-elid="###" data-elfid="@@@">Rimuovi Familiare Convivente Maggiorenne</a> \
       <div class="field"> \
         <label>Ruolo</label> \
         <select name="anagrafica[###][f][@@@][role]" id="anagrafica[###][f][@@@][role]"> \
@@ -226,26 +277,20 @@ function addFamiliar(e){
         <input type="text" name="anagrafica[###][f][@@@][name]" value="" id="anagrafica_###_f_@@@_name" class="required maxlen" /> \
       </div> \
       <div class="field"> \
-        <label for="anagrafica[###][f][@@@][surname]">Cognome*</label> \
+        <label for="anagrafica[###][f][@@@][lastname]">Cognome*</label> \
         <input type="text" name="anagrafica[###][f][@@@][lastname]" value="" id="anagrafica_###_f_@@@_lastname" class="required maxlen" /> \
-      </div> \
-      <div class="field"> \
-        <label for="anagrafica[###][f][@@@][comune]">Comune di nascita*</label> \
-        <input type="text" name="anagrafica[###][f][@@@][comune]" value="" id="anagrafica_###_f_@@@_comune" class="required maxlen" /> \
-      </div> \
-      <div class="field"> \
-        <label for="anagrafica[###][f][@@@][provincia]">Provincia di residenza</label> \
-        <select name="anagrafica[###][f][@@@][provincia]" id="anagrafica_###_f_@@@_provincia"> \
-        ' + provincie_options + '\
-        </select>\
       </div> \
       <div class="field"> \
         <label for="anagrafica[###][f][@@@][data_nascita]">Data di nascita (nel formato gg/mm/aaaa)*</label> \
         <input type="text" name="anagrafica[###][f][@@@][data_nascita]" value="" id="anagrafica[###][f][@@@][data_nascita]" class="required data" /> \
       </div> \
       <div class="field"> \
+        <label for="anagrafica[###][f][@@@][comune]">Comune di nascita*</label> \
+        <input type="text" name="anagrafica[###][f][@@@][comune]" value="" id="anagrafica_###_f_@@@_comune" class="required maxlen" /> \
+      </div> \
+      <div class="field"> \
         <label for="anagrafica[###][f][@@@][cf]">Codice Fiscale*</label> \
-        <input type="text" name="anagrafica[###][f][@@@][cf]" value="" id="anagrafica[###][f][@@@][cf]" class="required cf" /> \
+        <input type="text" name="anagrafica[###][f][@@@][cf]" value="" id="anagrafica[###][f][@@@][cf]" class="required cfp" /> \
       </div> \
       <div class="resizer"></div> \
     </div>';

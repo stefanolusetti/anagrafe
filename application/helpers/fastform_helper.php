@@ -3,6 +3,11 @@
      exit('No direct script access allowed');
  }
 
+function f_hidden($campo){
+  echo form_hidden('stmt_wl_interest', '');
+  echo mostra_errore($campo);
+}
+
 function f_text($campo, $etichetta, $args = null)
 {
     $id = str_replace(array('[', ']'), '', $campo);
@@ -130,31 +135,58 @@ function soa_options()
 function list_fields()
 {
     $CI = &get_instance();
-    $fields = $CI->db->list_fields('dichiaraziones');
+    $fields = $CI->db->list_fields('docs');
     foreach ($fields as $key => $value) {
         if (preg_match('/^id/', $value)) {
             unset($fields[$key]);
         }
     }
   #return implode(", ", $fields);
+
   $data = array();
     foreach ($fields as $key => $value) {
         $data[$value] = strip_tags($CI->input->post($value));
     }
 
+    unset($data['did']);
+    unset($data['upd']);
     return $data;
 }
 
-function parse_date($date)
-{
-    $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
-    preg_match($format, $date, $dateInfo);
-    $mysql_datetime = '';
-    if (array_key_exists('year', $dateInfo)) {
-        $mysql_datetime = "{$dateInfo['year']}:{$dateInfo['month']}:{$dateInfo['day']} 00:00:00";
-    }
+function parse_checkbox($v){
+  return 'Yes' == $v ? 1 : 0;
+}
+function parse_decimal($v){
+  if('' == $v) {
+    return 0;
+  }
+  return $v;
+}
 
-    return $mysql_datetime;
+function list_anagrafiche_fields()
+{
+    $CI = &get_instance();
+    $fields = $CI->db->list_fields('anagrafiche_antimafia');
+  #return implode(", ", $fields);
+  $data = array();
+    foreach ($fields as $key => $value) {
+        $data[$value] = strip_tags($CI->input->post($value));
+    }
+    unset($data['did']);
+    return $data;
+}
+
+function parse_date($date) {
+  if(empty($date)) {
+    return null;
+  }
+  $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
+  preg_match($format, $date, $dateInfo);
+  $mysql_datetime = '';
+  if (array_key_exists('year', $dateInfo)) {
+    $mysql_datetime = "{$dateInfo['year']}:{$dateInfo['month']}:{$dateInfo['day']} 00:00:00";
+  }
+  return $mysql_datetime;
 }
 
 function partial_parse_date($date)
@@ -287,4 +319,33 @@ function opzioni_company_shape() {
     $options[$result['csid']] = $result['value'];
   }
   return $options;
+}
+
+
+
+
+function db_transaction_error_handler($errno, $errstr, $errfile, $errline)
+{
+  if (!(error_reporting() & $errno)) {
+      // This error code is not included in error_reporting, so let it fall
+      // through to the standard PHP error handler
+      return false;
+  }
+
+  switch ($errno) {
+    case E_USER_ERROR:
+      throw new Exception($errstr);
+      break;
+
+    case E_USER_WARNING:
+      break;
+    case E_USER_NOTICE:
+      break;
+
+    default:
+      throw new Exception($errstr);
+      break;
+  }
+  /* Don't execute PHP internal error handler */
+  return true;
 }
