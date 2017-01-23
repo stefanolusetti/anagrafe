@@ -1,0 +1,8 @@
+id_istanza
+id_anno
+
+name_X
+piva_X
+cf_X
+
+[max 12, start from 0]

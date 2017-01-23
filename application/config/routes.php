@@ -51,6 +51,9 @@ $route['404_override'] = '';*/
 
 $route['default_controller'] = 'domanda';
 $route['comune/([^/]+)'] = 'domanda/comune/$1';
+
+
+$route['test/([^/]+)'] = 'domanda/test/$1';
 #$route['(:any)'] = 'pages/view/$1';
 
 

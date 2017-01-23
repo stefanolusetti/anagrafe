@@ -1,6 +1,6 @@
 <?php
 if (!defined('BASEPATH')) {
-   exit('No direct script access allowed');
+  exit('No direct script access allowed');
 }
 
 /*
@@ -10,10 +10,10 @@ $fileinfo = $myFdf->mergeAll();
 $myFdf->removePages();
 */
 
-class CerthideaFDF{
-  const TMP_PATH = '';
-  const SOURCE_PATH = '';
-  const OUTPUT_PATH = '';
+class CerthideaFDF {
+  const TMP_PATH = '/home/ubuntu/www/merito/pdf/xfdf/';
+  const SOURCE_PATH = '/home/ubuntu/www/merito/pdf/sources/';
+  const OUTPUT_PATH = '/home/ubuntu/www/merito/pdf/outputs/';
 
   private $_pages, $_tmpHash, $_outputFileName;
 /*
@@ -23,14 +23,14 @@ class CerthideaFDF{
                 ██      ██    ██ ██  ██ ██      ██    ██    ██   ██ ██    ██ ██         ██
 ███████ ███████  ██████  ██████  ██   ████ ███████    ██    ██   ██  ██████   ██████    ██
 */
-  public function __construct($tipo, $pe_id, $titolo, $user) {
+  public function __construct() {
     $this->_pages = array();
     // Hash che vale solo per una singola chiamata.
     $this->_tmpHash = uniqid();
     // Stabilisco il path sul server dove i file di questo documento saranno ospitati
     $this->_currPath = self::TMP_PATH . $this->_tmpHash;
     // Filename arrandom.
-    $this->_outputFileName = md5(uniqid());
+    $this->_outputFileName = md5(uniqid()) . '.pdf';
   }
 
 /*
@@ -64,12 +64,12 @@ class CerthideaFDF{
         $fdf = '';
         $dati = '';
       }
-
       $this->_pages[] = array(
         'fdf' => $fdf,
         'template' => $template,
         'output' => $filename . '.pdf',
-        'dati' => is_array($dati) ? array_map('CerthideaFDF::strip_accenti', $dati) : '',
+        //'dati' => is_array($dati) ? array_map('CerthideaFDF::strip_accenti', $dati) : '',
+        'dati' => $dati,
         'flatten' => $flatten
       );
       return true;
@@ -100,7 +100,7 @@ class CerthideaFDF{
           die("cant create fdf file");
         }
         chmod($this->_currPath . '/' . $page['fdf'], 0777);
-        if(!fwrite($fh, $this->_createFdf(self::SOURCE_PATH . $page['template'], $page['dati']))) {
+        if(!fwrite($fh, $this->_createXFDF(self::SOURCE_PATH . $page['template'], $page['dati']))) {
           die("cant write file");
         }
         fclose($fh);
@@ -134,6 +134,37 @@ class CerthideaFDF{
   }
 
 /*
+         ██████ ██████  ███████  █████  ████████ ███████ ██   ██ ███████ ██████  ███████
+        ██      ██   ██ ██      ██   ██    ██    ██       ██ ██  ██      ██   ██ ██
+        ██      ██████  █████   ███████    ██    █████     ███   █████   ██   ██ █████
+        ██      ██   ██ ██      ██   ██    ██    ██       ██ ██  ██      ██   ██ ██
+███████  ██████ ██   ██ ███████ ██   ██    ██    ███████ ██   ██ ██      ██████  ██
+*/
+  private function _createXFDF($file, $info, $enc='UTF-8'){
+    $data = '<?xml version="1.0" encoding="' . $enc . '"?>' . "\n".
+      '<xfdf xmlns="http://ns.adobe.com/xfdf/" xml:space="preserve">'."\n".
+      '<fields>' . "\n";
+    foreach ($info as $field => $val) {
+      $data .= '<field name="' . $field . '">' . "\n";
+      if (is_array($val)) {
+        foreach ($val as $opt) {
+          $data .= '<value>' . htmlentities($opt) . '</value>' . "\n";
+        }
+      }
+      else {
+        $data .= '<value>' . htmlentities($val) . '</value>' . "\n";
+      }
+      $data .= '</field>' . "\n";
+    }
+    $data .= '</fields>' . "\n".
+      '<ids original="' . md5($file) . '" modified="' . time() . '" />' . "\n"
+      . '<f href="'.$file.'" />' . "\n"
+      . "</xfdf>\n";
+    return $data;
+  }
+
+
+/*
 ███████ ██ ██      ██      ███████  ██████  ██████  ███    ███ ███████
 ██      ██ ██      ██      ██      ██    ██ ██   ██ ████  ████ ██
 █████   ██ ██      ██      █████   ██    ██ ██████  ██ ████ ██ ███████
@@ -143,7 +174,7 @@ class CerthideaFDF{
   public function fillForms(){
     foreach($this->_pages AS $page){
       if($page['fdf'] != '') {
-        $commans = sprintf(
+        $command = sprintf(
           "pdftk %s fill_form %s output %s %s",
           self::SOURCE_PATH . $page['template'],
           $this->_currPath . '/' . $page['fdf'],
@@ -156,7 +187,6 @@ class CerthideaFDF{
         // Blank PDF? without forms?
         copy(self::SOURCE_PATH . $page['template'], $this->_currPath . '/' . $page['output']);
       }
-
       if (file_exists($this->_currPath . '/' . $page['output'])) {
         chmod($this->_currPath . '/' . $page['output'], 0777);
       }
@@ -202,13 +232,13 @@ class CerthideaFDF{
       return array(
         'folder' => self::OUTPUT_PATH,
         'file' => $this->_outputFileName,
-        'path' => self::OUTPUT_PATH . $this->_outputFileName,
-        'uri' => $this->user_uri
+        'path' => self::OUTPUT_PATH . $this->_outputFileName
       );
     }
     else {
       throw new Exception('List of files is empty..');
     }
+    return false;
   }
 
 /*

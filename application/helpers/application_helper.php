@@ -9,7 +9,7 @@ function list_soas($dichiarazione_id)
     echo "<ul>";
     foreach ($soas as $soa): ?>
         <li class="soas"><strong><?php echo $soa['codice']; ?></strong> <?php echo $soa['denominazione']; ?>, classe <?php echo $soa['classe']; ?></div>
-    <?php endforeach; 
+    <?php endforeach;
     echo "</ul>";
     endif;
 }
@@ -61,9 +61,9 @@ function set_search_querystring(){
         {
             $params[$item] = partial_parse_date($parameter);
         }
-        
+
     }
-	
+
 	foreach ($items_dropdown as $item_dropdown) {
 	$parameter_dropdown = $CI -> input -> get($item_dropdown);
 	if($parameter_dropdown == "")
@@ -71,12 +71,12 @@ function set_search_querystring(){
 	else
 	$params[$item_dropdown]= $parameter_dropdown;
 	}
-	
+
     $order_by = $CI -> input -> get('order_by');
     $order_by = empty($order_by) ? "id desc" : $order_by;
 	if (($order_by=="ragione_sociale asc") or ($order_by=="ragione_sociale desc") or ($order_by=="id desc") or ($order_by=="id asc") or ($order_by=="titolare_nome desc") or ($order_by=="titolare_nome asc") or
-	($order_by=="data_firma asc") or ($order_by=="data_firma desc") or ($order_by=="sl_piva asc") or ($order_by=="sl_piva desc") or ($order_by=="created_at asc") or ($order_by=="created_at desc") or ($order_by=="uploaded asc") or ($order_by=="uploaded desc") or ($order_by=="sl_cf asc") or ($order_by=="sl_cf desc") 
-	or ($order_by=="5bis asc") or ($order_by=="5bis desc") or ($order_by=="pubblicato asc") or ($order_by=="pubblicato desc") or ($order_by=="durc asc") or ($order_by=="durc desc") or ($order_by=="protesti asc") or ($order_by=="protesti desc")  
+	($order_by=="data_firma asc") or ($order_by=="data_firma desc") or ($order_by=="sl_piva asc") or ($order_by=="sl_piva desc") or ($order_by=="created_at asc") or ($order_by=="created_at desc") or ($order_by=="uploaded asc") or ($order_by=="uploaded desc") or ($order_by=="sl_cf asc") or ($order_by=="sl_cf desc")
+	or ($order_by=="5bis asc") or ($order_by=="5bis desc") or ($order_by=="pubblicato asc") or ($order_by=="pubblicato desc") or ($order_by=="durc asc") or ($order_by=="durc desc") or ($order_by=="protesti asc") or ($order_by=="protesti desc")
 	or ($order_by=="antimafia asc") or ($order_by=="antimafia desc") or ($order_by=="uploaded_at asc") or ($order_by=="uploaded_at desc"))  {
     $qs = array_merge($params,$params_dropdown,array('order_by' => $order_by));
     return array('params' => $params,'order_by' => $order_by, 'qs' => $qs);
@@ -84,23 +84,23 @@ function set_search_querystring(){
    else {
    $qs = array_merge($params, $params_dropdown, array('order_by' => $order_by));
    return array('params' => $params,'order_by' => "id desc", 'qs' => $qs);
-   
+
    }
    }
-   
+
 
 
 function query_link($href, $name){
     $base = current_url();
     $criteria = set_search_querystring();
-    
+
     $class = preg_match("/^{$href}/", $criteria['order_by']) ? "selected" : "unselected";
-    
+
     $order_by = "{$href} asc" == $criteria['order_by'] ? "{$href} desc" : "{$href} asc";
     $qs = array_merge($criteria['params'], array('order_by' => $order_by));
-    
+
     $url = htmlentities($base . "?" . http_build_query($qs));
-    echo "<a href='{$url}' class='{$class}'>{$name}</a>";	
+    echo "<a href='{$url}' class='{$class}'>{$name}</a>";
 }
 
 function valid_hash($hash){
@@ -109,10 +109,28 @@ function valid_hash($hash){
     }
     $CI =& get_instance();
     $query = $CI -> db -> get_where('dichiaraziones', array('hash' => $hash, 'uploaded != ' => '1'), 1, 0);
-                
+
     $results = $query->result_array();
     log_message('debug', print_r($results, TRUE));
     return $results ? $results[0] : FALSE;
+}
+
+/*
+ ██████ ██   ██ ███████  ██████ ██   ██ ██   ██  █████  ███████ ██   ██
+██      ██   ██ ██      ██      ██  ██  ██   ██ ██   ██ ██      ██   ██
+██      ███████ █████   ██      █████   ███████ ███████ ███████ ███████
+██      ██   ██ ██      ██      ██  ██  ██   ██ ██   ██      ██ ██   ██
+ ██████ ██   ██ ███████  ██████ ██   ██ ██   ██ ██   ██ ███████ ██   ██
+*/
+function valid_hash_new($hash){
+  if($hash == FALSE){
+    return FALSE;
+  }
+  $CI =& get_instance();
+  $query = $CI -> db -> get_where('docs', array('hash' => $hash, 'uploaded != ' => '1'), 1, 0);
+  $results = $query->result_array();
+  log_message('debug', print_r($results, TRUE));
+  return $results ? $results[0] : FALSE;
 }
 
 function gestione_dropdown($nomecampo, $options)
@@ -137,9 +155,9 @@ function legenda(){
 
 
 function durc_description ($id) {
-	$CI =& get_instance();	
+	$CI =& get_instance();
 	$query = $CI -> db -> get_where('dichiaraziones', array('id' => $id));
-	$item =  $query->row_array();	
+	$item =  $query->row_array();
 	switch ( $item['durc']) {
 	case 0:
 	$message = "Il controllo DURC è in stato di NON FATTO.";
@@ -159,12 +177,12 @@ function durc_description ($id) {
 	}
 	return $message;
 	}
-	
-	
+
+
 function protesti_description ($id) {
-	$CI =& get_instance();	
+	$CI =& get_instance();
 	$query = $CI -> db -> get_where('dichiaraziones', array('id' => $id));
-	$item =  $query->row_array();	
+	$item =  $query->row_array();
 	switch ( $item['protesti']) {
 	case 0:
 	$message = "Il controllo PROTESTI è in stato di NON FATTO.";
@@ -184,12 +202,12 @@ function protesti_description ($id) {
 	}
 	return $message;
 	}
-	
-	
+
+
 function antimafia_description ($id) {
-	$CI =& get_instance();	
+	$CI =& get_instance();
 	$query = $CI -> db -> get_where('dichiaraziones', array('id' => $id));
-	$item =  $query->row_array();	
+	$item =  $query->row_array();
 	switch ( $item['antimafia']) {
 	case 0:
 	$message = "Il controllo ANTIMAFIA è in stato di NON FATTO.";

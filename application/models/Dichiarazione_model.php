@@ -19,9 +19,24 @@ class Dichiarazione_model extends CI_Model
     return $this->get_item($id);
   }
 
+  // Load and return the full document.
+  public function get_document($id) {
+    try{
+      $doc = $this->get_item($id);
+      $doc['anagrafiche_antimafia'] = $this->get_doc_antimafia($id);
+      foreach ($doc['anagrafiche_antimafia'] AS $i => $antimafia) {
+        $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_item_familiars($doc['anagrafiche_antimafia'][$i]['aaid']);
+      }
+      $doc['offices'] = $this->get_item_offices($id);
+      return $doc;
+    } catch(Exception $e){
+      return false;
+    }
+  }
+
   public function get_item($id) {
     $qhr = $this->db->get_where('docs', array('did' => $id));
-    return $query->row_array();
+    return $qhr->row_array();
     /*
     $item['ateco_lista'] = build_other_fields($item['id'], 'ateco', 0);
     $item['ateco_lista_r'] = build_other_fields($item['id'], 'ateco', 1);
@@ -40,13 +55,28 @@ class Dichiarazione_model extends CI_Model
       $query = $this->db->get('anagrafiche_antimafia');
       return $query->result_array();
     }
-    return $this->get_item_antimafia($id);
+    return $this->get_doc_antimafia($id);
   }
 
-  public function get_item_antimafia($id) {
+  // id docs
+  public function get_doc_antimafia($id) {
     $query_antimafia = $this->db->get_where('anagrafiche_antimafia', array('did' => $id));
     $item_antimafia = $query_antimafia->result_array();
     return $item_antimafia;
+  }
+
+  // id anagrafiche_antimafia
+  public function get_item_familiars($id) {
+    $query_antimafia = $this->db->get_where('anagrafiche_familiari', array('aaid' => $id));
+    $item_antimafia = $query_antimafia->result_array();
+    return $item_antimafia;
+  }
+
+  // id docs
+  public function get_item_offices($id) {
+    $query_offices = $this->db->get_where('doc_offices', array('did' => $id));
+    $item_offices = $query_offices->result_array();
+    return $item_offices;
   }
 
   public function set_statement() {
@@ -60,14 +90,15 @@ class Dichiarazione_model extends CI_Model
     $data['stmt_wl_date'] = parse_date($data['stmt_wl_date']);
     $data['doc_date'] = parse_date($data['doc_date']);
     $data['company_birthdate'] = parse_date($data['company_birthdate']);
+    $data['residence_city'] = $data['residence_locality']; // WTF? @TODO FIX!
 
-    $data['stmt_wl'] = parse_checkbox($data['stmt_wl']);
-    $data['stmt_wl_interest'] = parse_checkbox($data['stmt_wl_interest']);
-    $data['sake_work'] = parse_checkbox($data['sake_work']);
-    $data['sake_service'] = parse_checkbox($data['sake_service']);
-    $data['sake_supply'] = parse_checkbox($data['sake_supply']);
-    $data['sake_fix'] = parse_checkbox($data['sake_fix']);
-    $data['stmt_eligible'] = parse_checkbox($data['stmt_eligible']);
+    $data['stmt_wl'] = $data['stmt_wl'] == 'Yes' ? 1 : 0;
+    $data['stmt_wl_interest'] = $data['stmt_wl_interest'] == 'Yes' ? 1 : 0;
+    $data['sake_work'] = $this->input->post('sake_work_flag') == 'Yes' ? 1 : 0;
+    $data['sake_service'] = $this->input->post('sake_service_flag') == 'Yes' ? 1 : 0;
+    $data['sake_supply'] = $this->input->post('sake_supply_flag') == 'Yes' ? 1 : 0;
+    $data['sake_fix'] = $this->input->post('sake_fix_flag') == 'Yes' ? 1 : 0;
+    $data['stmt_eligible'] = $this->input->post('sake_eligible_flag') == 'Yes' ? 1 : 0;
 
     $data['sake_work_amount'] = parse_decimal($data['sake_work_amount']);
     $data['sake_service_amount'] = parse_decimal($data['sake_service_amount']);
@@ -78,6 +109,10 @@ class Dichiarazione_model extends CI_Model
     $data['company_num_attorney'] = parse_decimal($data['company_num_attorney']);
     $data['company_num_majors'] = parse_decimal($data['company_num_majors']);
     $data['company_num_majors_tmp'] = parse_decimal($data['company_num_majors_tmp']);
+
+    $data['stato'] = NULL;
+    $data['uploaded'] = 0;
+    $data['uploaded_date'] = NULL;
 
     $this->db->trans_start();
     $curr_error_handler = set_error_handler('db_transaction_error_handler');
@@ -160,6 +195,12 @@ class Dichiarazione_model extends CI_Model
       $return[$v['rid']] = $v['value'];
     }
     return $return;
+  }
+
+  public function get_company_shape_label($id) {
+    $query = $this->db->where('csid', (int)$id)->get('company_shapes');
+    $r = $query->result_array();
+    return $r;
   }
 
   public function get_company_shapes() {

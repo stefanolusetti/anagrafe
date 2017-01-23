@@ -34,7 +34,7 @@ class Domanda extends CI_Controller
     }
 
     public function nuova()
-    { #azione che mostra form vuota e salva i dati compilati
+    { #azione che mostra form vuota e salva i dati
         if (ENVIRONMENT == 'development') {
             $this->output->enable_profiler(true);
         }
@@ -86,25 +86,29 @@ class Domanda extends CI_Controller
         }
         elseif (array_key_exists('start', $sessione)) {
           $id = $this->dichiarazione_model->set_statement();
-          /*
+          if ($id) {
+            $document_data = $this->dichiarazione_model->get_document($id);
+          }
+
           $data['submitted'] = true;
-          $stato = send_pdf($this->dichiarazione_model->get_items($id));
+          //$stato = send_pdf($this->dichiarazione_model->get_items($id));
+          $stato = send_pdf_new($id);
 
-          $data['mittente'] = $this->input->post('titolare_nome');
-          $data['sl_pec'] = $this->input->post('sl_pec');
+          if (true === $stato) {
+            $data['mittente'] = $document_data['name'] . ' ' . $document_data['lastname'];
+            $data['sl_pec'] = $document_data['company_pec'];
 
-          $this->session->unset_userdata('start');
+            $this->session->unset_userdata('start');
 
-          $this->load->view('templates/header', $data);
-          $this->load->view('templates/headbar');
-          if (!$stato) {
-              $data['errore'] = ENVIRONMENT == 'development' ? $this->email->print_debugger() : 'si &egrave; verificato un errore nella spedizione del messaggio';
-              $this->parser->parse('domanda/errore_invio', $data);
-          } else {
-              $this->parser->parse('domanda/sent', $data);
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/headbar');
+            $this->parser->parse('domanda/sent', $data);
+          }
+          else {
+            $data['errore'] = ENVIRONMENT == 'development' ? $this->email->print_debugger() : 'si &egrave; verificato un errore nella spedizione del messaggio';
+            $this->parser->parse('domanda/errore_invio', $data);
           }
           $this->load->view('templates/footer');
-          */
         }
         else {
           //redirect('/domanda/nuova', 'refresh');
@@ -112,68 +116,202 @@ class Domanda extends CI_Controller
         }
     }
 
-    public function upload($hash = false)
-    {
-        if (ENVIRONMENT == 'development') {
-            $this->output->enable_profiler(true);
+    public function test($id = false){
+      if (false === $id) {
+        $id = 17;
+      }
+
+      send_pdf_new($id);
+      die('dead');
+
+      $doc = $this->dichiarazione_model->get_document($id);
+      if ($doc) {
+        $id_anno = substr($doc['doc_date'], 0, 4);
+        $this->load->helper('fdf');
+
+        if('Altro' == $doc['company_role']) {
+          $role_label = $doc['ruolo_richiedente'];
         }
-        $item = valid_hash($hash);
-        if ($item) {
-            if ($this->input->post()) {
-                $config['allowed_types'] = 'p7m';
-                $config['upload_path'] = './uploads/';
-                $config['overwrite'] = true;
-                $config['file_name'] = $item['id'].'_'.get_year($item['data_firma']).'.p7m';
-                $this->load->library('upload', $config);
-                if ($this->upload->do_upload('userfile')) {
-                    $dati = $this->protocollo_model->get_items($hash);
-                    $protocollo_config = $this->protocollo_model->get_protocollo_items();
-                    $object = ws_crea_anagrafica($dati, $protocollo_config, $config['file_name']);
+        else {
+          $role_label = $doc['company_role'];
+        }
 
-                    $codice = $object->Stato[0]->Codice;
-                    $item['messaggio'] = $object->Stato[0]->Messaggio;
+        $shapes = $this->dichiarazione_model->get_company_shape_label($doc['company_shape']);
+        if (!empty($shapes)) {
+          $shape_label = $shapes[0]['value'];
+        }
 
-                    if ($codice == '0') {
-                        $this->db
-                            ->where('id', $item['id'])
-// Da attivare la prima o la seconda opzione, a seconda se si voglia pubblicare subito una azienda o meno
-//                            ->update('dichiaraziones', array('uploaded' => 1, 'pubblicato' => 1,'uploaded_at' => date("Y-m-d H:i:s")));
-                            ->update('dichiaraziones', array('uploaded' => 1, 'pubblicato' => 0, 'uploaded_at' => date('Y-m-d H:i:s')));
+        echo "<pre>";
+        var_dump($doc);
+        echo "</pre>";
 
-                        $this->load->view('templates/header');
-                        $this->load->view('templates/headbar');
-                        $this->parser->parse('domanda/uploaded', $item);
-                        $this->load->view('templates/footer');
-                    } else {
-                        $this->db
-                            ->where('id', $item['id'])
-                            ->update('dichiaraziones', array('uploaded' => 2, 'uploaded_at' => date('Y-m-d H:i:s')));
-                        $this->load->view('templates/header');
-                        $this->load->view('templates/headbar');
-                        $this->parser->parse('domanda/uploaded', $item);
-                        $this->load->view('templates/footer');
-                    }
-                } else {
-                    $item['error'] = $this->upload->display_errors();
-                    $this->load->view('templates/header');
-                    $this->load->view('templates/headbar');
-                    $this->parser->parse('domanda/upload', $item);
-                    $this->load->view('templates/footer');
-                }
-            } else {
-                $item['error'] = '';
-                $this->load->view('templates/header');
-                $this->load->view('templates/headbar');
-                $this->parser->parse('domanda/upload', $item);
-                $this->load->view('templates/footer');
+        $fdf = new CerthideaFDF();
+        $fdf->addPage('indice.pdf', array(
+          'id_istanza' => $id,
+          'id_anno' => $id_anno,
+
+          'nome_cognome' => $doc['name'] . ' ' . $doc['lastname'],
+          'birth_locality' => $doc['birth_locality'],
+          'birth_province' => $doc['birth_province'],
+          'birth_date' => $doc['birth_date'],
+          'residence_city' => $doc['residence_city'],
+          'residence_province' => $doc['residence_province'],
+          'residence_zip' => $doc['residence_zip'],
+          'residence_street' => $doc['residence_street'],
+
+          'company_role_label' => $role_label,
+          'company_name' => $doc['company_name'],
+          'company_birthdate' => $doc['company_birthdate'],
+          'company_shape_label' => $shape_label,
+
+          'company_locality' => $doc['company_locality'],
+          'company_zip' => $doc['company_zip'],
+          'company_province' => $doc['company_province'],
+          'company_street' => $doc['company_street'],
+          'company_num' => $doc['company_num'],
+          'company_phone' => $doc['company_phone'],
+          'company_mobile' => $doc['company_mobile'],
+          'company_fax' => $doc['company_fax'],
+          'company_vat' => $doc['company_vat'],
+          'company_cf' => $doc['company_cf'],
+          'company_pec' => $doc['company_pec'],
+          'company_mail' => $doc['company_mail'],
+          //'company_offices' => $doc['company_offices'],
+
+          'rea_location' => $doc['rea_location'],
+          'rea_subscription' => $doc['rea_subscription'],
+          'rea_number' => $doc['rea_number'],
+          'company_social_subject' => $doc['company_social_subject'],
+
+          'company_num_admins' => $doc['company_num_admins'],
+          'company_num_attorney' => $doc['company_num_attorney'],
+          'company_num_majors' => $doc['company_num_majors'],
+          'company_num_majors_tmp' => $doc['company_num_majors_tmp']
+        ));
+
+        $doc_offices = $this->dichiarazione_model->get_item_offices($id);
+        if(!empty($doc_offices)) {
+          // 12 per pagina
+          $_num_pages = ceil(count($doc_offices) / 12);
+          for ( $i = 0; $i < $_num_pages; $i++ ) {
+            $office_data = array(
+              'id_istanza' => $id,
+              'id_anno' => $id_anno
+            );
+            for ( $j = 0; $j < 12; $j++ ) {
+              while (!empty($doc_offices)) {
+                $office = array_shift($doc_offices);
+                $office_data["name_$j"] = $office['name'];
+                $office_data["piva_$j"] = $office['piva'];
+                $office_data["cf_$j"] = $office['cf'];
+              }
             }
-        } else {
-            $this->load->view('templates/header');
-            $this->load->view('templates/headbar');
-            $this->load->view('domanda/errore');
-            $this->load->view('templates/footer');
+            $fdf->addPage('imprese-partecipate.pdf', $office_data);
+          }
         }
+
+        if ( !empty($doc['anagrafiche_antimafia']) ) {
+          $role_list = $this->dichiarazione_model->get_roles();
+          echo "<pre>";
+          var_dump($role_list);
+          echo "</pre>";
+          // 4 per pagina
+          $_num_pages = ceil(count($doc['anagrafiche_antimafia']) / 4);
+          for ( $i = 0; $i < $_num_pages; $i++ ) {
+            $anagrafica_data = array(
+              'id_istanza' => $id,
+              'id_anno' => $id_anno
+            );
+            for ( $j = 0; $j < 12; $j++ ) {
+              while ( !empty($doc['anagrafiche_antimafia']) ) {
+                $anagrafica = array_shift($doc['anagrafiche_antimafia']);
+
+                $anagrafica_data["nome_cognome_$j"] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['atimafia_cognome'];
+                $anagrafica_data["cf_$j"] = $anagrafica['antimafia_cf'];
+                $anagrafica_data["ruolo_$j"] = $role_list[$anagrafica['role_id']];
+                $anagrafica_data["birth_locality_$j"] = $anagrafica['antimafia_comune_nascita'];
+                $anagrafica_data["birth_province_$j"] = $anagrafica['antimafia_provincia_nascita'];
+                $anagrafica_data["birth_date_$j"] = $anagrafica['antimafia_data_nascita'];
+
+                $anagrafica_data["residence_city_$j"] = $anagrafica['antimafia_comune_residenza'];
+                $anagrafica_data["residence_province_$j"] = $anagrafica['antimafia_provincia_residenza'];
+                $anagrafica_data["residence_zip_$j"] = $anagrafica['antimafia_civico_residenza'];
+                $anagrafica_data["residence_street_$j"] = $anagrafica['antimafia_via_residenza'];
+                $anagrafica_data["residence_number_$j"] = $anagrafica['antimafia_civico_residenza'];
+              }
+            }
+            $fdf->addPage('anagrafiche-componenti.pdf', $anagrafica_data);
+          }
+        }
+
+        $fdf->makeFDF();
+        $fdf->fillForms();
+        $fileinfo = $fdf->mergeAll();
+        echo "--------------<pre>";
+        var_dump($fileinfo);
+        echo "</pre>";
+        echo '<a href="/pdf/outputs/' . $fileinfo['file'] . '" target="_blank">Link al file</a>';
+      }
+
+      //$this->load->helper('url');
     }
+
+/*
+██    ██ ██████  ██       ██████   █████  ██████
+██    ██ ██   ██ ██      ██    ██ ██   ██ ██   ██
+██    ██ ██████  ██      ██    ██ ███████ ██   ██
+██    ██ ██      ██      ██    ██ ██   ██ ██   ██
+ ██████  ██      ███████  ██████  ██   ██ ██████
+*/
+  public function upload($hash = false) {
+    if (ENVIRONMENT == 'development') {
+      $this->output->enable_profiler(true);
+    }
+    $item = valid_hash_new($hash);
+    if ($item) {
+      if ($this->input->post()) {
+        $config['allowed_types'] = 'p7m';
+        $config['upload_path'] = './uploads/';
+        $config['overwrite'] = true;
+        $config['file_name'] = $item['did'].'_'.get_year($item['doc_date']).'.p7m';
+        $this->load->library('upload', $config);
+        if ($this->upload->do_upload('userfile')) {
+          if (true === $stato) {
+            $this->db->where('did', $item['did'])->update( 'docs',
+                array('stato' => 0, 'uploaded' => 1, 'uploaded_date' => date('Y-m-d H:i:s'))
+            );
+          }
+          $this->load->view('templates/header');
+          $this->load->view('templates/headbar');
+          $this->parser->parse('domanda/uploaded', $item);
+          $this->load->view('templates/footer');
+        }
+        else {
+          $item['error'] = $this->upload->display_errors();
+          $this->load->view('templates/header');
+          $this->load->view('templates/headbar');
+          $this->parser->parse('domanda/upload', $item);
+          $this->load->view('templates/footer');
+        }
+      }
+      else {
+        $item['error'] = '';
+        $this->load->view('templates/header');
+        $this->load->view('templates/headbar');
+        $this->parser->parse('domanda/upload', $item);
+        $this->load->view('templates/footer');
+      }
+    }
+    else {
+      $this->load->view('templates/header');
+      $this->load->view('templates/headbar');
+      $this->load->view('domanda/errore');
+      $this->load->view('templates/footer');
+    }
+  }
+
+
+
 /*
 ███████  ██████  ██████  ███    ███      ██████  █████  ██      ██      ██████   █████   ██████ ██   ██ ███████
 ██      ██    ██ ██   ██ ████  ████     ██      ██   ██ ██      ██      ██   ██ ██   ██ ██      ██  ██  ██

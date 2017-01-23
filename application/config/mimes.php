@@ -120,7 +120,7 @@ return array(
 	'p12'   =>	'application/x-pkcs12',
 	'p7a'   =>	'application/x-pkcs7-signature',
 	'p7c'   =>	array('application/pkcs7-mime', 'application/x-pkcs7-mime'),
-	'p7m'   =>	array('application/pkcs7-mime', 'application/x-pkcs7-mime'),
+	'p7m'   =>	array('application/pkcs7-mime', 'application/x-pkcs7-mime', 'application/octet-stream'),
 	'p7r'   =>	'application/x-pkcs7-certreqresp',
 	'p7s'   =>	'application/pkcs7-signature',
 	'crt'   =>	array('application/x-x509-ca-cert', 'application/x-x509-user-cert', 'application/pkix-cert'),

@@ -26,10 +26,10 @@
 //$config['newline'] = "\r\n";
 
 $config['protocol'] = 'smtp';
-$config['smtp_host'] = 'ssl://smtp.gmail.com';
+$config['smtp_host'] = 'ssl://smtp.telecompost.it';
 $config['smtp_port'] = '465';
-$config['smtp_user'] = 'daniele.pignedoli@certhidea.it';
-$config['smtp_pass'] = 'danmyc001';
+$config['smtp_user'] = 'anagrafeantimafiasisma@pec.interno.it';
+$config['smtp_pass'] = 'Sisma@2017';
 $config[ 'mailtype'] = 'html';
 $config['charset'] = 'utf-8';
 $config['wordwrap'] = TRUE;
