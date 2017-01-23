@@ -99,16 +99,17 @@ function send_pdf_new($id) {
     }
 
 
-    echo "<h7>debug@" .__FILE__.":".__LINE__."</h7><pre>";
-    var_dump($doc);
-    echo "</pre>";
+    $birth_locality = $doc['birth_locality'];
+    if ( !empty($doc['birth_nation']) ) {
+      $birth_locality .= sprintf(" (%s)", $doc['birth_nation']);
+    }
 
     $index_data = array(
       'id_istanza' => $id,
       'id_anno' => $id_anno,
 
       'nome_cognome' => $doc['name'] . ' ' . $doc['lastname'],
-      'birth_locality' => $doc['birth_locality'],
+      'birth_locality' => $birth_locality,
       'birth_province' => $doc['birth_province'],
       'birth_date' => format_date($doc['birth_date']),
       'residence_city' => $doc['residence_city'],
@@ -177,15 +178,6 @@ function send_pdf_new($id) {
       'sake_fix_type' => $doc['sake_fix_type'],
       'sake_fix_amount' => $doc['sake_fix_amount'] == 0 ? '' : $doc['sake_fix_amount'],
     );
-
-    //██████  ███████ ██████  ██    ██  ██████
-    //██   ██ ██      ██   ██ ██    ██ ██
-    //██   ██ █████   ██████  ██    ██ ██   ███
-    //██   ██ ██      ██   ██ ██    ██ ██    ██
-    //██████  ███████ ██████   ██████   ██████
-    echo "<h7>INDEX DATA debug@" .__FILE__.":".__LINE__."</h7><pre>";
-    var_dump($index_data);
-    echo "</pre>";
 
     $fdf = new CerthideaFDF();
     $fdf->addPage('indice.pdf', $index_data);
@@ -298,15 +290,6 @@ function send_pdf_new($id) {
     $fdf->makeFDF();
     $fdf->fillForms();
     $fileinfo = $fdf->mergeAll();
-    //██████  ███████ ██████  ██    ██  ██████
-    //██   ██ ██      ██   ██ ██    ██ ██
-    //██   ██ █████   ██████  ██    ██ ██   ███
-    //██   ██ ██      ██   ██ ██    ██ ██    ██
-    //██████  ███████ ██████   ██████   ██████
-    echo "<h7>FINITO - debug@" .__FILE__.":".__LINE__."</h7><a href=\"/pdf/outputs/".$fileinfo['file']."\" target=\"_blank\">LINK</a><pre>";
-    var_dump($fileinfo);
-    echo "</pre>";
-    die();
 /*
 ███████ ███████ ███    ██ ██████  ███    ███  █████  ██ ██
 ██      ██      ████   ██ ██   ██ ████  ████ ██   ██ ██ ██
@@ -421,7 +404,7 @@ function email_message_new($doc, $hash){
     $msg = "<p>Gentile {$doc['name']} {$doc['lastname']}, \nin allegato trova il modulo PDF da Lei compilato.</p>".
             "<p>Per completare l'iscrizione all'elenco di merito, La preghiamo di firmare digitalmente ".
             "il file qui allegato e di caricare quindi il file in formato P7M tramite la funzione disponibile ".
-            "al seguente indirizzo web:</p><p>a href=\"{$url}\">{$url}</a></p>".
+            "al seguente indirizzo web:</p><p><a href=\"{$url}\">{$url}</a></p>".
             "<p>Cordiali Saluti\nIl Nucleo Operativo Gestione Elenco di Merito</p>";
     return $msg;
 }

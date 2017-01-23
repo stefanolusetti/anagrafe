@@ -1,10 +1,8 @@
 <h2>
-    Gentile <?php echo $titolare_nome; ?>, <br/> il caricamento &egrave; avvenuto con successo.
+    Gentile <?php echo $name . ' ' . $lastname; ?>, <br/> il caricamento &egrave; avvenuto con successo.
 	<br/>
 	<br/>
-	<?php echo $messaggio; ?>
 	<br/>
-	La preghiamo di prendere nota del numero di protocollo assegnato al documento: 
-	dovr‡ esserre indicato nelle eventuali successive comunicazioni.
+	La preghiamo di prendere nota del numero di protocollo assegnato al documento:
+	dovr√† essere indicato nelle eventuali successive comunicazioni.
 </h2>
-   

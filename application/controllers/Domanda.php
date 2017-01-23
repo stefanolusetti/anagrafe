@@ -276,11 +276,9 @@ class Domanda extends CI_Controller
         $config['file_name'] = $item['did'].'_'.get_year($item['doc_date']).'.p7m';
         $this->load->library('upload', $config);
         if ($this->upload->do_upload('userfile')) {
-          if (true === $stato) {
-            $this->db->where('did', $item['did'])->update( 'docs',
-                array('stato' => 0, 'uploaded' => 1, 'uploaded_date' => date('Y-m-d H:i:s'))
-            );
-          }
+          $this->db->where('did', $item['did'])->update( 'docs',
+            array('stato' => 0, 'uploaded' => 1, 'uploaded_date' => date('Y-m-d H:i:s'))
+          );
           $this->load->view('templates/header');
           $this->load->view('templates/headbar');
           $this->parser->parse('domanda/uploaded', $item);
