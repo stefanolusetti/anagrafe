@@ -275,6 +275,19 @@ echo form_open('domanda/nuova');
     array('input' => array('style' => 'width:100%', 'rows' => 4))
   );
 ?>
+<h4>L'impresa opera in uno dei seguenti settori:</h4>
+<?php
+f_checkbox('company_field_trasporto', 'Trasporto di materiali a discarica conto terzi', array('input' => array('class' => 'company_fields')));
+f_checkbox('company_field_rifiuti', 'Trasporto e smaltimento di rifiuti', array('input' => array('class' => 'company_fields')));
+f_checkbox('company_field_terra', 'Estrazione, fornitura e trasporto di terra e materiali inerti', array('input' => array('class' => 'company_fields')));
+f_checkbox('company_field_bitume', 'Confezionamento, fornitura e trasporto di calcestruzzo e di bitume', array('input' => array('class' => 'company_fields')));
+f_checkbox('company_field_nolo', 'Noli a freddo e a caldo di macchinari', array('input' => array('class' => 'company_fields')));
+f_checkbox('company_field_ferro', 'Fornitura di ferro lavorato', array('input' => array('class' => 'company_fields')));
+f_checkbox('company_field_autotrasporto', 'Autotrasporto conto terzi', array('input' => array('class' => 'company_fields')));
+f_checkbox('company_field_guardiana', 'Guardiania dei cantieri', array('input' => array('class' => 'company_fields')));
+
+f_checkbox('company_field_none', 'Nessuna delle precedenti');
+?>
 <h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2>
 <a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a>
 <div class="offices">

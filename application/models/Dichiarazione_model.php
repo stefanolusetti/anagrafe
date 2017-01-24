@@ -110,6 +110,16 @@ class Dichiarazione_model extends CI_Model
     $data['company_num_majors'] = parse_decimal($data['company_num_majors']);
     $data['company_num_majors_tmp'] = parse_decimal($data['company_num_majors_tmp']);
 
+    $data['company_field_none'] = $this->input->post('company_field_none') == 'Yes' ? 1 : 0;
+    $data['company_field_trasporto'] = $this->input->post('company_field_trasporto') == 'Yes' ? 1 : 0;
+    $data['company_field_rifiuti'] = $this->input->post('company_field_rifiuti') == 'Yes' ? 1 : 0;
+    $data['company_field_terra'] = $this->input->post('company_field_terra') == 'Yes' ? 1 : 0;
+    $data['company_field_bitume'] = $this->input->post('company_field_bitume') == 'Yes' ? 1 : 0;
+    $data['company_field_nolo'] = $this->input->post('company_field_nolo') == 'Yes' ? 1 : 0;
+    $data['company_field_ferro'] = $this->input->post('company_field_ferro') == 'Yes' ? 1 : 0;
+    $data['company_field_autotrasporto'] = $this->input->post('company_field_autotrasporto') == 'Yes' ? 1 : 0;
+    $data['company_field_guardiana'] = $this->input->post('company_field_guardiana') == 'Yes' ? 1 : 0;
+
     $data['stato'] = NULL;
     $data['uploaded'] = 0;
     $data['uploaded_date'] = NULL;
@@ -141,7 +151,7 @@ class Dichiarazione_model extends CI_Model
             $data_anagrafiche = array(
               'did' => $doc_id,
               'antimafia_nome' => $anagrafica['antimafia_nome'],
-              'antimafia_cognome  ' => $anagrafica['antimafia_cognome'],
+              'antimafia_cognome' => $anagrafica['antimafia_cognome'],
               'antimafia_comune_nascita' => $anagrafica['antimafia_comune_nascita'],
               'antimafia_data_nascita' => parse_date($anagrafica['antimafia_data_nascita']),
               'antimafia_comune_residenza' => $anagrafica['antimafia_comune_residenza'],

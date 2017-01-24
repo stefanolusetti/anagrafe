@@ -127,7 +127,13 @@ function valid_hash_new($hash){
     return FALSE;
   }
   $CI =& get_instance();
-  $query = $CI -> db -> get_where('docs', array('hash' => $hash, 'uploaded != ' => '1'), 1, 0);
+  //$query = $CI -> db -> get_where('docs', array('hash' => $hash, 'uploaded != ' => '1'), 1, 0);
+  //██████  ███████ ██████  ██    ██  ██████
+  //██   ██ ██      ██   ██ ██    ██ ██
+  //██   ██ █████   ██████  ██    ██ ██   ███
+  //██   ██ ██      ██   ██ ██    ██ ██    ██
+  //██████  ███████ ██████   ██████   ██████
+  $query = $CI -> db -> get_where('docs', array('hash' => $hash), 1, 0);
   $results = $query->result_array();
   log_message('debug', print_r($results, TRUE));
   return $results ? $results[0] : FALSE;
@@ -234,6 +240,7 @@ function antimafia_description ($id) {
 	return $message;
 	}
 
+
 function export_antimafia_components($id){
   $CI =& get_instance();
   $CI->load->helper('file');
@@ -302,7 +309,7 @@ function export_antimafia_components($id){
       }
     }
     $csv->create();
-    $csv->writeToFile('TEST-REPORT.csv');
+    return $csv->writeToFile('TEST-REPORT.csv');
   }
 }
 
@@ -321,7 +328,7 @@ class CthCsvExporter{
   private $_data = array();
   private $_header = array();
   private $_buffer = '';
-
+  const OUTPUT_PATH = '/home/dp/Projects/0000/merito/source/csv/';
 
   public function __construct($cols){
     if ( is_array($cols) ) {
@@ -400,9 +407,18 @@ class CthCsvExporter{
     echo "</pre>";
   }
 
-  public function writeToFile($filename) {
-    $fh = fopen($filename, 'wb');
+  public function writeToFile($filename = '') {
+    if ( '' == $filename ) {
+      $filename = uniqid('csv_');
+    }
+    $full_path = self::OUTPUT_PATH . $filename;
+    $fh = fopen($full_path, 'wb');
     fwrite($fh, $this->_buffer);
     fclose($fh);
+    return array(
+      'folder' => self::OUTPUT_PATH,
+      'file' => $filename,
+      'path' => $full_path
+    );
   }
 }

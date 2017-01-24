@@ -35,6 +35,27 @@ function mainEventHandlers(){
     addOffice(e);
   });
 
+  jQuery(".company_fields").change(function(e){
+    if (
+      jQuery("#company_field_trasporto").is(':checked')
+      || jQuery("#company_field_rifiuti").is(':checked')
+      || jQuery("#company_field_terra").is(':checked')
+      || jQuery("#company_field_bitume").is(':checked')
+      || jQuery("#company_field_nolo").is(':checked')
+      || jQuery("#company_field_ferro").is(':checked')
+      || jQuery("#company_field_autotrasporto").is(':checked')
+      || jQuery("#company_field_guardiana").is(':checked')
+    ) {
+      jQuery("#company_field_none").attr('checked', false);
+    }
+  });
+
+  jQuery("#company_field_none").change(function(e){
+    if (jQuery("#company_field_none").is(':checked')) {
+      jQuery(".company_fields").attr('checked', false);
+    }
+  });
+
   jQuery("[name=stmt_wl]").change(function(e){
     if (jQuery('#stmt_wl_si').is(':checked')) {
       jQuery('#stmt_wl_more').show();

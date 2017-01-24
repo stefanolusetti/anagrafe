@@ -33,6 +33,13 @@ class Domanda extends CI_Controller
         $this->nuova();
     }
 
+/*
+███    ██ ██    ██  ██████  ██    ██  █████
+████   ██ ██    ██ ██    ██ ██    ██ ██   ██
+██ ██  ██ ██    ██ ██    ██ ██    ██ ███████
+██  ██ ██ ██    ██ ██    ██  ██  ██  ██   ██
+██   ████  ██████   ██████    ████   ██   ██
+*/
     public function nuova()
     { #azione che mostra form vuota e salva i dati
         if (ENVIRONMENT == 'development') {
@@ -91,8 +98,7 @@ class Domanda extends CI_Controller
           }
 
           $data['submitted'] = true;
-          //$stato = send_pdf($this->dichiarazione_model->get_items($id));
-          $stato = send_pdf_new($id);
+          $stato = send_welcome_email($id);
 
           if (true === $stato) {
             $data['mittente'] = $document_data['name'] . ' ' . $document_data['lastname'];

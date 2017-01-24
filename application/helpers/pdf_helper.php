@@ -79,7 +79,14 @@ function send_pdf($item) {
 }
 
 
-function send_pdf_new($id) {
+/*
+ ██████ ██████  ███████  █████  ████████ ███████ ██████  ██████  ███████
+██      ██   ██ ██      ██   ██    ██    ██      ██   ██ ██   ██ ██
+██      ██████  █████   ███████    ██    █████   ██████  ██   ██ █████
+██      ██   ██ ██      ██   ██    ██    ██      ██      ██   ██ ██
+ ██████ ██   ██ ███████ ██   ██    ██    ███████ ██      ██████  ██
+*/
+function create_pdf($id) {
   $_pages = array();
   $CI =& get_instance();
   $doc = $CI->dichiarazione_model->get_document($id);
@@ -98,7 +105,6 @@ function send_pdf_new($id) {
     if (!empty($shapes)) {
       $shape_label = $shapes[0]['value'];
     }
-
 
     $birth_locality = $doc['birth_locality'];
     if ( !empty($doc['birth_nation']) ) {
@@ -178,6 +184,17 @@ function send_pdf_new($id) {
       'sake_fix' => $doc['sake_fix'] == 1 ? 'Yes' : 'No',
       'sake_fix_type' => $doc['sake_fix_type'],
       'sake_fix_amount' => $doc['sake_fix_amount'] == 0 ? '' : $doc['sake_fix_amount'],
+
+      'company_field_none' => $doc['company_field_none'] == 1 ? 'Yes' : 'No',
+
+      'company_field_trasporto' => $doc['company_field_trasporto'] == 1 ? 'Yes' : 'No',
+      'company_field_rifiuti' => $doc['company_field_rifiuti'] == 1 ? 'Yes' : 'No',
+      'company_field_terra' => $doc['company_field_terra'] == 1 ? 'Yes' : 'No',
+      'company_field_bitume' => $doc['company_field_bitume'] == 1 ? 'Yes' : 'No',
+      'company_field_nolo' => $doc['company_field_nolo'] == 1 ? 'Yes' : 'No',
+      'company_field_ferro' => $doc['company_field_ferro'] == 1 ? 'Yes' : 'No',
+      'company_field_autotrasporto' => $doc['company_field_autotrasporto'] == 1 ? 'Yes' : 'No',
+      'company_field_guardiana' => $doc['company_field_guardiana'] == 1 ? 'Yes' : 'No',
     );
 
     $fdf = new CerthideaFDF();
@@ -238,11 +255,11 @@ function send_pdf_new($id) {
           if ( isset($anagrafica['familiari']) && !empty($anagrafica['familiari'])) {
             foreach($anagrafica['familiari'] AS $familiar) {
               // inject parent name.
-              $familiar['parent'] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome  '];
+              $familiar['parent'] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome'];
               $familiars[] = $familiar;
             }
           }
-          $anagrafica_data["nome_cognome_$j"] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome  '];
+          $anagrafica_data["nome_cognome_$j"] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome'];
           $anagrafica_data["cf_$j"] = $anagrafica['antimafia_cf'];
           $anagrafica_data["ruolo_$j"] = $role_list[$anagrafica['role_id']];
           $anagrafica_data["birth_locality_$j"] = $anagrafica['antimafia_comune_nascita'];
@@ -307,36 +324,9 @@ function send_pdf_new($id) {
     $fdf->fillForms();
     $fileinfo = $fdf->mergeAll();
     $fdf->clean(); // remove ONLY the tmp files&folders!
-
-/*
-███████ ███████ ███    ██ ██████  ███    ███  █████  ██ ██
-██      ██      ████   ██ ██   ██ ████  ████ ██   ██ ██ ██
-███████ █████   ██ ██  ██ ██   ██ ██ ████ ██ ███████ ██ ██
-     ██ ██      ██  ██ ██ ██   ██ ██  ██  ██ ██   ██ ██ ██
-███████ ███████ ██   ████ ██████  ██      ██ ██   ██ ██ ███████
-*/
-    if( $fileinfo ){
-      //genero e scrivo MD5
-      $hash = md5_file($fileinfo['path']);
-      $CI->db->where('did', $doc['did'])->update('docs', array('hash' => $hash));
-
-      $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
-      $CI->email->to($doc['company_pec']);
-      $CI->email->subject('Domanda di iscrizione Anagrafe Antimafia degli Esecutori');
-      $CI->email->message(email_message_new($doc, $hash));
-      $CI->email->attach(
-        $fileinfo['path'],
-        'attachment',
-        'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $doc['did'] . '-'.date("Y").'.pdf'
-      );
-      $esito = $CI->email->send();
-      unlink($fileinfo['path']);
-    }
-    else {
-      $esito = FALSE;
-    }
-    return $esito;
+    return $fileinfo;
   }
+  return false;
 }
 
 function build_other_fields($id, $nomecampo,$tipo)
@@ -408,12 +398,34 @@ function email_message($item, $hash){
 }
 
 /*
-███████ ███    ███  █████  ██ ██          ████████ ███████ ██   ██ ████████
-██      ████  ████ ██   ██ ██ ██             ██    ██       ██ ██     ██
-█████   ██ ████ ██ ███████ ██ ██             ██    █████     ███      ██
-██      ██  ██  ██ ██   ██ ██ ██             ██    ██       ██ ██     ██
-███████ ██      ██ ██   ██ ██ ███████        ██    ███████ ██   ██    ██
+███████ ███    ███  █████  ██ ██      ███████
+██      ████  ████ ██   ██ ██ ██      ██
+█████   ██ ████ ██ ███████ ██ ██      ███████
+██      ██  ██  ██ ██   ██ ██ ██           ██
+███████ ██      ██ ██   ██ ██ ███████ ███████
 */
+function send_welcome_email($id) {
+  $CI =& get_instance();
+  $doc = $CI->dichiarazione_model->get_document($id);
+
+  $hash = hash('md5', $doc['company_name']);
+  $CI->db->where('did', $doc['did'])->update('docs', array('hash' => $hash));
+
+  $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
+  $CI->email->to($doc['company_pec']);
+  $CI->email->subject('Domanda di iscrizione Anagrafe Antimafia degli Esecutori');
+  $CI->email->message(email_message_new($doc, $hash));
+  /*
+  $CI->email->attach(
+    $fileinfo['path'],
+    'attachment',
+    'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $doc['did'] . '-'.date("Y").'.pdf'
+  );
+  */
+  $esito = $CI->email->send();
+  return $esito;
+}
+
 function email_message_new($doc, $hash){
     $url = site_url("domanda/upload/{$hash}");
     $msg = "<p>Gentile {$doc['name']} {$doc['lastname']}, \nin allegato trova il modulo PDF da Lei compilato.</p>".
@@ -431,6 +443,10 @@ function send_thanks_mail($doc) {
   $codice = $doc['did'] . '-' . substr($doc['doc_date'], 0, 4);
   $url = site_url("elenco");
 
+  $fileinfo = create_pdf($doc['did']);
+  $csv = export_antimafia_components($doc['did']);
+
+  // Email utente
   $msg ="<p>Gentile {$doc['name']} {$doc['lastname']}, \n la sua pratica è stata presentata in data {$data_caricamento} e ha numero {$codice}.</p>".
       "<p>\nLa sua richiesta di iscrizione verrà presa in carico ed in caso di nulla osta il suo nominativo verrà pubblicato in elenco all'indirizzo web {$url}</p>".
       "<p>\n\nCordiali Saluti\n <br /><em>Struttura di Missione del Ministero dell'Interno</em></p>";
@@ -439,5 +455,34 @@ function send_thanks_mail($doc) {
   $CI->email->to($doc['company_pec']);
   $CI->email->subject('Domanda di iscrizione Anagrafe Antimafia degli Esecutori ricevuta');
   $CI->email->message($msg);
+
+  $CI->email->attach(
+    $fileinfo['path'],
+    'attachment',
+    'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $doc['did'] . '-' . date("Y") . '.pdf'
+  );
   $esito = $CI->email->send();
+
+  $CI->email->clear(TRUE);
+
+  // Email interna
+  $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
+  $CI->email->to('dp@certhidea.it');
+  $CI->email->subject('Caricamento Carta di identità avvenuto.');
+  $CI->email->message("in allegato CSV e PDF");
+  $CI->email->attach(
+    $fileinfo['path'],
+    'attachment',
+    'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $doc['did'] . '-' . date("Y") . '.pdf'
+  );
+  $CI->email->attach(
+    $csv['path'],
+    'attachment',
+    'elenco-componenti-antimafia-' . $doc['did'] . '-' . date("Y") . '.csv'
+  );
+  $esito = $CI->email->send();
+
+  unlink($fileinfo['path']);
+  unlink($csv['path']);
+  return $esito;
 }
