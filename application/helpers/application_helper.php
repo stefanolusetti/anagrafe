@@ -233,3 +233,176 @@ function antimafia_description ($id) {
 	}
 	return $message;
 	}
+
+function export_antimafia_components($id){
+  $CI =& get_instance();
+  $CI->load->helper('file');
+  $role_list = $CI->dichiarazione_model->get_roles();
+  $documento = $CI->dichiarazione_model->get_document($id);
+  $columns = array(
+    array( 'label' => 'Prog.', 'field' => 'n' ),
+    array( 'label' => 'Codice Fiscale Azienda', 'field' => 'codice_fiscale_azienda' ),
+    array( 'label' => 'Partita IVA', 'field' => 'partita_iva'),
+    array( 'label' => 'Ragione Sociale', 'field' => 'ragione_sociale' ),
+    array( 'label' => 'Cognome', 'field' => 'cognome' ),
+    array( 'label' => 'Nome', 'field' => 'nome' ),
+    array( 'label' => 'Data di Nascita', 'field' => 'data_nascita' ),
+    array( 'label' => 'Luogo di Nascita', 'field' => 'luogo_nascita' ),
+    array( 'label' => 'Codice Fiscale', 'field' => 'codice_fiscale' ),
+    array( 'label' => 'Ruolo', 'field' => 'ruolo' ),
+    array( 'label' => 'Riferimento Soggetto', 'field' => 'riferimento' ),
+  );
+
+  $csv = new CthCsvExporter($columns);
+  $csv->setDelimeter('|');
+
+  $soggetti = array();
+  $n = 1;
+  if ( !empty($documento['anagrafiche_antimafia']) ) {
+    foreach ($documento['anagrafiche_antimafia'] AS $anagrafica) {
+
+      $csv->addRow(array(
+        'n' => $n,
+
+        'codice_fiscale_azienda' => $documento['company_cf'],
+        'partita_iva' => $documento['company_vat'],
+        'ragione_sociale' => $documento['company_name'],
+
+        'cognome' => $anagrafica['antimafia_cognome'],
+        'nome' => $anagrafica['antimafia_nome'],
+        'data_nascita' => format_date($anagrafica['antimafia_data_nascita']),
+        'luogo_nascita' => $anagrafica['antimafia_comune_nascita'],
+        'codice_fiscale' => $anagrafica['antimafia_cf'],
+        'ruolo' => $role_list[$anagrafica['role_id']],
+
+        'riferimento' => ''
+      ));
+      $parent_n = $n;
+      $n++;
+      if ( isset($anagrafica['familiari']) && !empty($anagrafica['familiari']) ) {
+        foreach ($anagrafica['familiari'] AS $familiare) {
+          $csv->addRow(array(
+            'n' => $n,
+
+            'codice_fiscale_azienda' => $documento['company_cf'],
+            'partita_iva' => $documento['company_vat'],
+            'ragione_sociale' => $documento['company_name'],
+
+            'cognome' => $familiare['nome'],
+            'nome' => $familiare['cognome'],
+            'data_nascita' => format_date($familiare['data_nascita']),
+            'luogo_nascita' => $familiare['comune'],
+            'codice_fiscale' => $familiare['cf'],
+            'ruolo' => $role_list[$familiare['rid']],
+
+            'riferimento' => $parent_n
+          ));
+          $n++;
+        }
+      }
+    }
+    $csv->create();
+    $csv->writeToFile('TEST-REPORT.csv');
+  }
+}
+
+
+/*
+ ██████ ████████ ██   ██  ██████ ███████ ██    ██ ███████ ██   ██ ██████   ██████  ██████  ████████ ███████ ██████
+██         ██    ██   ██ ██      ██      ██    ██ ██       ██ ██  ██   ██ ██    ██ ██   ██    ██    ██      ██   ██
+██         ██    ███████ ██      ███████ ██    ██ █████     ███   ██████  ██    ██ ██████     ██    █████   ██████
+██         ██    ██   ██ ██           ██  ██  ██  ██       ██ ██  ██      ██    ██ ██   ██    ██    ██      ██   ██
+ ██████    ██    ██   ██  ██████ ███████   ████   ███████ ██   ██ ██       ██████  ██   ██    ██    ███████ ██   ██
+*/
+class CthCsvExporter{
+  private $_delimeter = ',';
+  private $_newline = "\n";
+  private $_cols = array();
+  private $_data = array();
+  private $_header = array();
+  private $_buffer = '';
+
+
+  public function __construct($cols){
+    if ( is_array($cols) ) {
+      $this->_cols = $cols;
+      // header
+      foreach ($this->_cols AS $col) {
+        if ( isset($col['label']) ) {
+          // Escaping?
+          $this->_header[] = $col['label'];
+        }
+        else {
+          // Error if mandatory?
+          $this->_header[] = '';
+        }
+      }
+    }
+  }
+
+  public function setDelimeter($char) {
+    if ( empty($char) ) {
+      throw new Exception("Delimeter char must not be empty.", 1);
+    }
+    $this->_delimeter = $char;
+  }
+
+  public function addRow($data) {
+    $_tmpData = array();
+    foreach ($this->_cols AS $col) {
+      if ( isset($data[$col['field']]) ) {
+        // Escaping?
+        $_tmpData[$col['field']] = $data[$col['field']];
+      }
+      else {
+        // Error if mandatory?
+        $_tmpData[$col['field']] = '';
+      }
+    }
+    $this->_data[] = $_tmpData;
+  }
+
+  public function create($headers = true){
+    if ( $headers ) {
+      $this->_buffer .= sprintf(
+        "%s%s",
+        implode($this->_delimeter, $this->_header),
+        $this->_newline
+      );
+    }
+
+    foreach ( $this->_data AS $element ) {
+      $tmpData = array();
+      foreach ($this->_cols AS $col) {
+        if ( isset($element[$col['field']]) ) {
+          // Escaping?
+          $tmpData[] = $element[$col['field']];
+        }
+        else {
+          // Error if mandatory?
+          $tmpData[] = '';
+        }
+      }
+
+
+      $this->_buffer .= sprintf(
+        "%s%s",
+        implode($this->_delimeter, $tmpData),
+        $this->_newline
+      );
+    }
+
+  }
+
+  public function debug() {
+    echo "<h7>debug@" .__FILE__.":".__LINE__."</h7><pre>";
+    var_dump($this->_buffer);
+    echo "</pre>";
+  }
+
+  public function writeToFile($filename) {
+    $fh = fopen($filename, 'wb');
+    fwrite($fh, $this->_buffer);
+    fclose($fh);
+  }
+}

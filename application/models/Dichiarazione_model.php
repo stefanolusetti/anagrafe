@@ -141,7 +141,7 @@ class Dichiarazione_model extends CI_Model
             $data_anagrafiche = array(
               'did' => $doc_id,
               'antimafia_nome' => $anagrafica['antimafia_nome'],
-              'atimafia_cognome' => $anagrafica['antimafia_cognome'],
+              'antimafia_cognome  ' => $anagrafica['antimafia_cognome'],
               'antimafia_comune_nascita' => $anagrafica['antimafia_comune_nascita'],
               'antimafia_data_nascita' => parse_date($anagrafica['antimafia_data_nascita']),
               'antimafia_comune_residenza' => $anagrafica['antimafia_comune_residenza'],

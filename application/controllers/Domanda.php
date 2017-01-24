@@ -115,6 +115,22 @@ class Domanda extends CI_Controller
         }
     }
 
+/*
+██████  ███████ ██████   ██████  ██████  ████████     ███████  █████  ███    ███ ██ ██      ██  █████  ██████  ██
+██   ██ ██      ██   ██ ██    ██ ██   ██    ██        ██      ██   ██ ████  ████ ██ ██      ██ ██   ██ ██   ██ ██
+██████  █████   ██████  ██    ██ ██████     ██        █████   ███████ ██ ████ ██ ██ ██      ██ ███████ ██████  ██
+██   ██ ██      ██      ██    ██ ██   ██    ██        ██      ██   ██ ██  ██  ██ ██ ██      ██ ██   ██ ██   ██ ██
+██   ██ ███████ ██       ██████  ██   ██    ██        ██      ██   ██ ██      ██ ██ ███████ ██ ██   ██ ██   ██ ██
+*/
+    public function report_familiari($id){
+
+      export_antimafia_components($id);
+      $this->load->view('templates/header');
+      $this->load->view('templates/headbar');
+      $this->parser->parse('domanda/report', array());
+      $this->load->view('templates/footer');
+    }
+
     public function test($id = false){
       if (false === $id) {
         $id = 17;

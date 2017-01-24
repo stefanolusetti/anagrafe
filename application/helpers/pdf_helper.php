@@ -238,11 +238,11 @@ function send_pdf_new($id) {
           if ( isset($anagrafica['familiari']) && !empty($anagrafica['familiari'])) {
             foreach($anagrafica['familiari'] AS $familiar) {
               // inject parent name.
-              $familiar['parent'] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['atimafia_cognome'];
+              $familiar['parent'] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome  '];
               $familiars[] = $familiar;
             }
           }
-          $anagrafica_data["nome_cognome_$j"] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['atimafia_cognome'];
+          $anagrafica_data["nome_cognome_$j"] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome  '];
           $anagrafica_data["cf_$j"] = $anagrafica['antimafia_cf'];
           $anagrafica_data["ruolo_$j"] = $role_list[$anagrafica['role_id']];
           $anagrafica_data["birth_locality_$j"] = $anagrafica['antimafia_comune_nascita'];

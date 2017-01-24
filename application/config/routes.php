@@ -54,6 +54,7 @@ $route['comune/([^/]+)'] = 'domanda/comune/$1';
 
 
 $route['test/([^/]+)'] = 'domanda/test/$1';
+$route['report_familiari/([^/]+)'] = 'domanda/report_familiari/$1';
 #$route['(:any)'] = 'pages/view/$1';
 
 
