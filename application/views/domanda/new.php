@@ -617,8 +617,8 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
 
 
 
-  echo '<div class="checkbox field "><label for="stmt_wl_si">di essere iscritto alle white list della Prefettura</label><input type="radio" name="stmt_wl" value="Yes" id="stmt_wl_si">
-</div><div class="checkbox field "><label for="stmt_wl_no">di <b>NON</b> essere iscritto alle white list della Prefettura</label><input type="radio" name="stmt_wl" value="No" id="stmt_wl_no">
+  echo '<div class="checkbox field "><label for="stmt_wl_si">di essere iscritto alle white list della Prefettura</label><input class="required" type="radio" name="stmt_wl" value="Yes" id="stmt_wl_si">
+</div><div class="checkbox field "><label for="stmt_wl_no">di <b>NON</b> essere iscritto alle white list della Prefettura</label><input class="required" type="radio" name="stmt_wl" value="No" id="stmt_wl_no">
 </div>';
 
   echo '<div id="stmt_wl_more" class="'.$stmt_wl_class.'">';

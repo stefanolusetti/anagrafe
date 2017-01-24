@@ -45,20 +45,19 @@
 | the active record class
 */
 
-
-
 $active_group = 'default';
-//$active_record = TRUE;
-$query_builder = TRUE;
+$active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
+# configurazione RER
+$db['default']['hostname'] = '10.10.80.126';
 $db['default']['username'] = 'merito';
-$db['default']['password'] = 'rermerito';
+$db['default']['password'] = '4usGAeGYNhz6R9Dc';
 $db['default']['database'] = 'merito';
-$db['default']['dbdriver'] = 'mysqli';
+$db['default']['dbdriver'] = 'mysql';
+
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
-$db['default']['db_debug'] = TRUE;
+$db['default']['db_debug'] = FALSE;
 $db['default']['cache_on'] = FALSE;
 $db['default']['cachedir'] = APPPATH . '/cache/database/';
 $db['default']['char_set'] = 'utf8';

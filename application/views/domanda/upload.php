@@ -1,6 +1,6 @@
-<h3>Gentile <?php echo $name . ' ' . $lastname; ?>, 
-<br/> proceda nel caricare la propria dichiarazione PDF firmata digitalmente (in formato p7m).
-Al termine dell'operazione la preghiamo di prendere nota del numero di protocollo assegnato al documento:
+<h3>Gentile <?php echo $name . ' ' . $lastname; ?>,
+<br/> proceda nel caricare la propria dichiarazione PDF firmata digitalmente (in formato p7m).<br />
+Al termine dell'operazione la preghiamo di prendere nota del codice assegnato al documento:
 dovr&agrave; esserre indicato nelle eventuali successive comunicazioni.</h3>
 <div id="searchbar">
     <?php echo form_open_multipart("domanda/upload/{$hash}") ?>

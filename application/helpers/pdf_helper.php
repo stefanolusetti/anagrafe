@@ -63,9 +63,9 @@ function send_pdf($item) {
                 ->update('dichiaraziones', array('hash' => $hash));
 
 		//$CI->email->from('elencomeritocostruzioni@postacert.regione.emilia-romagna.it', 'Nucleo operativo elenco merito');
-		$CI->email->from('stefano.lusetti@certhidea.it', 'Commissario Straordinario Ricostruzione Sisma 2016');
+		$CI->email->from('stefano.lusetti@certhidea.it', 'Struttura di Missione del Ministero dell\'Interno');
 		$CI->email->to($item['sl_pec']);
-		$CI->email->subject('Domanda di iscrizione elenco di merito');
+		$CI->email->subject('Domanda di iscrizione Anagrafe Antimafia degli Esecutori');
 		$CI->email->message(email_message($item, $hash));
 		$CI->email->attach($filename);
 		$esito = $CI->email->send();
@@ -80,6 +80,7 @@ function send_pdf($item) {
 
 
 function send_pdf_new($id) {
+  $_pages = array();
   $CI =& get_instance();
   $doc = $CI->dichiarazione_model->get_document($id);
   if ($doc) {
@@ -180,7 +181,8 @@ function send_pdf_new($id) {
     );
 
     $fdf = new CerthideaFDF();
-    $fdf->addPage('indice.pdf', $index_data);
+    //$fdf->addPage('indice.pdf', $index_data);
+    $_pages[] = array('file' => 'indice.pdf', 'data' => $index_data);
 
 /*
  ██████  ███████ ███████ ██  ██████ ███████ ███████
@@ -206,7 +208,8 @@ function send_pdf_new($id) {
             $office_data["cf_$j"] = $office['cf'];
           }
         }
-        $fdf->addPage('imprese-partecipate.pdf', $office_data);
+        //$fdf->addPage('imprese-partecipate.pdf', $office_data);
+        $_pages[] = array('file' => 'imprese-partecipate.pdf', 'data' => $office_data);
       }
     }
 
@@ -220,9 +223,6 @@ function send_pdf_new($id) {
     $familiars = array();
     if ( !empty($doc['anagrafiche_antimafia']) ) {
       $role_list = $CI->dichiarazione_model->get_roles();
-      //echo "<h7>debug@" .__FILE__.":".__LINE__."</h7><pre>";
-      //var_dump($role_list);
-      //echo "</pre>";
       // 4 per pagina
       $_num_pages = ceil(count($doc['anagrafiche_antimafia']) / 4);
       for ( $i = 0; $i < $_num_pages; $i++ ) {
@@ -256,7 +256,8 @@ function send_pdf_new($id) {
           $anagrafica_data["residence_number_$j"] = $anagrafica['antimafia_civico_residenza'];
 
         }
-        $fdf->addPage('anagrafiche-componenti.pdf', $anagrafica_data);
+        //$fdf->addPage('anagrafiche-componenti.pdf', $anagrafica_data);
+        $_pages[] = array('file' => 'anagrafiche-componenti.pdf', 'data' => $anagrafica_data);
       }
     }
 
@@ -283,13 +284,30 @@ function send_pdf_new($id) {
           $familiari_data["birth_province_$j"] = $familiare['provincia_nascita'];
           $familiari_data["birth_date_$j"] = format_date($familiare['data_nascita']);
         }
-        $fdf->addPage('anagrafiche-familiari.pdf', $familiari_data);
+        //$fdf->addPage('anagrafiche-familiari.pdf', $familiari_data);
+        $_pages[] = array('file' => 'anagrafiche-familiari.pdf', 'data' => $familiari_data);
+      }
+    }
+
+    // Num pages.
+    $tot_num_pages = count($_pages) + 1;
+    $ip = 1;
+    foreach($_pages AS $_page) {
+      $_page['data']['tot_pages'] = sprintf("Pagina %s di %s", $ip, $tot_num_pages);
+      // Libreoffice cant handle two inputs with same name.
+      $_page['data']['tot_pages_2'] = sprintf("Pagina 2 di %s", $tot_num_pages);
+      $fdf->addPage($_page['file'], $_page['data']);
+      $ip++;
+      if ($ip == 2) {
+        $ip++;
       }
     }
 
     $fdf->makeFDF();
     $fdf->fillForms();
     $fileinfo = $fdf->mergeAll();
+    $fdf->clean(); // remove ONLY the tmp files&folders!
+
 /*
 ███████ ███████ ███    ██ ██████  ███    ███  █████  ██ ██
 ██      ██      ████   ██ ██   ██ ████  ████ ██   ██ ██ ██
@@ -302,23 +320,20 @@ function send_pdf_new($id) {
       $hash = md5_file($fileinfo['path']);
       $CI->db->where('did', $doc['did'])->update('docs', array('hash' => $hash));
 
-      $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Commissario Straordinario Ricostruzione Sisma 2016');
+      $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
       $CI->email->to($doc['company_pec']);
       $CI->email->subject('Domanda di iscrizione Anagrafe Antimafia degli Esecutori');
       $CI->email->message(email_message_new($doc, $hash));
-      $CI->email->attach($fileinfo['path'], 'attachment', 'modulo-in-pdf.pdf');
+      $CI->email->attach(
+        $fileinfo['path'],
+        'attachment',
+        'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $doc['did'] . '-'.date("Y").'.pdf'
+      );
       $esito = $CI->email->send();
       unlink($fileinfo['path']);
     }
     else {
       $esito = FALSE;
-    }
-    if ( true == $esito ) {
-      echo '<h1>maIL</h1>';
-    }
-    else {
-      echo '<h1>AAAAAAAAAAAAAAAAAAA</h1>';
-      var_dump($CI->email->print_debugger());
     }
     return $esito;
   }
@@ -385,10 +400,10 @@ function pdfmd5($id){
 function email_message($item, $hash){
     $url = site_url("domanda/upload/{$hash}");
     $msg = "Gentile {$item['titolare_nome']}, \nin allegato trova il modulo PDF da Lei compilato.\n".
-            "Per completare l'iscrizione all'elenco di merito, La preghiamo di firmare digitalmente ".
+            "Per completare l'iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di firmare digitalmente ".
             "il file qui allegato e di caricare quindi il file in formato P7M tramite la funzione disponibile ".
             "al seguente indirizzo web:\n\n {$url}".
-            "\n\nCordiali Saluti\nIl Nucleo Operativo Gestione Elenco di Merito";
+            "\n\nCordiali Saluti\nIl Nucleo Operativo Gestione Anagrafe Antimafia degli Esecutori";
     return $msg;
 }
 
@@ -402,9 +417,27 @@ function email_message($item, $hash){
 function email_message_new($doc, $hash){
     $url = site_url("domanda/upload/{$hash}");
     $msg = "<p>Gentile {$doc['name']} {$doc['lastname']}, \nin allegato trova il modulo PDF da Lei compilato.</p>".
-            "<p>Per completare l'iscrizione all'elenco di merito, La preghiamo di firmare digitalmente ".
+            "<p>Per completare l'iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di firmare digitalmente ".
             "il file qui allegato e di caricare quindi il file in formato P7M tramite la funzione disponibile ".
             "al seguente indirizzo web:</p><p><a href=\"{$url}\">{$url}</a></p>".
-            "<p>Cordiali Saluti\nIl Nucleo Operativo Gestione Elenco di Merito</p>";
+            "<p>\n\nCordiali Saluti\n <br /><em>Struttura di Missione del Ministero dell'Interno</em></p>";
     return $msg;
+}
+
+
+function send_thanks_mail($doc) {
+  $CI =& get_instance();
+  $data_caricamento = format_date($doc['uploaded_date']);
+  $codice = $doc['did'] . '-' . substr($doc['doc_date'], 0, 4);
+  $url = site_url("elenco");
+
+  $msg ="<p>Gentile {$doc['name']} {$doc['lastname']}, \n la sua pratica è stata presentata in data {$data_caricamento} e ha numero {$codice}.</p>".
+      "<p>\nLa sua richiesta di iscrizione verrà presa in carico ed in caso di nulla osta il suo nominativo verrà pubblicato in elenco all'indirizzo web {$url}</p>".
+      "<p>\n\nCordiali Saluti\n <br /><em>Struttura di Missione del Ministero dell'Interno</em></p>";
+
+  $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
+  $CI->email->to($doc['company_pec']);
+  $CI->email->subject('Domanda di iscrizione Anagrafe Antimafia degli Esecutori ricevuta');
+  $CI->email->message($msg);
+  $esito = $CI->email->send();
 }

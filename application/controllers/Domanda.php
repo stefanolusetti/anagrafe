@@ -99,7 +99,6 @@ class Domanda extends CI_Controller
             $data['sl_pec'] = $document_data['company_pec'];
 
             $this->session->unset_userdata('start');
-
             $this->load->view('templates/header', $data);
             $this->load->view('templates/headbar');
             $this->parser->parse('domanda/sent', $data);
@@ -121,139 +120,12 @@ class Domanda extends CI_Controller
         $id = 17;
       }
 
-      send_pdf_new($id);
-      die('dead');
-
       $doc = $this->dichiarazione_model->get_document($id);
-      if ($doc) {
-        $id_anno = substr($doc['doc_date'], 0, 4);
-        $this->load->helper('fdf');
 
-        if('Altro' == $doc['company_role']) {
-          $role_label = $doc['ruolo_richiedente'];
-        }
-        else {
-          $role_label = $doc['company_role'];
-        }
-
-        $shapes = $this->dichiarazione_model->get_company_shape_label($doc['company_shape']);
-        if (!empty($shapes)) {
-          $shape_label = $shapes[0]['value'];
-        }
-
-        echo "<pre>";
-        var_dump($doc);
-        echo "</pre>";
-
-        $fdf = new CerthideaFDF();
-        $fdf->addPage('indice.pdf', array(
-          'id_istanza' => $id,
-          'id_anno' => $id_anno,
-
-          'nome_cognome' => $doc['name'] . ' ' . $doc['lastname'],
-          'birth_locality' => $doc['birth_locality'],
-          'birth_province' => $doc['birth_province'],
-          'birth_date' => $doc['birth_date'],
-          'residence_city' => $doc['residence_city'],
-          'residence_province' => $doc['residence_province'],
-          'residence_zip' => $doc['residence_zip'],
-          'residence_street' => $doc['residence_street'],
-
-          'company_role_label' => $role_label,
-          'company_name' => $doc['company_name'],
-          'company_birthdate' => $doc['company_birthdate'],
-          'company_shape_label' => $shape_label,
-
-          'company_locality' => $doc['company_locality'],
-          'company_zip' => $doc['company_zip'],
-          'company_province' => $doc['company_province'],
-          'company_street' => $doc['company_street'],
-          'company_num' => $doc['company_num'],
-          'company_phone' => $doc['company_phone'],
-          'company_mobile' => $doc['company_mobile'],
-          'company_fax' => $doc['company_fax'],
-          'company_vat' => $doc['company_vat'],
-          'company_cf' => $doc['company_cf'],
-          'company_pec' => $doc['company_pec'],
-          'company_mail' => $doc['company_mail'],
-          //'company_offices' => $doc['company_offices'],
-
-          'rea_location' => $doc['rea_location'],
-          'rea_subscription' => $doc['rea_subscription'],
-          'rea_number' => $doc['rea_number'],
-          'company_social_subject' => $doc['company_social_subject'],
-
-          'company_num_admins' => $doc['company_num_admins'],
-          'company_num_attorney' => $doc['company_num_attorney'],
-          'company_num_majors' => $doc['company_num_majors'],
-          'company_num_majors_tmp' => $doc['company_num_majors_tmp']
-        ));
-
-        $doc_offices = $this->dichiarazione_model->get_item_offices($id);
-        if(!empty($doc_offices)) {
-          // 12 per pagina
-          $_num_pages = ceil(count($doc_offices) / 12);
-          for ( $i = 0; $i < $_num_pages; $i++ ) {
-            $office_data = array(
-              'id_istanza' => $id,
-              'id_anno' => $id_anno
-            );
-            for ( $j = 0; $j < 12; $j++ ) {
-              while (!empty($doc_offices)) {
-                $office = array_shift($doc_offices);
-                $office_data["name_$j"] = $office['name'];
-                $office_data["piva_$j"] = $office['piva'];
-                $office_data["cf_$j"] = $office['cf'];
-              }
-            }
-            $fdf->addPage('imprese-partecipate.pdf', $office_data);
-          }
-        }
-
-        if ( !empty($doc['anagrafiche_antimafia']) ) {
-          $role_list = $this->dichiarazione_model->get_roles();
-          echo "<pre>";
-          var_dump($role_list);
-          echo "</pre>";
-          // 4 per pagina
-          $_num_pages = ceil(count($doc['anagrafiche_antimafia']) / 4);
-          for ( $i = 0; $i < $_num_pages; $i++ ) {
-            $anagrafica_data = array(
-              'id_istanza' => $id,
-              'id_anno' => $id_anno
-            );
-            for ( $j = 0; $j < 12; $j++ ) {
-              while ( !empty($doc['anagrafiche_antimafia']) ) {
-                $anagrafica = array_shift($doc['anagrafiche_antimafia']);
-
-                $anagrafica_data["nome_cognome_$j"] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['atimafia_cognome'];
-                $anagrafica_data["cf_$j"] = $anagrafica['antimafia_cf'];
-                $anagrafica_data["ruolo_$j"] = $role_list[$anagrafica['role_id']];
-                $anagrafica_data["birth_locality_$j"] = $anagrafica['antimafia_comune_nascita'];
-                $anagrafica_data["birth_province_$j"] = $anagrafica['antimafia_provincia_nascita'];
-                $anagrafica_data["birth_date_$j"] = $anagrafica['antimafia_data_nascita'];
-
-                $anagrafica_data["residence_city_$j"] = $anagrafica['antimafia_comune_residenza'];
-                $anagrafica_data["residence_province_$j"] = $anagrafica['antimafia_provincia_residenza'];
-                $anagrafica_data["residence_zip_$j"] = $anagrafica['antimafia_civico_residenza'];
-                $anagrafica_data["residence_street_$j"] = $anagrafica['antimafia_via_residenza'];
-                $anagrafica_data["residence_number_$j"] = $anagrafica['antimafia_civico_residenza'];
-              }
-            }
-            $fdf->addPage('anagrafiche-componenti.pdf', $anagrafica_data);
-          }
-        }
-
-        $fdf->makeFDF();
-        $fdf->fillForms();
-        $fileinfo = $fdf->mergeAll();
-        echo "--------------<pre>";
-        var_dump($fileinfo);
-        echo "</pre>";
-        echo '<a href="/pdf/outputs/' . $fileinfo['file'] . '" target="_blank">Link al file</a>';
-      }
-
-      //$this->load->helper('url');
+      $this->load->view('templates/header');
+      $this->load->view('templates/headbar');
+      $this->parser->parse('domanda/uploaded', $doc);
+      $this->load->view('templates/footer');
     }
 
 /*
@@ -281,6 +153,7 @@ class Domanda extends CI_Controller
           );
           $this->load->view('templates/header');
           $this->load->view('templates/headbar');
+          send_thanks_mail($item);
           $this->parser->parse('domanda/uploaded', $item);
           $this->load->view('templates/footer');
         }
