@@ -137,17 +137,16 @@ class Domanda extends CI_Controller
       $this->load->view('templates/footer');
     }
 
+/*
+    ████████ ███████ ███████ ████████
+       ██    ██      ██         ██
+       ██    █████   ███████    ██
+       ██    ██           ██    ██
+       ██    ███████ ███████    ██
+*/
     public function test($id = false){
-      if (false === $id) {
-        $id = 17;
-      }
-
-      $doc = $this->dichiarazione_model->get_document($id);
-
-      $this->load->view('templates/header');
-      $this->load->view('templates/headbar');
-      $this->parser->parse('domanda/uploaded', $doc);
-      $this->load->view('templates/footer');
+      $fileinfo = create_pdf($id);
+      var_dump($fileinfo);
     }
 
 /*

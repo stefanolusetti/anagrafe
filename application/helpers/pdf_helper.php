@@ -307,17 +307,15 @@ function create_pdf($id) {
     }
 
     // Num pages.
-    $tot_num_pages = count($_pages) + 1;
-    $ip = 1;
+    $tot_num_pages = count($_pages) + 2;
+    $ip = 3;
     foreach($_pages AS $_page) {
+      $_page['data']['tot_pages__1'] = sprintf("Pagina 1 di %s", $tot_num_pages);
+      $_page['data']['tot_pages__2'] = sprintf("Pagina 2 di %s", $tot_num_pages);
+      $_page['data']['tot_pages__3'] = sprintf("Pagina 3 di %s", $tot_num_pages);
       $_page['data']['tot_pages'] = sprintf("Pagina %s di %s", $ip, $tot_num_pages);
-      // Libreoffice cant handle two inputs with same name.
-      $_page['data']['tot_pages_2'] = sprintf("Pagina 2 di %s", $tot_num_pages);
       $fdf->addPage($_page['file'], $_page['data']);
       $ip++;
-      if ($ip == 2) {
-        $ip++;
-      }
     }
 
     $fdf->makeFDF();
