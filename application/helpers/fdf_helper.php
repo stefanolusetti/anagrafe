@@ -11,9 +11,9 @@ $myFdf->removePages();
 */
 
 class CerthideaFDF {
-  const TMP_PATH = '/home/dp/Projects/0000/merito/source/pdf/xfdf/';
-  const SOURCE_PATH = '/home/dp/Projects/0000/merito/source/pdf/sources/';
-  const OUTPUT_PATH = '/home/dp/Projects/0000/merito/source/pdf/outputs/';
+  const TMP_PATH = FCPATH . 'pdf/xfdf/';
+  const SOURCE_PATH = FCPATH . 'pdf/sources/';
+  const OUTPUT_PATH = FCPATH . 'pdf/outputs/';
 
   private $_pages, $_tmpHash, $_outputFileName;
 /*

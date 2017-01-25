@@ -336,7 +336,7 @@ class CthCsvExporter{
   private $_data = array();
   private $_header = array();
   private $_buffer = '';
-  const OUTPUT_PATH = '/home/dp/Projects/0000/merito/source/csv/';
+  const OUTPUT_PATH = FCPATH . 'csv/';
 
   public function __construct($cols){
     if ( is_array($cols) ) {
@@ -423,6 +423,7 @@ class CthCsvExporter{
     $fh = fopen($full_path, 'wb');
     fwrite($fh, $this->_buffer);
     fclose($fh);
+    chmod($full_path, 0777);
     return array(
       'folder' => self::OUTPUT_PATH,
       'file' => $filename,
