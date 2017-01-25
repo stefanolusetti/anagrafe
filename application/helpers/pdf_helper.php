@@ -167,6 +167,7 @@ function create_pdf($id) {
       'stmt_wl_no' => $doc['stmt_wl'] == 0 ? 'Yes' : 'No',
       'stmt_wl_name' => $doc['stmt_wl_name'],
       'stmt_wl_date' => empty($doc['stmt_wl_date']) ? '' : format_date($doc['stmt_wl_date']),
+      'stmt_eligible' => $doc['stmt_eligible'],
 
       'stmt_interest' => 'Yes',
       'sake_work' => $doc['sake_work'] == 1 ? 'Yes' : 'No',
@@ -218,7 +219,7 @@ function create_pdf($id) {
           'id_anno' => $id_anno
         );
         for ( $j = 0; $j < 12; $j++ ) {
-          while (!empty($doc_offices)) {
+          if (!empty($doc_offices)) {
             $office = array_shift($doc_offices);
             $office_data["name_$j"] = $office['name'];
             $office_data["piva_$j"] = $office['vat'];
@@ -426,18 +427,43 @@ function send_welcome_email($id) {
 
 function email_message_new($doc, $hash){
     $url = site_url("domanda/upload/{$hash}");
-    $msg = "<p>Gentile {$doc['name']} {$doc['lastname']}, \nin allegato trova il modulo PDF da Lei compilato.</p>".
-            "<p>Per completare l'iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di firmare digitalmente ".
-            "il file qui allegato e di caricare quindi il file in formato P7M tramite la funzione disponibile ".
-            "al seguente indirizzo web:</p><p><a href=\"{$url}\">{$url}</a></p>".
-            "<p>\n\nCordiali Saluti\n <br /><em>Struttura di Missione del Ministero dell'Interno</em></p>";
+    $msg = "<p>
+    <b>ATTENZIONE:</b> Non rispondere a questa PEC. Seguire le istruzioni per concludere l’iscrizione.
+    </p>
+    <p>
+      Gentile {$doc['name']} {$doc['lastname']},<br />Per completare la domanda di iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di collegarsi al seguente indirizzo web:</p>
+    <p><a href=\"{$url}\">{$url}</a></p>
+    <p>
+      <b>Attenzione:</b>
+    </p>
+    <ul>
+      <li>
+        Si consiglia di inviare un file in format pdf. Sono comunque accettati i seguenti formati: tiff, jpg, jpeg.
+      </li>
+      <li>
+        Non saranno accettati altri documenti oltre alla carta d’identità.
+      </li>
+      <li>
+        Verranno accettati solamente documenti inferiori ai 2.5 MB di dimensione.
+      </li>
+      <li>
+      È possibile caricare <strong>un unico file</strong> che dovrà contenere la scannerizzazione <strong>fronte e retro</strong> della propria carta d’identità in corso di validità.
+      </li>
+    </ul>
+    <p>
+    Se non è possibile fare click sul link o se il link risulta incompleto, copia l’indirizzo completo, incollalo nella barra degli indirizzi del browser e quindi premi invio.
+    </p>
+    <p>
+    La procedura di iscrizione risulterà termiata solo DOPO aver caricato la carta di identità all’indirizzo indicato.
+    </p>
+    <p>\n\nCordiali Saluti\n <br /><em>Struttura di Missione Prevenzione e Contrasto Antimafia Sisma</em></p>";
     return $msg;
 }
 
 
 function send_thanks_mail($doc) {
   $CI =& get_instance();
-  $data_caricamento = format_date($doc['uploaded_date']);
+  $data_caricamento = date('d/m/Y');
   $codice = $doc['did'] . '-' . substr($doc['doc_date'], 0, 4);
   $url = site_url("elenco");
 
@@ -445,9 +471,14 @@ function send_thanks_mail($doc) {
   $csv = export_antimafia_components($doc['did']);
 
   // Email utente
-  $msg ="<p>Gentile {$doc['name']} {$doc['lastname']}, \n la sua pratica è stata presentata in data {$data_caricamento} e ha numero {$codice}.</p>".
-      "<p>\nLa sua richiesta di iscrizione verrà presa in carico ed in caso di nulla osta il suo nominativo verrà pubblicato in elenco all'indirizzo web {$url}</p>".
-      "<p>\n\nCordiali Saluti\n <br /><em>Struttura di Missione del Ministero dell'Interno</em></p>";
+  $msg ="<p>
+  <strong>ATTENZIONE:</strong> Non rispondere a questa PEC. Per qualsiasi comunicazione utilizzare l’indirizzo: (XXXXXXXX)
+  </p>
+  <p>Gentile {$doc['name']} {$doc['lastname']},</p>
+  <p>
+    la procedura di presentazione della sua pratica è terminata in data {$data_caricamento} e ha numero {$codice}.</p>".
+      "<p>In allegato troverà il suo modulo di iscrizione.</p>".
+      "<p>\n\nCordiali Saluti\n <br /><em>Struttura di Missione Prevenzione e Contrasto Antimafia Sisma</em></p>";
 
   $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
   $CI->email->to($doc['company_pec']);
@@ -457,7 +488,7 @@ function send_thanks_mail($doc) {
   $CI->email->attach(
     $fileinfo['path'],
     'attachment',
-    'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $doc['did'] . '-' . date("Y") . '.pdf'
+    'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $codice . '.pdf'
   );
   $esito = $CI->email->send();
 
@@ -465,21 +496,29 @@ function send_thanks_mail($doc) {
 
   // Email interna
   $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
-  $CI->email->to('dp@certhidea.it');
-  $CI->email->subject('Caricamento Carta di identità avvenuto.');
+
+  $CI->email->to('anagrafeantimafiasisma@pec.interno.it');
+  $CI->email->cc('luigi.carbone@interno.it');
+  $CI->email->bcc('info@certhidea.it');
+
+  $CI->email->subject(sprintf(
+    "Domanda iscrizione anagrafica antimafia %s %s %s",
+    $doc['company_name'],
+    $doc['company_vat'],
+    $codice
+  ));
   $CI->email->message("in allegato CSV e PDF");
   $CI->email->attach(
     $fileinfo['path'],
     'attachment',
-    'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $doc['did'] . '-' . date("Y") . '.pdf'
+    'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $codice . '.pdf'
   );
   $CI->email->attach(
     $csv['path'],
     'attachment',
-    'elenco-componenti-antimafia-' . $doc['did'] . '-' . date("Y") . '.csv'
+    'elenco-componenti-antimafia-' . $codice . '.csv'
   );
   $esito = $CI->email->send();
-
   unlink($fileinfo['path']);
   unlink($csv['path']);
   return $esito;

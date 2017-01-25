@@ -36,6 +36,14 @@ function current_controller($now){
     }
 }
 
+function current_action($now){
+  $CI =& get_instance();
+  $action = $CI->router->fetch_method();
+  if($now == $action){
+      return TRUE;
+  }
+}
+
 function logged_in(){
     $CI =& get_instance();
     return $CI -> session->userdata('logged_in');
@@ -240,6 +248,10 @@ function export_antimafia_components($id){
   $CI->load->helper('file');
   $role_list = $CI->dichiarazione_model->get_roles();
   $documento = $CI->dichiarazione_model->get_document($id);
+  $shapes = $CI->dichiarazione_model->get_company_shape_label($documento['company_shape']);
+  if (!empty($shapes)) {
+    $shape_label = $shapes[0]['value'];
+  }
   $columns = array(
     array( 'label' => 'Prog.', 'field' => 'n' ),
     array( 'label' => 'CODICE-FISCALE-IMPRESA', 'field' => 'codice_fiscale_azienda' ),
@@ -265,14 +277,14 @@ function export_antimafia_components($id){
   $n = 1;
   if ( !empty($documento['anagrafiche_antimafia']) ) {
     foreach ($documento['anagrafiche_antimafia'] AS $anagrafica) {
-
+      $is_socio_maggioranza = $role_list[$anagrafica['role_id']] == 24 ? 'X' : '';
       $csv->addRow(array(
         'n' => $n,
 
         'codice_fiscale_azienda' => $documento['company_cf'],
         'partita_iva' => $documento['company_vat'],
         'ragione_sociale' => $documento['company_name'],
-        'company_shape' => $documento['company_shape'],
+        'company_shape' => $shape_label,
         'company_province' => $documento['company_province'],
         'sede_legale' => sprintf("%s %s", $documento['company_street'], $documento['company_num']),
 
@@ -283,7 +295,7 @@ function export_antimafia_components($id){
         'codice_fiscale' => $anagrafica['antimafia_cf'],
         'ruolo' => $role_list[$anagrafica['role_id']],
 
-        'socio_maggioranza' => '',
+        'socio_maggioranza' => $is_socio_maggioranza,
 
         'riferimento' => ''
       ));
@@ -297,7 +309,7 @@ function export_antimafia_components($id){
             'codice_fiscale_azienda' => $documento['company_cf'],
             'partita_iva' => $documento['company_vat'],
             'ragione_sociale' => $documento['company_name'],
-            'company_shape' => $documento['company_shape'],
+            'company_shape' => $shape_label,
             'company_province' => $documento['company_province'],
             'sede_legale' => sprintf("%s %s", $documento['company_street'], $documento['company_num']),
 
@@ -317,7 +329,7 @@ function export_antimafia_components($id){
       }
     }
     $csv->create();
-    return $csv->writeToFile('TEST-REPORT.csv');
+    return $csv->writeToFile($documento['did'] .'-' . substr($documento['doc_date'], 0, 4) . '.csv');
   }
 }
 
@@ -421,9 +433,10 @@ class CthCsvExporter{
     }
     $full_path = self::OUTPUT_PATH . $filename;
     $fh = fopen($full_path, 'wb');
+    fwrite($fh, pack("CCC",0xef,0xbb,0xbf));
     fwrite($fh, $this->_buffer);
     fclose($fh);
-    chmod($full_path, 0777);
+    @chmod($full_path, 0777);
     return array(
       'folder' => self::OUTPUT_PATH,
       'file' => $filename,

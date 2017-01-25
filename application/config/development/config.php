@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://merito.lan';
+$config['base_url']	= 'http://anagrafetest.certhidea.it';
 #$config['base_url']	= 'http://merito.nginx.lan/';
 $config['exclude_logging'] = array(E_STRICT,E_NOTICE);
 

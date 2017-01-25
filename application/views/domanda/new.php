@@ -1,3 +1,4 @@
+<h3><a href="/domanda/help" target="_blank">Istruzioni per la compilazione della domanda di iscrizione all'Anagrafe Antimafia degli Esecutori</a></h3>
 <?php
 echo form_open('domanda/nuova');
 ?>
@@ -113,7 +114,10 @@ echo form_open('domanda/nuova');
   f_text(
     'ruolo_richiedente',
     'se selezionato <b>Altro</b> specificare:',
-    array('field' => array('class' => 'indent'))
+    array(
+      'field' => array('class' => 'indent'),
+      'input' => array('class' => '_company_role')
+    )
   );
   echo '</div>';
 
@@ -138,12 +142,11 @@ echo form_open('domanda/nuova');
 
   //array_unshift($shapes, ' - - - SELEZIONARE - - - ');
   // Inject 'Altro' value.
-  $shapes['Altro'] = 'Altro';
+  $shapes['0'] = 'Altro';
   f_select(
     'company_shape',
-    "Forma giuridica dell'impresa",
-    $shapes, $choosen_shape);
-
+    "Forma giuridica dell'impresa*",
+    $shapes, array('input' => array('class' => 'required')));
   /*
   f_select(
     'company_type',
@@ -172,7 +175,7 @@ echo form_open('domanda/nuova');
   f_text(
     'company_type_more',
     'se selezionato <b>Altro</b> specificare:',
-    array('field' => array('class' => 'indent'))
+    array('field' => array('class' => 'indent'), 'input' => array('class' => '_company_type_more'))
   );
   echo '</div>';
   ?>
@@ -261,7 +264,7 @@ echo form_open('domanda/nuova');
   );
 
   echo '<h4>Iscrizione nel Registro delle Imprese presso la C.C.I.A.A.</h4>';
-  f_text('rea_location', 'Registro delle Imprese *', array('input' => array('class' => 'required maxlen')));
+  f_text('rea_location', 'Registro delle Imprese di *', array('input' => array('class' => 'required maxlen')));
   f_text('rea_subscription', 'Numero di iscrizione*', array('input' => array('class' => 'required maxlen')));
   f_text('rea_number', 'Numero di R.E.A.*', array('input' => array('class' => 'required maxlen')));
   f_text(
@@ -428,14 +431,19 @@ if (isset($offices) AND !empty($offices)) {
     'Importo',
     array('input' => array('class' => 'maxlen'), 'field' => array('class' => 'w50'))
   );
+  f_checkbox(
+    'stmt_eligible',
+    'Dichiara che nei propri confronti e nei confronti di tutti I soggetti di cui all’art 85. del decreto legislativo n. 159/2011 non sussistono le cause di divieto, di decadenza o di sospensione di cui all\'art.67 del D.Lgs. 06/09/2011, n.159',
+    array('input' => array('class' => 'stmt__eligible'))
+  );
   echo '</div>';
-  /*
-  ██████
-       ██
-    ▄███
-    ▀▀
-    ██
-  */
+/*
+██████
+     ██
+  ▄███
+  ▀▀
+  ██
+*/
   echo '</div>';
   ?>
 
@@ -629,9 +637,8 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
 */
 
 
-
-  echo '<div class="checkbox field "><label for="stmt_wl_si">di essere iscritto alle white list della Prefettura</label><input class="required" type="radio" name="stmt_wl" value="Yes" id="stmt_wl_si">
-</div><div class="checkbox field "><label for="stmt_wl_no">di <b>NON</b> essere iscritto alle white list della Prefettura</label><input class="required" type="radio" name="stmt_wl" value="No" id="stmt_wl_no">
+  echo '<div class="checkbox field "><label for="stmt_wl_si">di essere iscritto alle white list della Prefettura</label><input ' . $stmt_wl_si_checked . ' class="required" type="radio" name="stmt_wl" value="Yes" id="stmt_wl_si">
+</div><div class="checkbox field "><label for="stmt_wl_no">di <b>NON</b> essere iscritto alle white list della Prefettura</label><input ' . $stmt_wl_no_checked . ' class="required" type="radio" name="stmt_wl" value="No" id="stmt_wl_no">
 </div>';
 
   echo '<div id="stmt_wl_more" class="'.$stmt_wl_class.'">';
@@ -647,12 +654,6 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
   );
   echo '</div>';
 
-
-  f_checkbox(
-    'stmt_eligible',
-    'Dichiara che nei propri confronti non sussistono le cause di divieto, di decadenza o di sospensione di cui all\'art.67 del D.Lgs. 06/09/2011, n.159',
-    array('input' => array('class' => 'required'))
-  );
 
 
 

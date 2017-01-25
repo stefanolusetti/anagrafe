@@ -57,12 +57,15 @@ class Domanda extends CI_Controller
           $this->session->set_userdata('start', '1');
 
           // Hidden conditional things.
-          $data['show_other_shape'] = 'Altro' == $this->input->post('company_shape') ? true : false;
+          $data['show_other_shape'] = '0' == $this->input->post('company_shape') ? true : false;
           $data['choosen_shape'] = $this->input->post('company_shape');
           $data['sake_service_type_class'] = 'Yes' == $this->input->post('sake_service_flag') ? '' : 'hidden';
           $data['sake_work_type_class'] = 'Yes' == $this->input->post('sake_work_flag') ? '' : 'hidden';
           $data['sake_supply_type_class'] = 'Yes' == $this->input->post('sake_supply_flag') ? '' : 'hidden';
           $data['sake_fix_type_class'] = 'Yes' == $this->input->post('sake_fix_flag') ? '' : 'hidden';
+
+          $data['stmt_wl_si_checked'] = 'Yes' == $this->input->post('stmt_wl') ? ' checked="checked" ' : '';
+          $data['stmt_wl_no_checked'] = 'No' == $this->input->post('stmt_wl') ? ' checked="checked" ' : '';
 
           $data['antimafias'] = false;
 
@@ -122,31 +125,19 @@ class Domanda extends CI_Controller
     }
 
 /*
-██████  ███████ ██████   ██████  ██████  ████████     ███████  █████  ███    ███ ██ ██      ██  █████  ██████  ██
-██   ██ ██      ██   ██ ██    ██ ██   ██    ██        ██      ██   ██ ████  ████ ██ ██      ██ ██   ██ ██   ██ ██
-██████  █████   ██████  ██    ██ ██████     ██        █████   ███████ ██ ████ ██ ██ ██      ██ ███████ ██████  ██
-██   ██ ██      ██      ██    ██ ██   ██    ██        ██      ██   ██ ██  ██  ██ ██ ██      ██ ██   ██ ██   ██ ██
-██   ██ ███████ ██       ██████  ██   ██    ██        ██      ██   ██ ██      ██ ██ ███████ ██ ██   ██ ██   ██ ██
+████████ ███████ ███████ ████████ ██    ██████  ███████ ██████  ██    ██  ██████
+   ██    ██      ██         ██    ██    ██   ██ ██      ██   ██ ██    ██ ██
+   ██    █████   ███████    ██ ████████ ██   ██ █████   ██████  ██    ██ ██   ███
+   ██    ██           ██    ██ ██  ██   ██   ██ ██      ██   ██ ██    ██ ██    ██
+   ██    ███████ ███████    ██ ██████   ██████  ███████ ██████   ██████   ██████
 */
-    public function report_familiari($id){
 
-      export_antimafia_components($id);
+    public function test($id = false){
+      $item = $this->dichiarazione_model->get_document($id);
       $this->load->view('templates/header');
       $this->load->view('templates/headbar');
-      $this->parser->parse('domanda/report', array());
+      $this->parser->parse('domanda/uploaded', $item);
       $this->load->view('templates/footer');
-    }
-
-/*
-    ████████ ███████ ███████ ████████
-       ██    ██      ██         ██
-       ██    █████   ███████    ██
-       ██    ██           ██    ██
-       ██    ███████ ███████    ██
-*/
-    public function test($id = false){
-      $csv = create_pdf($id);
-      var_dump($csv);
     }
 
 /*
@@ -169,14 +160,21 @@ class Domanda extends CI_Controller
         $config['file_name'] = $item['did'].'_'.get_year($item['doc_date']).'.p7m';
         $this->load->library('upload', $config);
         if ($this->upload->do_upload('userfile')) {
-          $this->db->where('did', $item['did'])->update( 'docs',
-            array('stato' => 0, 'uploaded' => 1, 'uploaded_date' => date('Y-m-d H:i:s'))
-          );
-          $this->load->view('templates/header');
-          $this->load->view('templates/headbar');
-          send_thanks_mail($item);
-          $this->parser->parse('domanda/uploaded', $item);
-          $this->load->view('templates/footer');
+          if ( send_thanks_mail($item) ) {
+            $this->db->where('did', $item['did'])->update( 'docs',
+              array('stato' => 0, 'uploaded' => 1, 'uploaded_date' => date('Y-m-d H:i:s'))
+            );
+            $this->load->view('templates/header');
+            $this->load->view('templates/headbar');
+            $this->parser->parse('domanda/uploaded', $item);
+            $this->load->view('templates/footer');
+          }
+          else {
+            $this->load->view('templates/header');
+            $this->load->view('templates/headbar');
+            $this->parser->parse('domanda/uploaded-system-error', $item);
+            $this->load->view('templates/footer');
+          }
         }
         else {
           $item['error'] = $this->upload->display_errors();
@@ -202,6 +200,13 @@ class Domanda extends CI_Controller
     }
   }
 
+  public function help(){
+    $this->load->view('templates/header');
+    $this->load->view('templates/headbar');
+    $this->load->view('domanda/help');
+    $this->load->view('templates/footer');
+  }
+
 
 
 /*
@@ -211,8 +216,28 @@ class Domanda extends CI_Controller
 ██      ██    ██ ██   ██ ██  ██  ██     ██      ██   ██ ██      ██      ██   ██ ██   ██ ██      ██  ██       ██
 ██       ██████  ██   ██ ██      ██      ██████ ██   ██ ███████ ███████ ██████  ██   ██  ██████ ██   ██ ███████
 */
+    public function _company_shape_check($val){
+      if (0 == (int)$val || 1 == (int)$val) {
+        $this->form_validation->set_message('company_shape', 'Il campo <em>%s</em> è obbligatorio.');
+        return false;
+      }
+      return true;
+    }
+
+    public function _stmt_eligible($val){
+      $__post = $this->input->post();
+      if ( isset($__post['sake_fix_flag']) && 'Yes' == $__post['sake_fix_flag'] ) {
+        if ( ! (isset($__post['stmt_eligible']) && 'Yes' == $__post['stmt_eligible']) ) {
+          $this->form_validation->set_message('stmt_eligible', 'Campo obbligatorio.');
+          return false;
+        }
+      }
+      return true;
+    }
+
     public function _controlla_data($str)
     {
+
         $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
         if (preg_match($format, $str) == false) {
             $this->form_validation->set_message('_controlla_data', 'Il campo <em>%s</em> deve contenere una data nel formato gg/mm/yyyy');
@@ -266,6 +291,7 @@ class Domanda extends CI_Controller
 
         if(isset($__post['sake_' . $sake_type . '_flag']) && 'Yes' == $__post['sake_' . $sake_type . '_flag']) {
           $abemus_data = true;
+          /*
           foreach($els AS $el){
             if (empty($__post['sake_' . $sake_type . '_' . $el])){
               $this->form_validation->set_message('_sake', 'Il campo <em>'.$sake_label.'</em> contiene campi vuoti.');
@@ -278,6 +304,7 @@ class Domanda extends CI_Controller
               return false;
             }
           }
+          */
         }
       }
 

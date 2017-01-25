@@ -3,15 +3,21 @@ jQuery(document).ready(function() {
     'doc_location',
     ''
   );
-  mainEventHandlers();
-  subEventHandlers();
-  subOfficeEventHandlers();
   window.ia = jQuery(".anagrafica.anagrafica-box").length;
   window.is = jQuery(".office.container").length;
   window.familiars = {};
+  mainEventHandlers();
+  subEventHandlers();
+  subOfficeEventHandlers();
 });
 
-
+function buildFamiliarsObject() {
+  jQuery(".anagrafica-box").each(function(i, el){
+    var elid = jQuery(el).attr('data-elid');
+    var numFamiliars = jQuery(el).find('.familiars[data-elid=' + elid + ']').children().length;
+    window.familiars[elid] = numFamiliars;
+  });
+}
 
 /*
 ██   ██  █████  ███    ██ ██████  ██      ███████ ██████  ███████
@@ -21,6 +27,7 @@ jQuery(document).ready(function() {
 ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ ███████
 */
 function mainEventHandlers(){
+  buildFamiliarsObject();
   jQuery('.container > a.addAnagrafica').on('click', function(e){
     e.preventDefault();
     addAnagrafica(e);
@@ -75,7 +82,7 @@ function mainEventHandlers(){
   });
 
   jQuery("#company_shape").change(function(e){
-    if ('Altro' == jQuery(e.target).val()) {
+    if ('0' == jQuery(e.target).val()) {
       jQuery('.controlla_tipo_impresa').show();
     }
     else {

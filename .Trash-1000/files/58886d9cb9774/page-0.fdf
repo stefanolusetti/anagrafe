@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xfdf xmlns="http://ns.adobe.com/xfdf/" xml:space="preserve">
+<fields>
+<field name="id_istanza">
+<value>37</value>
+</field>
+<field name="id_anno">
+<value>1987</value>
+</field>
+<field name="nome_cognome">
+<value>Giacomo Nvidia</value>
+</field>
+<field name="birth_locality">
+<value>Lecco</value>
+</field>
+<field name="birth_province">
+<value>LC</value>
+</field>
+<field name="birth_date">
+<value>29/11/1985</value>
+</field>
+<field name="residence_city">
+<value>Loazzolo</value>
+</field>
+<field name="residence_province">
+<value>AT</value>
+</field>
+<field name="residence_zip">
+<value>784589</value>
+</field>
+<field name="residence_street">
+<value>via dei test</value>
+</field>
+<field name="company_role_label">
+<value>Titolare</value>
+</field>
+<field name="company_name">
+<value>Guinness</value>
+</field>
+<field name="company_birthdate">
+<value>11/11/1985</value>
+</field>
+<field name="company_shape_label">
+<value>Consorzio con attivit&agrave; esterna </value>
+</field>
+<field name="company_locality">
+<value>Secinaro</value>
+</field>
+<field name="company_zip">
+<value>45126</value>
+</field>
+<field name="company_province">
+<value>AQ</value>
+</field>
+<field name="company_street">
+<value>delle prove </value>
+</field>
+<field name="company_num">
+<value>321</value>
+</field>
+<field name="company_phone">
+<value>123</value>
+</field>
+<field name="company_mobile">
+<value>321</value>
+</field>
+<field name="company_fax">
+<value>123</value>
+</field>
+<field name="company_vat">
+<value>00000000000</value>
+</field>
+<field name="company_cf">
+<value>11111111111</value>
+</field>
+<field name="company_pec">
+<value>pec@gotinsane.com</value>
+</field>
+<field name="company_mail">
+<value>dp@gotinsane.com</value>
+</field>
+<field name="company_offices">
+<value>321</value>
+</field>
+<field name="rea_location">
+<value>33333</value>
+</field>
+<field name="rea_subscription">
+<value>444</value>
+</field>
+<field name="rea_number">
+<value>555</value>
+</field>
+<field name="company_social_subject">
+<value>tavolo</value>
+</field>
+<field name="company_num_admins">
+<value>1</value>
+</field>
+<field name="company_num_attorney">
+<value>2</value>
+</field>
+<field name="company_num_majors">
+<value>3</value>
+</field>
+<field name="company_num_majors_tmp">
+<value>4</value>
+</field>
+<field name="doc_location">
+<value>Quiliano</value>
+</field>
+<field name="doc_date">
+<value>11/11/1987</value>
+</field>
+<field name="checkbox_checked">
+<value>Yes</value>
+</field>
+<field name="stmt_wl">
+<value>No</value>
+</field>
+<field name="stmt_wl_no">
+<value>Yes</value>
+</field>
+<field name="stmt_wl_name">
+<value></value>
+</field>
+<field name="stmt_wl_date">
+<value></value>
+</field>
+<field name="stmt_interest">
+<value>Yes</value>
+</field>
+<field name="sake_work">
+<value>No</value>
+</field>
+<field name="sake_work_type">
+<value></value>
+</field>
+<field name="sake_work_amount">
+<value></value>
+</field>
+<field name="sake_service">
+<value>No</value>
+</field>
+<field name="sake_service_type">
+<value></value>
+</field>
+<field name="sake_service_amount">
+<value></value>
+</field>
+<field name="sake_supply">
+<value>Yes</value>
+</field>
+<field name="sake_supply_type">
+<value>mattoni</value>
+</field>
+<field name="sake_supply_amount">
+<value>789.00</value>
+</field>
+<field name="sake_fix">
+<value>No</value>
+</field>
+<field name="sake_fix_type">
+<value></value>
+</field>
+<field name="sake_fix_amount">
+<value></value>
+</field>
+<field name="company_field_none">
+<value>No</value>
+</field>
+<field name="company_field_trasporto">
+<value>No</value>
+</field>
+<field name="company_field_rifiuti">
+<value>No</value>
+</field>
+<field name="company_field_terra">
+<value>Yes</value>
+</field>
+<field name="company_field_bitume">
+<value>Yes</value>
+</field>
+<field name="company_field_nolo">
+<value>No</value>
+</field>
+<field name="company_field_ferro">
+<value>No</value>
+</field>
+<field name="company_field_autotrasporto">
+<value>No</value>
+</field>
+<field name="company_field_guardiana">
+<value>No</value>
+</field>
+<field name="tot_pages__1">
+<value>Pagina 1 di 5</value>
+</field>
+<field name="tot_pages__2">
+<value>Pagina 2 di 5</value>
+</field>
+<field name="tot_pages__3">
+<value>Pagina 3 di 5</value>
+</field>
+<field name="tot_pages">
+<value>Pagina 3 di 5</value>
+</field>
+</fields>
+<ids original="687129b22398aeaee952cfa766d94391" modified="1485335964" />
+<f href="/home/ubuntu/www/merito/pdf/sources/indice.pdf" />
+</xfdf>

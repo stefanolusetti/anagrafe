@@ -15,6 +15,40 @@ $(document).ready(function() {
     "Inserire un anno nel formato aaaa"
   );
 
+  $.validator.addMethod(
+    "stmt__eligible",
+    function(val, el){
+      /*
+        ██████  ███████ ██████  ██    ██  ██████
+        ██   ██ ██      ██   ██ ██    ██ ██
+        ██   ██ █████   ██████  ██    ██ ██   ███
+        ██   ██ ██      ██   ██ ██    ██ ██    ██
+        ██████  ███████ ██████   ██████   ██████
+      */
+      console.log('██'.repeat(10) + "\t" +  'que abemus aqui?' + "\t" + '██'.repeat(10));
+      console.log(jQuery("#sake_fix_flag").is(':checked'));
+      console.log(jQuery("#stmt_eligible").is(':checked'));
+      
+      if (jQuery("#sake_fix_flag").is(':checked') && false == jQuery("#stmt_eligible").is(':checked')){
+        return false;
+      }
+    },
+    "Campo obbligatorio"
+  );
+  $.validator.addMethod('_company_type_more', function(val, el){
+    if ( '0' == jQuery('#company_shape').val() && '' == jQuery('#company_type_more').val()) {
+      return false;
+    }
+    return true;
+  }, 'Compilare il campo <em>Altro</em>');
+
+  $.validator.addMethod('_company_role', function(val, el){
+    if ( 'Altro' == jQuery('#company_role').val() && '' == jQuery('#ruolo_richiedente').val() ) {
+      return false;
+    }
+    return true;
+  }, 'Compilare il campo <em>Altro</em>');
+
   $.validator.addMethod("controlla_contratto", function(value, element) {
       return !($('select[name=tipo_contratto]').val() == "Altri settori" && $('input[name=tipo_contratto_altri]').val() == "");
     },

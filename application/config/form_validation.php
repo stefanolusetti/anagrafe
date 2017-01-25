@@ -69,7 +69,7 @@ $config = array(
     array(
       'field' => 'company_shape',
       'label' => 'Forma giuridica dell\'impresa',
-      'rules' => 'required|max_length[200]',
+      'rules' => 'callback__company_shape_check',
     ),
     array(
       'field' => 'company_type_more',
@@ -181,7 +181,7 @@ $config = array(
     array(
       'field' => 'stmt_eligible',
       'label' => 'Nome del dichiarante',
-      'rules' => 'required',
+      'rules' => 'callback__stmt_eligible',
     ),
     array(
       'field' => 'doc_date',

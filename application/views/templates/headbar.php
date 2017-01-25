@@ -4,9 +4,20 @@
          <?php
          $attr = array();
          $attr['title'] = "Domanda di iscrizione";
-         if(current_controller('domanda'))
-            $attr['class'] = 'selected';
+         if(current_controller('domanda') && current_action('index')) {
+           $attr['class'] = 'selected';
+         }
          echo anchor('/domanda', 'Domanda di iscrizione', $attr); ?>
+        </li>
+        <li>
+         <?php
+         $attr = array();
+         $attr['title'] = "Istruzioni per la compilazione";
+         $attr['target'] = "_blank";
+         if(current_controller('domanda') && current_action('help')) {
+           $attr['class'] = 'selected';
+         }
+         echo anchor('/domanda/help', 'Istruzioni per la compilazione', $attr); ?>
         </li>
         <li>
          <?php

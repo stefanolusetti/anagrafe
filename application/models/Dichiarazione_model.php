@@ -121,6 +121,7 @@ class Dichiarazione_model extends CI_Model
     $data['company_field_guardiana'] = $this->input->post('company_field_guardiana') == 'Yes' ? 1 : 0;
 
     $data['stato'] = NULL;
+    $data['is_digital'] = 1;
     $data['uploaded'] = 0;
     $data['uploaded_date'] = NULL;
 

@@ -89,7 +89,7 @@ class CerthideaFDF {
   public function makeFDF(){
     if (!is_writable($this->_currPath)) {
       if (!mkdir($this->_currPath, 0777)) {
-        die("cant create fdf folder");
+        die("cant create fdf folder: " . $this->_currPath);
       }
     }
     //creo la cartella che li conterrà tutti
