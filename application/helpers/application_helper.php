@@ -127,13 +127,7 @@ function valid_hash_new($hash){
     return FALSE;
   }
   $CI =& get_instance();
-  //$query = $CI -> db -> get_where('docs', array('hash' => $hash, 'uploaded != ' => '1'), 1, 0);
-  //██████  ███████ ██████  ██    ██  ██████
-  //██   ██ ██      ██   ██ ██    ██ ██
-  //██   ██ █████   ██████  ██    ██ ██   ███
-  //██   ██ ██      ██   ██ ██    ██ ██    ██
-  //██████  ███████ ██████   ██████   ██████
-  $query = $CI -> db -> get_where('docs', array('hash' => $hash), 1, 0);
+  $query = $CI -> db -> get_where('docs', array('hash' => $hash, 'uploaded != ' => '1'), 1, 0);
   $results = $query->result_array();
   log_message('debug', print_r($results, TRUE));
   return $results ? $results[0] : FALSE;
@@ -248,16 +242,20 @@ function export_antimafia_components($id){
   $documento = $CI->dichiarazione_model->get_document($id);
   $columns = array(
     array( 'label' => 'Prog.', 'field' => 'n' ),
-    array( 'label' => 'Codice Fiscale Azienda', 'field' => 'codice_fiscale_azienda' ),
-    array( 'label' => 'Partita IVA', 'field' => 'partita_iva'),
-    array( 'label' => 'Ragione Sociale', 'field' => 'ragione_sociale' ),
-    array( 'label' => 'Cognome', 'field' => 'cognome' ),
-    array( 'label' => 'Nome', 'field' => 'nome' ),
-    array( 'label' => 'Data di Nascita', 'field' => 'data_nascita' ),
-    array( 'label' => 'Luogo di Nascita', 'field' => 'luogo_nascita' ),
-    array( 'label' => 'Codice Fiscale', 'field' => 'codice_fiscale' ),
-    array( 'label' => 'Ruolo', 'field' => 'ruolo' ),
-    array( 'label' => 'Riferimento Soggetto', 'field' => 'riferimento' ),
+    array( 'label' => 'CODICE-FISCALE-IMPRESA', 'field' => 'codice_fiscale_azienda' ),
+    array( 'label' => 'PARTITA-IVA-IMPRESA', 'field' => 'partita_iva'),
+    array( 'label' => 'TIPO-SOCIETA\'', 'field' => 'company_shape'),
+    array( 'label' => 'RAGIONE-SOCIALE', 'field' => 'ragione_sociale' ),
+    array( 'label' => 'PROVINCIA', 'field' => 'company_province' ),
+    array( 'label' => 'SEDE-LEGALE', 'field' => 'sede_legale' ),
+    array( 'label' => 'COGNOME', 'field' => 'cognome' ),
+    array( 'label' => 'NOME', 'field' => 'nome' ),
+    array( 'label' => 'DATA-NASCITA', 'field' => 'data_nascita' ),
+    array( 'label' => 'LUOGO-NASCITA', 'field' => 'luogo_nascita' ),
+    array( 'label' => 'CODICE-FISCALE-PERSONA', 'field' => 'codice_fiscale' ),
+    array( 'label' => 'SOCIO-DI-MAGG', 'field' => 'socio_maggioranza' ),
+    array( 'label' => 'RUOLO', 'field' => 'ruolo' ),
+    array( 'label' => 'RIFERIMENTO SOGGETTO', 'field' => 'riferimento' ),
   );
 
   $csv = new CthCsvExporter($columns);
@@ -274,6 +272,9 @@ function export_antimafia_components($id){
         'codice_fiscale_azienda' => $documento['company_cf'],
         'partita_iva' => $documento['company_vat'],
         'ragione_sociale' => $documento['company_name'],
+        'company_shape' => $documento['company_shape'],
+        'company_province' => $documento['company_province'],
+        'sede_legale' => sprintf("%s %s", $documento['company_street'], $documento['company_num']),
 
         'cognome' => $anagrafica['antimafia_cognome'],
         'nome' => $anagrafica['antimafia_nome'],
@@ -281,6 +282,8 @@ function export_antimafia_components($id){
         'luogo_nascita' => $anagrafica['antimafia_comune_nascita'],
         'codice_fiscale' => $anagrafica['antimafia_cf'],
         'ruolo' => $role_list[$anagrafica['role_id']],
+
+        'socio_maggioranza' => '',
 
         'riferimento' => ''
       ));
@@ -294,6 +297,9 @@ function export_antimafia_components($id){
             'codice_fiscale_azienda' => $documento['company_cf'],
             'partita_iva' => $documento['company_vat'],
             'ragione_sociale' => $documento['company_name'],
+            'company_shape' => $documento['company_shape'],
+            'company_province' => $documento['company_province'],
+            'sede_legale' => sprintf("%s %s", $documento['company_street'], $documento['company_num']),
 
             'cognome' => $familiare['nome'],
             'nome' => $familiare['cognome'],
@@ -301,6 +307,8 @@ function export_antimafia_components($id){
             'luogo_nascita' => $familiare['comune'],
             'codice_fiscale' => $familiare['cf'],
             'ruolo' => $role_list[$familiare['rid']],
+
+            'socio_maggioranza' => '',
 
             'riferimento' => $parent_n
           ));

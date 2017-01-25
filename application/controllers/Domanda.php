@@ -145,8 +145,8 @@ class Domanda extends CI_Controller
        ██    ███████ ███████    ██
 */
     public function test($id = false){
-      $fileinfo = create_pdf($id);
-      var_dump($fileinfo);
+      $csv = create_pdf($id);
+      var_dump($csv);
     }
 
 /*
