@@ -3,32 +3,32 @@
 class Elenco extends CI_Controller {
 
     public function __construct() {
-        
+
         parent::__construct();
-        
+
         $this -> load -> library('parser');
         $this -> load -> library('session');
         $this -> load -> library('pagination');
-		
+
 		$this -> load -> library('excel');
-        
+
         $this -> load -> model('admin_model');
         $this -> load -> model('comuni_model');
 		$this -> load -> model('elenco_model');
-        
+
         $this -> load -> helper('url');
         $this -> load -> helper('form');
         $this -> load -> helper('application');
-		
-		
-        
-    } 
+
+
+
+    }
 
     public function index($offset = 0) {
-	
-        if(ENVIRONMENT == 'development')   
+
+        if(ENVIRONMENT == 'development')
             $this->output->enable_profiler(TRUE);
-        
+
         $this -> admin_model -> inserisci_valore();
         //$limit = 25; //modifico in via temporanea il limite di paginazione
         $limit = 50;
@@ -45,30 +45,30 @@ class Elenco extends CI_Controller {
 			$config['page_query_string'] = TRUE;
             $this->pagination->initialize($config);
             $_GET['tipo_contratto'] = "Edilizia"; // dirty hack per impostare il campo tipo contratto su Edilizia
-            
-            
-        }  else 
-        { 
-            
+
+
+        }  else
+        {
+
             if($params['provincia'] == 'altre')
                 $params['provincia'] = "altre";
-            
+
             $data['statements'] = $this -> admin_model -> find_items($params, $this->input->get("per_page"), $limit);
             $config['base_url'] = site_url("/elenco/index?provincia={$params['provincia']}&ateco={$params['ateco']}&soa={$params['soa']}&tipo_contratto={$params['tipo_contratto']}&ragione_sociale=&sl_piva=");
             $config['total_rows'] = $data['statements']['rowcount'];
             $config['page_query_string'] = TRUE;
             $this->pagination->initialize($config);
-            
+
         }
-        
+
         unset($data['statements']['rowcount']);
         $this -> load -> view('elenco/header');
         $this -> load -> view('templates/headbar');
         $this -> load -> view('elenco/index', $data);
         $this -> load -> view('templates/footer');
-		
-		
-		
+
+
+
 	}
 public function open_data () {
 $data['statements'] = $this -> admin_model -> find_items(FALSE, 0, 10000);
@@ -78,9 +78,9 @@ $data['statements'] = $this -> admin_model -> find_items(FALSE, 0, 10000);
   $xml->addAttribute('xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance');
   $xml->addAttribute('copyright','http://dati.emilia-romagna.it/media/rdp/comune/licenze/licenza_Elenco_di_merito_CC-BY.pdf');
   $xml->addAttribute('source','Base dati realizzata da Regione Emilia-Romagna - Osservatorio dei contratti pubblici');
-  
+
   foreach ($data['statements'] as $item):
-  
+
   $impresa_xml = $xml->addChild('Impresa');
   $ragione_sociale = $impresa_xml->ragionesociale=$item['ragione_sociale'];
   $p_iva = $impresa_xml->addChild('PartitaIva', $item['sl_piva']);
@@ -94,26 +94,26 @@ $data['statements'] = $this -> admin_model -> find_items(FALSE, 0, 10000);
   $telefono = $riferimenti->addChild('Telefono',$item['sl_tel']);
   $mail = $riferimenti->addChild('Mail',$item['sl_email']);
   $attestazioni_soa=$impresa_xml->addChild('AttestazioniSOA');
-  
+
   $soas['soa']= $this -> admin_model ->elenco_soas($item['id']);
-  
+
   foreach ($soas['soa'] as $soa):
-  
+
   $codice = $attestazioni_soa->addChild('Codice',$soa['codice']);
   $denominazione = $attestazioni_soa->addChild('Denominazione',$soa['denominazione']);
   $classe = $attestazioni_soa->addChild('Classe',$soa['classe']);
   endforeach;
-  
-  
+
+
   $classifica_ateco=$impresa_xml->addChild('ClassificaATECO');
-  
+
   $atecos['ateco']= $this -> admin_model ->elenco_atecos($item['id']);
-  
+
   foreach ($atecos['ateco'] as $ateco):
   $codice = $classifica_ateco->addChild('Codice',$ateco['codice']);
   $denominazione = $classifica_ateco->addChild('Denominazione',$ateco['denominazione']);
   endforeach;
-  
+
   endforeach;
 
   $xml_string = $xml->asXML();
@@ -135,7 +135,7 @@ $json_element = array(
 "comune" => $item['sl_comune'],
 "provincia" =>$item['sl_prov'],
 "cap" =>$item['sl_cap'],
-"via"=>$item['sl_via'], 
+"via"=>$item['sl_via'],
 "civico"=>$item['sl_civico'],
 "telefono"=>$item['sl_tel'],
 "mail"=>$item['sl_email']
@@ -151,14 +151,14 @@ endforeach;
 }
 
 */
-    
+
 }
 public function export_excel () {
-	
+
 	$comuni = $this->db->get('comuni');
 	$data['statements'] = $this -> admin_model -> find_items(FALSE, 0, 10000);
-	
-	
+
+
 $this->excel->setActiveSheetIndex(0)
 							->setCellValue('A1', 'PARTITA_IVA')
                             ->setCellValue('B1', 'CODICE_FISCALE')
@@ -258,15 +258,15 @@ $this->excel->setActiveSheetIndex(0)
 							->setCellValue('CR1', '43.99.09-Altre attività di lavori specializzati di costruzione nca')
 							->setCellValue('CS1', '90.03.02-Attività di conservazione e restauro di opere di arte')
 							->setCellValue('CT1', 'DATA_PUBBLICAZIONE');
-							
+
                 //name the worksheet
                 $this->excel->getActiveSheet()->setTitle('IMPRESE_PUBBLICATE');
 
-        
-		
 
-                        
-                
+
+
+
+
         $i=2;
         //$exceldata="";
         foreach ($data['statements'] as $item):
@@ -274,7 +274,7 @@ $this->excel->setActiveSheetIndex(0)
 		$atecos['ateco']= $this -> admin_model ->elenco_atecos($item['id']);
                 //$exceldata[] = $item['sl_piva'];
 				$this->excel->setActiveSheetIndex(0);
-							
+
 							$this->excel->setActiveSheetIndex(0)->setCellValueExplicit('A'.$i,$item['sl_piva'],PHPExcel_Cell_DataType::TYPE_STRING );
                             $this->excel->setActiveSheetIndex(0)->setCellValueExplicit('B'.$i,$item['sl_cf'],PHPExcel_Cell_DataType::TYPE_STRING );
                             $this->excel->setActiveSheetIndex(0)->setCellValue('C'.$i,$item['ragione_sociale']);
@@ -285,177 +285,177 @@ $this->excel->setActiveSheetIndex(0)
 							$this->excel->setActiveSheetIndex(0)->setCellValue('H'.$i,$item['sl_email']);
 							$this->excel->setActiveSheetIndex(0)->setCellValue('I'.$i,$item['tipo_contratto']);
 							foreach ($soas['soa'] as $soa):
-							
+
 							if ($soa['codice']== "OG1") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('J'.$i,$soa['classe']);
-								
-								
-							}	
-							
+
+
+							}
+
 							if ($soa['codice']=="OG2") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('K'.$i,$soa['classe']);
-						
-								
+
+
 							}
-							if ($soa['codice']=="OG3") { 
+							if ($soa['codice']=="OG3") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('L'.$i,$soa['classe']);
-							
+
 							}
-							if ($soa['codice']=="OG4") { 
+							if ($soa['codice']=="OG4") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('M'.$i,$soa['classe']);
-					
+
 							}
-							if ($soa['codice']=="OG5") { 
+							if ($soa['codice']=="OG5") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('N'.$i,$soa['classe']);
-								
+
 							}
-							if ($soa['codice']=="OG6") { 
+							if ($soa['codice']=="OG6") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('O'.$i,$soa['classe']);
-							
+
 							}
-							if ($soa['codice']=="OG7") { 
+							if ($soa['codice']=="OG7") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('P'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OG8") { 
+							if ($soa['codice']=="OG8") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('Q'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OG9") { 
+							if ($soa['codice']=="OG9") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('R'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OG10") { 
+							if ($soa['codice']=="OG10") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('S'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OG11") { 
+							if ($soa['codice']=="OG11") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('T'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OG12") { 
+							if ($soa['codice']=="OG12") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('U'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OG13") { 
+							if ($soa['codice']=="OG13") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('V'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS1") { 
+							if ($soa['codice']=="OS1") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('W'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OGS2-A") { 
+							if ($soa['codice']=="OGS2-A") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('X'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS2-B") { 
+							if ($soa['codice']=="OS2-B") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('Y'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS3") { 
+							if ($soa['codice']=="OS3") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('Z'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS4") { 
+							if ($soa['codice']=="OS4") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AA'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS5") { 
+							if ($soa['codice']=="OS5") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AB'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS6") { 
+							if ($soa['codice']=="OS6") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AC'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS7") { 
+							if ($soa['codice']=="OS7") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AD'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS8") { 
+							if ($soa['codice']=="OS8") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AE'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS9") { 
+							if ($soa['codice']=="OS9") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AF'.$i,$soa['classe']);
-								}		
-							if ($soa['codice']=="OS10") { 
+								}
+							if ($soa['codice']=="OS10") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AG'.$i,$soa['classe']);
-								}		
-							if ($soa['codice']=="OS11") { 
+								}
+							if ($soa['codice']=="OS11") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AH'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS12-A") { 
+								}
+							if ($soa['codice']=="OS12-A") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AI'.$i,$soa['classe']);
-								}		
-							if ($soa['codice']=="OS12-B") { 
+								}
+							if ($soa['codice']=="OS12-B") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AJ'.$i,$soa['classe']);
-								}		
-							if ($soa['codice']=="OS13") { 
+								}
+							if ($soa['codice']=="OS13") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AK'.$i,$soa['classe']);
-								}		
-							if ($soa['codice']=="OS14") { 
+								}
+							if ($soa['codice']=="OS14") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AL'.$i,$soa['classe']);
-								}		
-							if ($soa['codice']=="OS15") { 
+								}
+							if ($soa['codice']=="OS15") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AM'.$i,$soa['classe']);
-								}		
-							if ($soa['codice']=="OS16") { 
+								}
+							if ($soa['codice']=="OS16") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AN'.$i,$soa['classe']);
-								}		
-							if ($soa['codice']=="OS17") { 
+								}
+							if ($soa['codice']=="OS17") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AO'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS18-A") { 
+								}
+							if ($soa['codice']=="OS18-A") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AP'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS18-B") { 
+								}
+							if ($soa['codice']=="OS18-B") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AQ'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS19") { 
+								}
+							if ($soa['codice']=="OS19") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AR'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS20-A") { 
+								}
+							if ($soa['codice']=="OS20-A") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AS'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS20-B") { 
+								}
+							if ($soa['codice']=="OS20-B") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AT'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS21") { 
+								}
+							if ($soa['codice']=="OS21") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AU'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS22") { 
+								}
+							if ($soa['codice']=="OS22") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AV'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS23") { 
+								}
+							if ($soa['codice']=="OS23") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AW'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS24") { 
+								}
+							if ($soa['codice']=="OS24") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AX'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS25") { 
+								}
+							if ($soa['codice']=="OS25") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AY'.$i,$soa['classe']);
-								}	
-							if ($soa['codice']=="OS26") { 
+								}
+							if ($soa['codice']=="OS26") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('AZ'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS27") { 
+							if ($soa['codice']=="OS27") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BA'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS28") { 
+							if ($soa['codice']=="OS28") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BB'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS29") { 
+							if ($soa['codice']=="OS29") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BC'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS30") { 
+							if ($soa['codice']=="OS30") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BD'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS31") { 
+							if ($soa['codice']=="OS31") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BE'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS32") { 
+							if ($soa['codice']=="OS32") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BF'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS33") { 
+							if ($soa['codice']=="OS33") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BG'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS34") { 
+							if ($soa['codice']=="OS34") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BH'.$i,$soa['classe']);
 								}
-							if ($soa['codice']=="OS35") { 
+							if ($soa['codice']=="OS35") {
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BI'.$i,$soa['classe']);
 								}
-								
+
 							endforeach;
-							
+
 							foreach ($atecos['ateco'] as $ateco):
-			
+
 							if ($ateco['codice']== "41.10.00"){
 								$this->excel->setActiveSheetIndex(0)->setCellValue('BJ'.$i,'SI');
 							}
@@ -564,35 +564,35 @@ $this->excel->setActiveSheetIndex(0)
 								if ($ateco['codice']== "90.03.02"){
 								$this->excel->setActiveSheetIndex(0)->setCellValue('CS'.$i,'SI');
 								}
-								
+
 								endforeach;
-						    
+
 							   $this->excel->setActiveSheetIndex(0)->setCellValue('CT'.$i,format_date($item['published_at']));
 		$i++;
         endforeach;
-                //Fill data 
+                //Fill data
                 //$this->excel->getActiveSheet()->fromArray($exceldata, null, 'A2');
-                 
+
                 //$this->excel->getActiveSheet()->getStyle('A2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                 //$this->excel->getActiveSheet()->getStyle('B2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                 //$this->excel->getActiveSheet()->getStyle('C2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                 
+
                 $filename='IMPRESE_PUBBLICATE.xlsx'; //save our workbook as this file name
                 //header('Content-Type: application/vnd.ms-excel'); //mime type
                 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 				header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
                 header('Cache-Control: max-age=0'); //no cache
- 
+
                 //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
                 //if you want to save it as .XLSX Excel 2007 format
                 //$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
-				$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');  				
+				$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
 				ob_end_clean();
                 //force user to download the Excel file without writing it to server's HD
                 $objWriter->save('php://output');
-				
-	
-                 
+
+
+
     }
-         
+
 }

@@ -57,7 +57,7 @@ function is_admin(){
 
 function set_search_querystring(){
     $CI =& get_instance();
-    $items = array('id', 'titolare_nome', 'ragione_sociale', 'data_firma', 'sl_piva', 'created_at', 'uploaded_at', 'sl_cf');
+    $items = array('id', 'name', 'ragione_sociale', 'data_firma', 'sl_piva', 'created_at', 'uploaded_at', 'sl_cf');
     $items_dropdown = array ('uploaded','durc','protesti','antimafia','pubblicato');
 	$params = array();
 	$params_dropdown = array();
@@ -82,7 +82,7 @@ function set_search_querystring(){
 
     $order_by = $CI -> input -> get('order_by');
     $order_by = empty($order_by) ? "id desc" : $order_by;
-	if (($order_by=="ragione_sociale asc") or ($order_by=="ragione_sociale desc") or ($order_by=="id desc") or ($order_by=="id asc") or ($order_by=="titolare_nome desc") or ($order_by=="titolare_nome asc") or
+	if (($order_by=="ragione_sociale asc") or ($order_by=="ragione_sociale desc") or ($order_by=="id desc") or ($order_by=="id asc") or ($order_by=="name desc") or ($order_by=="name asc") or
 	($order_by=="data_firma asc") or ($order_by=="data_firma desc") or ($order_by=="sl_piva asc") or ($order_by=="sl_piva desc") or ($order_by=="created_at asc") or ($order_by=="created_at desc") or ($order_by=="uploaded asc") or ($order_by=="uploaded desc") or ($order_by=="sl_cf asc") or ($order_by=="sl_cf desc")
 	or ($order_by=="5bis asc") or ($order_by=="5bis desc") or ($order_by=="pubblicato asc") or ($order_by=="pubblicato desc") or ($order_by=="durc asc") or ($order_by=="durc desc") or ($order_by=="protesti asc") or ($order_by=="protesti desc")
 	or ($order_by=="antimafia asc") or ($order_by=="antimafia desc") or ($order_by=="uploaded_at asc") or ($order_by=="uploaded_at desc"))  {
@@ -248,7 +248,7 @@ function export_antimafia_components($id){
   $CI->load->helper('file');
   $role_list = $CI->dichiarazione_model->get_roles();
   $documento = $CI->dichiarazione_model->get_document($id);
-  $shapes = $CI->dichiarazione_model->get_company_shape_label($documento['company_shape']);
+  $shapes = $CI->dichiarazione_model->get_forma_giuridica_label($documento['forma_giuridica_id']);
   if (!empty($shapes)) {
     $shape_label = $shapes[0]['value'];
   }
@@ -256,9 +256,9 @@ function export_antimafia_components($id){
     array( 'label' => 'Prog.', 'field' => 'n' ),
     array( 'label' => 'CODICE-FISCALE-IMPRESA', 'field' => 'codice_fiscale_azienda' ),
     array( 'label' => 'PARTITA-IVA-IMPRESA', 'field' => 'partita_iva'),
-    array( 'label' => 'TIPO-SOCIETA\'', 'field' => 'company_shape'),
+    array( 'label' => 'TIPO-SOCIETA\'', 'field' => 'forma_giuridica_id'),
     array( 'label' => 'RAGIONE-SOCIALE', 'field' => 'ragione_sociale' ),
-    array( 'label' => 'PROVINCIA', 'field' => 'company_province' ),
+    array( 'label' => 'PROVINCIA', 'field' => 'sl_prov' ),
     array( 'label' => 'SEDE-LEGALE', 'field' => 'sede_legale' ),
     array( 'label' => 'COGNOME', 'field' => 'cognome' ),
     array( 'label' => 'NOME', 'field' => 'nome' ),
@@ -281,12 +281,12 @@ function export_antimafia_components($id){
       $csv->addRow(array(
         'n' => $n,
 
-        'codice_fiscale_azienda' => $documento['company_cf'],
-        'partita_iva' => $documento['company_vat'],
-        'ragione_sociale' => $documento['company_name'],
-        'company_shape' => $shape_label,
-        'company_province' => $documento['company_province'],
-        'sede_legale' => sprintf("%s %s", $documento['company_street'], $documento['company_num']),
+        'codice_fiscale_azienda' => $documento['codice_fiscale'],
+        'partita_iva' => $documento['partita_iva'],
+        'ragione_sociale' => $documento['ragione_sociale'],
+        'forma_giuridica_id' => $shape_label,
+        'sl_prov' => $documento['sl_prov'],
+        'sede_legale' => sprintf("%s %s", $documento['sl_via'], $documento['sl_civico']),
 
         'cognome' => $anagrafica['antimafia_cognome'],
         'nome' => $anagrafica['antimafia_nome'],
@@ -306,12 +306,12 @@ function export_antimafia_components($id){
           $csv->addRow(array(
             'n' => $n,
 
-            'codice_fiscale_azienda' => $documento['company_cf'],
-            'partita_iva' => $documento['company_vat'],
-            'ragione_sociale' => $documento['company_name'],
-            'company_shape' => $shape_label,
-            'company_province' => $documento['company_province'],
-            'sede_legale' => sprintf("%s %s", $documento['company_street'], $documento['company_num']),
+            'codice_fiscale_azienda' => $documento['codice_fiscale'],
+            'partita_iva' => $documento['partita_iva'],
+            'ragione_sociale' => $documento['ragione_sociale'],
+            'forma_giuridica_id' => $shape_label,
+            'sl_prov' => $documento['sl_prov'],
+            'sede_legale' => sprintf("%s %s", $documento['sl_via'], $documento['sl_civico']),
 
             'cognome' => $familiare['nome'],
             'nome' => $familiare['cognome'],
@@ -329,7 +329,7 @@ function export_antimafia_components($id){
       }
     }
     $csv->create();
-    return $csv->writeToFile($documento['did'] .'-' . substr($documento['doc_date'], 0, 4) . '.csv');
+    return $csv->writeToFile($documento['did'] .'-' . substr($documento['istanza_data'], 0, 4) . '.csv');
   }
 }
 

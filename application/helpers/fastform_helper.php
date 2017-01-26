@@ -135,9 +135,9 @@ function soa_options()
 function list_fields()
 {
     $CI = &get_instance();
-    $fields = $CI->db->list_fields('docs');
+    $fields = $CI->db->list_fields('esecutori');
     foreach ($fields as $key => $value) {
-        if (preg_match('/^id/', $value)) {
+        if (preg_match('/^I/', $value)) {
             unset($fields[$key]);
         }
     }
@@ -150,6 +150,7 @@ function list_fields()
 
     unset($data['did']);
     unset($data['upd']);
+    unset($data['DID']);
     return $data;
 }
 
@@ -311,12 +312,12 @@ function opzioni_ruoli_anagrafiche($type = null)
 }
 
 
-function opzioni_company_shape() {
+function opzioni_forma_giuridica_id() {
   $CI = &get_instance();
-  $resulsts = $CI->dichiarazione_model->get_company_shapes();
+  $resulsts = $CI->dichiarazione_model->get_forme_giuridiche();
   $options = array();
   foreach ($resulsts as $result) {
-    $options[$result['csid']] = $result['value'];
+    $options[$result['forma_giuridica_id']] = $result['valore'];
   }
   return $options;
 }

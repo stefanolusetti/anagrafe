@@ -1,5 +1,5 @@
 <div class="padded">
-  <h2>Gentile <?php echo $name . ' ' . $lastname; ?>,</h2>
+  <h2>Gentile <?php echo $titolare_nome . ' ' . $titolare_cognome; ?>,</h2>
 <p>
   proceda nel caricare la scannerizzazione della sua carta di identità.
 </p>

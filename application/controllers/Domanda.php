@@ -57,12 +57,12 @@ class Domanda extends CI_Controller
           $this->session->set_userdata('start', '1');
 
           // Hidden conditional things.
-          $data['show_other_shape'] = '0' == $this->input->post('company_shape') ? true : false;
-          $data['choosen_shape'] = $this->input->post('company_shape');
-          $data['sake_service_type_class'] = 'Yes' == $this->input->post('sake_service_flag') ? '' : 'hidden';
-          $data['sake_work_type_class'] = 'Yes' == $this->input->post('sake_work_flag') ? '' : 'hidden';
-          $data['sake_supply_type_class'] = 'Yes' == $this->input->post('sake_supply_flag') ? '' : 'hidden';
-          $data['sake_fix_type_class'] = 'Yes' == $this->input->post('sake_fix_flag') ? '' : 'hidden';
+          $data['show_other_shape'] = '0' == $this->input->post('forma_giuridica_id') ? true : false;
+          $data['choosen_shape'] = $this->input->post('forma_giuridica_id');
+          $data['interesse_servizi_tipo_class'] = 'Yes' == $this->input->post('interesse_servizi_flag') ? '' : 'hidden';
+          $data['interesse_lavori_tipo_class'] = 'Yes' == $this->input->post('interesse_lavori_flag') ? '' : 'hidden';
+          $data['interesse_forniture_tipo_class'] = 'Yes' == $this->input->post('interesse_forniture_flag') ? '' : 'hidden';
+          $data['interesse_interventi_tipo_class'] = 'Yes' == $this->input->post('interesse_interventi_flag') ? '' : 'hidden';
 
           $data['stmt_wl_si_checked'] = 'Yes' == $this->input->post('stmt_wl') ? ' checked="checked" ' : '';
           $data['stmt_wl_no_checked'] = 'No' == $this->input->post('stmt_wl') ? ' checked="checked" ' : '';
@@ -72,14 +72,14 @@ class Domanda extends CI_Controller
           $offices = $this->input->post('office');
           $data['stmt_wl_class'] = 'Yes' == $this->input->post('stmt_wl') ? '' : 'hidden';
 
-          $data['company_role_more_class'] = $this->input->post('company_role') == 'Altro' ? '' : 'hidden';
+          $data['titolare_rappresentanza_more_class'] = $this->input->post('titolare_rappresentanza') == 'Altro' ? '' : 'hidden';
 
           $data['offices'] = $this->input->post('office');
           /*
           else {
             $data['offices'] = array(
               array(
-                'office_name' => '',
+                'office_titolare_nome' => '',
                 'office_cf' => '',
                 'office_piva' => '',
               )
@@ -88,24 +88,24 @@ class Domanda extends CI_Controller
           */
           $data['anagrafiche'] = $this->input->post('anagrafica');
 
+
           $data['submitted'] = false;
           $this->load->view('templates/header', $data);
           $this->load->view('templates/headbar');
           $this->parser->parse('domanda/new', $data);
           $this->load->view('templates/footer');
         }
-        elseif (array_key_exists('start', $sessione)) {
+        elseif (array_key_exists('start', $sessione) OR true) { //@debug
           $id = $this->dichiarazione_model->set_statement();
           if ($id) {
             $document_data = $this->dichiarazione_model->get_document($id);
           }
-
           $data['submitted'] = true;
           $stato = send_welcome_email($id);
 
           if (true === $stato) {
-            $data['mittente'] = $document_data['name'] . ' ' . $document_data['lastname'];
-            $data['sl_pec'] = $document_data['company_pec'];
+            $data['mittente'] = $document_data['titolare_nome'] . ' ' . $document_data['titolare_cognome'];
+            $data['sl_pec'] = $document_data['impresa_pec'];
 
             $this->session->unset_userdata('start');
             $this->load->view('templates/header', $data);
@@ -157,12 +157,12 @@ class Domanda extends CI_Controller
         $config['allowed_types'] = 'p7m';
         $config['upload_path'] = './uploads/';
         $config['overwrite'] = true;
-        $config['file_name'] = $item['did'].'_'.get_year($item['doc_date']).'.p7m';
+        $config['file_titolare_nome'] = $item['did'].'_'.get_year($item['istanza_data']).'.p7m';
         $this->load->library('upload', $config);
         if ($this->upload->do_upload('userfile')) {
           if ( send_thanks_mail($item) ) {
             $this->db->where('did', $item['did'])->update( 'docs',
-              array('stato' => 0, 'uploaded' => 1, 'uploaded_date' => date('Y-m-d H:i:s'))
+              array('stato' => 0, 'uploaded' => 1, 'uploaded_at' => date('Y-m-d H:i:s'))
             );
             $this->load->view('templates/header');
             $this->load->view('templates/headbar');
@@ -216,9 +216,9 @@ class Domanda extends CI_Controller
 ██      ██    ██ ██   ██ ██  ██  ██     ██      ██   ██ ██      ██      ██   ██ ██   ██ ██      ██  ██       ██
 ██       ██████  ██   ██ ██      ██      ██████ ██   ██ ███████ ███████ ██████  ██   ██  ██████ ██   ██ ███████
 */
-    public function _company_shape_check($val){
-      if (0 == (int)$val || 1 == (int)$val) {
-        $this->form_validation->set_message('company_shape', 'Il campo <em>%s</em> è obbligatorio.');
+    public function _forma_giuridica_id_check($val){
+      if (1 == (int)$val) {
+        $this->form_validation->set_message('forma_giuridica_id', 'Il campo <em>%s</em> è obbligatorio.');
         return false;
       }
       return true;
@@ -226,9 +226,9 @@ class Domanda extends CI_Controller
 
     public function _stmt_eligible($val){
       $__post = $this->input->post();
-      if ( isset($__post['sake_fix_flag']) && 'Yes' == $__post['sake_fix_flag'] ) {
-        if ( ! (isset($__post['stmt_eligible']) && 'Yes' == $__post['stmt_eligible']) ) {
-          $this->form_validation->set_message('stmt_eligible', 'Campo obbligatorio.');
+      if ( isset($__post['interesse_interventi_flag']) && 'Yes' == $__post['interesse_interventi_flag'] ) {
+        if ( ! (isset($__post['interesse_interventi_checkbox']) && 'Yes' == $__post['interesse_interventi_checkbox']) ) {
+          $this->form_validation->set_message('interesse_interventi_checkbox', 'Campo obbligatorio.');
           return false;
         }
       }
@@ -317,10 +317,10 @@ class Domanda extends CI_Controller
       return true;
     }
 
-    public function _company_type_more(){
-      $shape = $this->input->post('company_shape');
-      if ('Altro' == $shape && empty($this->input->post('company_type_more'))){
-        $this->form_validation->set_message('_company_type_more', 'Se indicato <em>Altro</em>, inserire il valore.');
+    public function _impresa_forma_giuridica_altro(){
+      $shape = $this->input->post('forma_giuridica_id');
+      if (0 == $shape && empty($this->input->post('impresa_forma_giuridica_altro'))){
+        $this->form_validation->set_message('_impresa_forma_giuridica_altro', 'Se indicato <em>Altro</em>, inserire il valore.');
         return false;
       }
       return true;

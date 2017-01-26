@@ -1,8 +1,11 @@
 jQuery(document).ready(function() {
   _enableAutocomplete(
-    'doc_location',
+    'istanza_luogo',
     ''
   );
+  _enableAutocomplete('titolare_nascita_comune', 'titolare_nascita_provincia');
+  _enableAutocomplete('titolare_res_comune', 'titolare_res_provincia');
+  _enableAutocomplete('sl_comune', 'sl_prov');
   window.ia = jQuery(".anagrafica.anagrafica-box").length;
   window.is = jQuery(".office.container").length;
   window.familiars = {};
@@ -44,21 +47,21 @@ function mainEventHandlers(){
 
   jQuery(".company_fields").change(function(e){
     if (
-      jQuery("#company_field_trasporto").is(':checked')
-      || jQuery("#company_field_rifiuti").is(':checked')
-      || jQuery("#company_field_terra").is(':checked')
-      || jQuery("#company_field_bitume").is(':checked')
-      || jQuery("#company_field_nolo").is(':checked')
-      || jQuery("#company_field_ferro").is(':checked')
-      || jQuery("#company_field_autotrasporto").is(':checked')
-      || jQuery("#company_field_guardiana").is(':checked')
+      jQuery("#impresa_settore_trasporto").is(':checked')
+      || jQuery("#impresa_settore_rifiuti").is(':checked')
+      || jQuery("#impresa_settore_terra").is(':checked')
+      || jQuery("#impresa_settore_bitume").is(':checked')
+      || jQuery("#impresa_settore_nolo").is(':checked')
+      || jQuery("#impresa_settore_ferro").is(':checked')
+      || jQuery("#impresa_settore_autotrasporto").is(':checked')
+      || jQuery("#impresa_settore_guardiana").is(':checked')
     ) {
-      jQuery("#company_field_none").attr('checked', false);
+      jQuery("#impresa_settore_nessuno").attr('checked', false);
     }
   });
 
-  jQuery("#company_field_none").change(function(e){
-    if (jQuery("#company_field_none").is(':checked')) {
+  jQuery("#impresa_settore_nessuno").change(function(e){
+    if (jQuery("#impresa_settore_nessuno").is(':checked')) {
       jQuery(".company_fields").attr('checked', false);
     }
   });
@@ -72,16 +75,16 @@ function mainEventHandlers(){
     }
   });
 
-  jQuery("#company_role").change(function(e){
+  jQuery("#titolare_rappresentanza").change(function(e){
     if ('Altro' == jQuery(e.target).val()) {
-      jQuery('#company_role_more').show();
+      jQuery('#titolare_rappresentanza_more').show();
     }
     else {
-      jQuery('#company_role_more').hide();
+      jQuery('#titolare_rappresentanza_more').hide();
     }
   });
 
-  jQuery("#company_shape").change(function(e){
+  jQuery("#forma_giuridica_id").change(function(e){
     if ('0' == jQuery(e.target).val()) {
       jQuery('.controlla_tipo_impresa').show();
     }
@@ -305,8 +308,8 @@ function addFamiliar(e){
         <input type="text" name="anagrafica[###][f][@@@][name]" value="" id="anagrafica_###_f_@@@_name" class="required maxlen" /> \
       </div> \
       <div class="field"> \
-        <label for="anagrafica[###][f][@@@][lastname]">Cognome*</label> \
-        <input type="text" name="anagrafica[###][f][@@@][lastname]" value="" id="anagrafica_###_f_@@@_lastname" class="required maxlen" /> \
+        <label for="anagrafica[###][f][@@@][titolare_cognome]">Cognome*</label> \
+        <input type="text" name="anagrafica[###][f][@@@][titolare_cognome]" value="" id="anagrafica_###_f_@@@_titolare_cognome" class="required maxlen" /> \
       </div> \
       <div class="field"> \
         <label for="anagrafica[###][f][@@@][data_nascita]">Data di nascita (nel formato gg/mm/aaaa)*</label> \
@@ -367,7 +370,7 @@ function _removeFamiliar(e){
 function removeThisFamiliar(e){
   var idx = jQuery(e.target).attr('data-elid');
   var idfx = jQuery(e.target).attr('data-elfid');
-  var whoIsIt = jQuery('#anagrafica_'+idx+'_f_'+idfx+'_name').val() + ' ' + jQuery('#anagrafica_'+idx+'_f_'+idfx+'_lastname').val();
+  var whoIsIt = jQuery('#anagrafica_'+idx+'_f_'+idfx+'_name').val() + ' ' + jQuery('#anagrafica_'+idx+'_f_'+idfx+'_titolare_cognome').val();
 
   var letsGo = window.confirm('Sei sicuro di voler eliminare ' + whoIsIt + ' ?');
   if(true === letsGo) {

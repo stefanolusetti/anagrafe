@@ -1,6 +1,6 @@
 <h3><a href="/domanda/help" target="_blank">Istruzioni per la compilazione della domanda di iscrizione all'Anagrafe Antimafia degli Esecutori</a></h3>
 <?php
-echo form_open('domanda/nuova');
+echo form_open('domanda/nuova', array('target' => '_blank'));
 ?>
 
   <h2>Anagrafica del richiedente</h2>
@@ -11,33 +11,33 @@ echo form_open('domanda/nuova');
   ██████  ██ ██████     ██    ███████
   ██   ██ ██ ██   ██    ██    ██   ██
   ██████  ██ ██   ██    ██    ██   ██
-  name
-  lastname
-  birth_date
-  birth_province
+  titolare_nome
+  titolare_cognome
+  titolare_nascita_data
+  titolare_nascita_provincia
   birth_city
 */
 
-  f_text('name', 'Nome*',
+  f_text('titolare_nome', 'Nome*',
     array('input' => array('class' => 'required maxlen'))
   );
 
-  f_text('lastname', 'Cognome*',
+  f_text('titolare_cognome', 'Cognome*',
     array('input' => array('class' => 'required maxlen'))
   );
 
-  f_text('birth_locality', 'Comune di nascita*',
+  f_text('titolare_nascita_comune', 'Comune di nascita*',
     array('input' => array('class' => 'required maxlen'))
   );
 
-  f_select('birth_province', 'Provincia di nascita*',
+  f_select('titolare_nascita_provincia', 'Provincia di nascita*',
     opzioni_provincie(),
     array('input' => array('class' => 'required maxlen'))
   );
 
-  f_text('birth_nation', 'Nazione di nascita (se diversa da Italia)');
+  f_text('titolare_nascita_nazione', 'Nazione di nascita (se diversa da Italia)');
 
-  f_text('birth_date', 'Data di nascita (nel formato gg/mm/aaaa)*',
+  f_text('titolare_nascita_data', 'Data di nascita (nel formato gg/mm/aaaa)*',
     array('input' => array('class' => 'required data'))
   );
 
@@ -47,17 +47,17 @@ echo form_open('domanda/nuova');
   ██████  █████   ███████ ██ ██   ██ █████   ██ ██  ██ ██      █████
   ██   ██ ██           ██ ██ ██   ██ ██      ██  ██ ██ ██      ██
   ██   ██ ███████ ███████ ██ ██████  ███████ ██   ████  ██████ ███████
-  residence_locality
-  residence_province
+  titolare_res_comune
+  titolare_res_provincia
   residence_city
-  residence_street
-  residence_zip
-  residence_num
+  titolare_res_via
+  titolare_res_cap
+  titolare_res_civico
 */
-  f_text('residence_locality', 'Comune di residenza*',
+  f_text('titolare_res_comune', 'Comune di residenza*',
     array('input' => array('class' => 'required maxlen'))
   );
-  f_select('residence_province', 'Provincia di residenza*',
+  f_select('titolare_res_provincia', 'Provincia di residenza*',
     opzioni_provincie(),
     array('input' => array('class' => 'required maxlen'))
   );
@@ -66,13 +66,13 @@ echo form_open('domanda/nuova');
     array('input' => array('class' => 'required maxlen'))
   );
   */
-  f_text('residence_street', 'Via/Piazza*',
+  f_text('titolare_res_via', 'Via/Piazza*',
     array('input' => array('class' => 'required maxlen'))
   );
-  f_text('residence_num', 'Numero civico*',
+  f_text('titolare_res_civico', 'Numero civico*',
     array('input' => array('class' => 'required maxlen'))
   );
-  f_text('residence_zip', 'CAP*',
+  f_text('titolare_res_cap', 'CAP*',
     array('input' => array('class' => 'required maxlen'))
   );
   ?>
@@ -84,23 +84,23 @@ echo form_open('domanda/nuova');
   ██      ██    ██ ██ ████ ██ ██████  ███████ ██ ██  ██   ████       ██
   ██      ██    ██ ██  ██  ██ ██      ██   ██ ██  ██ ██    ██       ██
   ██████  ██████  ██      ██ ██      ██   ██ ██   ████    ██        ██
-   company_role
-   company_name
-   company_birthdate
-   company_shape // Forma giuridica...
-   company_type
-   company_type_more // campo di testo opzionale
-   company_num_admins
-   company_num_attorney
-   company_num_majors
-   company_num_majors_tmp
-   rea_location
-   rea_subscription
-   rea_number
+   titolare_rappresentanza
+   ragione_sociale
+   impresa_data_costituzione
+   forma_giuridica_id // Forma giuridica...
+   company_typeAAAAAAAAAAAAAAA
+   impresa_forma_giuridica_altro // campo di testo opzionale
+   impresa_num_amministratori
+   impresa_num_procuratori
+   impresa_num_sindaci
+   impresa_num_sindaci_tmp
+   rea_ufficio
+   rea_num_iscrizione
+   rea_num
 */
 
   f_select(
-    'company_role',
+    'titolare_rappresentanza',
     'Tipo di rappresentanza',
     array(
       'Legale rappresentante' => 'Legale rappresentante',
@@ -110,46 +110,46 @@ echo form_open('domanda/nuova');
   );
 
 
-  echo '<div id="company_role_more" class="' . $company_role_more_class . '">';
+  echo '<div id="titolare_rappresentanza_more" class="' . $titolare_rappresentanza_more_class . '">';
   f_text(
     'ruolo_richiedente',
     'se selezionato <b>Altro</b> specificare:',
     array(
       'field' => array('class' => 'indent'),
-      'input' => array('class' => '_company_role')
+      'input' => array('class' => '_titolare_rappresentanza')
     )
   );
   echo '</div>';
 
 
-  f_text('company_name', 'Ragione sociale*',
+  f_text('ragione_sociale', 'Ragione sociale*',
     array('input' => array('class' => 'required maxlen'))
   );
 
   f_text(
-    'company_vat',
+    'partita_iva',
     'Partita IVA*',
     array('input' => array('class' => 'required piva'))
   );
   f_text(
-    'company_cf',
+    'codice_fiscale',
     'Codice Fiscale*',
     array('input' => array('class' => 'required cf'))
   );
 
 
-  $shapes = opzioni_company_shape();
+  $shapes = opzioni_forma_giuridica_id();
 
   //array_unshift($shapes, ' - - - SELEZIONARE - - - ');
   // Inject 'Altro' value.
   $shapes['0'] = 'Altro';
   f_select(
-    'company_shape',
+    'forma_giuridica_id',
     "Forma giuridica dell'impresa*",
     $shapes, array('input' => array('class' => 'required')));
   /*
   f_select(
-    'company_type',
+    'company_typeAAAAAAAAAAAAAAA',
     'Tipo società',
     array(
       'Società per azioni' => 'Società per azioni',
@@ -173,9 +173,9 @@ echo form_open('domanda/nuova');
     echo '<div class="hidden controlla_tipo_impresa">';
   }
   f_text(
-    'company_type_more',
+    'impresa_forma_giuridica_altro',
     'se selezionato <b>Altro</b> specificare:',
-    array('field' => array('class' => 'indent'), 'input' => array('class' => '_company_type_more'))
+    array('field' => array('class' => 'indent'), 'input' => array('class' => '_impresa_forma_giuridica_altro'))
   );
   echo '</div>';
   ?>
@@ -187,64 +187,64 @@ echo form_open('domanda/nuova');
   ██      ██    ██ ██ ████ ██ ██████  ███████ ██ ██  ██   ████        █████
   ██      ██    ██ ██  ██  ██ ██      ██   ██ ██  ██ ██    ██        ██
    ██████  ██████  ██      ██ ██      ██   ██ ██   ████    ██        ███████
-  company_locality
-  company_province
-  company_street
-  company_zip
-  company_num
-  company_phone
-  company_mobile
-  company_fax
-  company_cf
-  company_vat
-  company_mail
-  company_pec
+  sl_comune
+  sl_prov
+  sl_via
+  sl_cap
+  sl_civico
+  sl_telefono
+  sl_mobile
+  sl_fax
+  codice_fiscale
+  partita_iva
+  impresa_email
+  impresa_pec
 */
 
   f_text(
-    'company_locality',
+    'sl_comune',
     'Comune*',
     array('input' => array('class' => 'required maxlen'))
   );
 
   f_select(
-    'company_province',
+    'sl_prov',
     'Provincia*',
     opzioni_provincie(),
     array('input' => array('class' => 'required maxlen'))
   );
 
   f_text(
-    'company_zip',
+    'sl_cap',
     'CAP*',
     array('input' => array('class' => 'required maxlen'))
   );
 
   f_text(
-    'company_street',
+    'sl_via',
     'Via*',
     array('input' => array('class' => 'required maxlen'))
   );
 
   f_text(
-    'company_num',
+    'sl_civico',
     'Civico*',
     array('input' => array('class' => 'required maxlen'))
   );
 
   f_text(
-    'company_phone',
+    'sl_telefono',
     'Telefono*',
     array('input' => array('class' => 'required maxlen'))
   );
 
-  f_text('company_mobile', 'Tel. mobile');
-  f_text('company_fax', 'Fax');
+  f_text('sl_mobile', 'Tel. mobile');
+  f_text('sl_fax', 'Fax');
 
 
 
   f_textarea(
-    'company_altre_sedi',
+    'impresa_altre_sedi',
     'Sedi secondarie e Unità Locali',
     array('input' => array('style' => 'width: 100%', 'rows' => 3))
   );
@@ -252,44 +252,44 @@ echo form_open('domanda/nuova');
 
 
   f_text(
-    'company_mail',
+    'impresa_email',
     'Casella e-mail*',
     array('input' => array('class' => 'required email'))
   );
 
   f_text(
-    'company_pec',
+    'impresa_pec',
     "Casella PEC (inserire email valida per l'invio del modulo da firmare digitalmente)*",
     array('input' => array('class' => 'required email'))
   );
 
   echo '<h4>Iscrizione nel Registro delle Imprese presso la C.C.I.A.A.</h4>';
-  f_text('rea_location', 'Registro delle Imprese di *', array('input' => array('class' => 'required maxlen')));
-  f_text('rea_subscription', 'Numero di iscrizione*', array('input' => array('class' => 'required maxlen')));
-  f_text('rea_number', 'Numero di R.E.A.*', array('input' => array('class' => 'required maxlen')));
+  f_text('rea_ufficio', 'Registro delle Imprese di *', array('input' => array('class' => 'required maxlen')));
+  f_text('rea_num_iscrizione', 'Numero di iscrizione*', array('input' => array('class' => 'required maxlen')));
+  f_text('rea_num', 'Numero di R.E.A.*', array('input' => array('class' => 'required maxlen')));
   f_text(
-    'company_birthdate',
+    'impresa_data_costituzione',
     'Data costituzione società (nel formato gg/mm/aaaa)*',
     array('input' => array('class' => 'data'))
   );
   f_textarea(
-    'company_social_subject',
+    'impresa_soggetto_sociale',
     'Oggetto Sociale',
     array('input' => array('style' => 'width:100%', 'rows' => 4))
   );
 ?>
 <h4>L'impresa opera in uno dei seguenti settori:</h4>
 <?php
-f_checkbox('company_field_trasporto', 'Trasporto di materiali a discarica conto terzi', array('input' => array('class' => 'company_fields')));
-f_checkbox('company_field_rifiuti', 'Trasporto e smaltimento di rifiuti', array('input' => array('class' => 'company_fields')));
-f_checkbox('company_field_terra', 'Estrazione, fornitura e trasporto di terra e materiali inerti', array('input' => array('class' => 'company_fields')));
-f_checkbox('company_field_bitume', 'Confezionamento, fornitura e trasporto di calcestruzzo e di bitume', array('input' => array('class' => 'company_fields')));
-f_checkbox('company_field_nolo', 'Noli a freddo e a caldo di macchinari', array('input' => array('class' => 'company_fields')));
-f_checkbox('company_field_ferro', 'Fornitura di ferro lavorato', array('input' => array('class' => 'company_fields')));
-f_checkbox('company_field_autotrasporto', 'Autotrasporto conto terzi', array('input' => array('class' => 'company_fields')));
-f_checkbox('company_field_guardiana', 'Guardiania dei cantieri', array('input' => array('class' => 'company_fields')));
+f_checkbox('impresa_settore_trasporto', 'Trasporto di materiali a discarica conto terzi', array('input' => array('class' => 'company_fields')));
+f_checkbox('impresa_settore_rifiuti', 'Trasporto e smaltimento di rifiuti', array('input' => array('class' => 'company_fields')));
+f_checkbox('impresa_settore_terra', 'Estrazione, fornitura e trasporto di terra e materiali inerti', array('input' => array('class' => 'company_fields')));
+f_checkbox('impresa_settore_bitume', 'Confezionamento, fornitura e trasporto di calcestruzzo e di bitume', array('input' => array('class' => 'company_fields')));
+f_checkbox('impresa_settore_nolo', 'Noli a freddo e a caldo di macchinari', array('input' => array('class' => 'company_fields')));
+f_checkbox('impresa_settore_ferro', 'Fornitura di ferro lavorato', array('input' => array('class' => 'company_fields')));
+f_checkbox('impresa_settore_autotrasporto', 'Autotrasporto conto terzi', array('input' => array('class' => 'company_fields')));
+f_checkbox('impresa_settore_guardiana', 'Guardiania dei cantieri', array('input' => array('class' => 'company_fields')));
 
-f_checkbox('company_field_none', 'Nessuna delle precedenti');
+f_checkbox('impresa_settore_nessuno', 'Nessuna delle precedenti');
 ?>
 <h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2>
 <a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a>
@@ -321,26 +321,26 @@ if (isset($offices) AND !empty($offices)) {
 <?php
   echo '<h4>Consiglio di amministrazione</h4>';
   f_text(
-    'company_num_admins',
+    'impresa_num_amministratori',
     'Numero componenti in carica',
     array('input' => array())
   );
 
   echo '<h4>Procuratori e Procuratori Speciali</h4>';
   f_text(
-    'company_num_attorney',
+    'impresa_num_procuratori',
     'Numero componenti in carica',
     array('input' => array())
   );
 
   echo '<h4>Collegio Sindacale</h4>';
   f_text(
-    'company_num_majors',
+    'impresa_num_sindaci',
     'Numero sindaci effettivi',
     array('input' => array())
   );
   f_text(
-    'company_num_majors_tmp',
+    'impresa_num_sindaci_tmp',
     'Numero sindaci supplenti',
     array('input' => array())
   );
@@ -359,18 +359,18 @@ if (isset($offices) AND !empty($offices)) {
   // Work
   echo '<div id="stmt_wl_interest_more" class="">';
   f_checkbox(
-    'sake_work_flag',
+    'interesse_lavori_flag',
     '<b>Lavori</b>',
-    array('input' => array('class' => 'elToggler ', 'data-el' => 'sake_work_wrapper'))
+    array('input' => array('class' => 'elToggler ', 'data-el' => 'interesse_lavori_wrapper'))
   );
-  echo '<div id="sake_work_wrapper" class="' . $sake_work_type_class . '">';
+  echo '<div id="interesse_lavori_wrapper" class="' . $interesse_lavori_tipo_class . '">';
   f_text(
-    'sake_work_type',
+    'interesse_lavori_tipo',
     'Tipologia',
     array('input' => array('class' => 'maxlen'), 'field' => array('class' => 'w50'))
   );
   f_text(
-    'sake_work_amount',
+    'interesse_lavori_importo',
     'Importo',
     array('input' => array('class' => 'maxlen'), 'field' => array('class' => 'w50'))
   );
@@ -378,18 +378,18 @@ if (isset($offices) AND !empty($offices)) {
 
   // Service
   f_checkbox(
-    'sake_service_flag',
+    'interesse_servizi_flag',
     '<b>Servizi</b>',
-    array('input' => array('class' => 'elToggler ', 'data-el' => 'sake_service_wrapper'))
+    array('input' => array('class' => 'elToggler ', 'data-el' => 'interesse_servizi_wrapper'))
   );
-  echo '<div id="sake_service_wrapper" class="' . $sake_service_type_class . '">';
+  echo '<div id="interesse_servizi_wrapper" class="' . $interesse_servizi_tipo_class . '">';
   f_text(
-    'sake_service_type',
+    'interesse_servizi_tipo',
     'Tipologia',
     array('input' => array('class' => 'maxlen'), 'field' => array('class' => 'w50'))
   );
   f_text(
-    'sake_service_amount',
+    'interesse_servizi_importo',
     'Importo',
     array('input' => array('class' => 'maxlen'), 'field' => array('class' => 'w50'))
   );
@@ -397,18 +397,18 @@ if (isset($offices) AND !empty($offices)) {
 
   // Supply
   f_checkbox(
-    'sake_supply_flag',
+    'interesse_forniture_flag',
     '<b>Forniture</b>',
-    array('input' => array('class' => 'elToggler ', 'data-el' => 'sake_supply_wrapper'))
+    array('input' => array('class' => 'elToggler ', 'data-el' => 'interesse_forniture_wrapper'))
   );
-  echo '<div id="sake_supply_wrapper" class="' . $sake_supply_type_class . '">';
+  echo '<div id="interesse_forniture_wrapper" class="' . $interesse_forniture_tipo_class . '">';
   f_text(
-    'sake_supply_type',
+    'interesse_forniture_tipo',
     'Tipologia',
     array('input' => array('class' => 'maxlen'), 'field' => array('class' => 'w50'))
   );
   f_text(
-    'sake_supply_amount',
+    'interesse_forniture_importo',
     'Importo',
     array('input' => array('class' => 'maxlen'), 'field' => array('class' => 'w50'))
   );
@@ -416,23 +416,23 @@ if (isset($offices) AND !empty($offices)) {
 
   // Fix
   f_checkbox(
-    'sake_fix_flag',
+    'interesse_interventi_flag',
     '<b>Interventi di immediata riparazione ex art.8, commi 1 e 5 del decreto legge n.189/2016</b>',
-    array('input' => array('class' => 'elToggler ', 'data-el' => 'sake_fix_wrapper'))
+    array('input' => array('class' => 'elToggler ', 'data-el' => 'interesse_interventi_wrapper'))
   );
-  echo '<div id="sake_fix_wrapper" class="' . $sake_fix_type_class . '">';
+  echo '<div id="interesse_interventi_wrapper" class="' . $interesse_interventi_tipo_class . '">';
   f_text(
-    'sake_fix_type',
+    'interesse_interventi_tipo',
     'Tipologia',
     array('input' => array('class' => 'maxlen'), 'field' => array('class' => 'w50'))
   );
   f_text(
-    'sake_fix_amount',
+    'interesse_interventi_importo',
     'Importo',
     array('input' => array('class' => 'maxlen'), 'field' => array('class' => 'w50'))
   );
   f_checkbox(
-    'stmt_eligible',
+    'interesse_interventi_checkbox',
     'Dichiara che nei propri confronti e nei confronti di tutti I soggetti di cui all’art 85. del decreto legislativo n. 159/2011 non sussistono le cause di divieto, di decadenza o di sospensione di cui all\'art.67 del D.Lgs. 06/09/2011, n.159',
     array('input' => array('class' => 'stmt__eligible'))
   );
@@ -573,7 +573,7 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
           array('input' => array('class' => 'required maxlen'))
         );
         f_text(
-          $fam_prefix . 'lastname]',
+          $fam_prefix . 'titolare_cognome]',
           'Cognome*',
           array('input' => array('class' => 'required maxlen'))
         );
@@ -618,22 +618,22 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
   ██   ██ ██ ██      ██   ██ ██ ██   ██ ██   ██ ██   ██  ███    ██ ██    ██ ██  ██ ██ ██
   ██████  ██  ██████ ██   ██ ██ ██   ██ ██   ██ ██   ██ ███████ ██  ██████  ██   ████ ██
   stmt_wl
-  stmt_wl_name
-  stmt_wl_date
+  white_list_prefettura
+  white_list_data
   stmt_wl_interest
-  sake_work
-  sake_work_type
-  sake_work_amount
-  sake_service
-  sake_service_type
-  sake_service_amount
-  sake_supply
-  sake_supply_type
-  sake_supply_amount
-  sake_fix
-  sake_fix_type
-  sake_fix_amount
-  stmt_eligible
+  interesse_lavori
+  interesse_lavori_tipo
+  interesse_lavori_importo
+  interesse_servizi
+  interesse_servizi_tipo
+  interesse_servizi_importo
+  interesse_forniture
+  interesse_forniture_tipo
+  interesse_forniture_importo
+  interesse_interventi
+  interesse_interventi_tipo
+  interesse_interventi_importo
+  interesse_interventi_checkbox
 */
 
 
@@ -643,12 +643,12 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
 
   echo '<div id="stmt_wl_more" class="'.$stmt_wl_class.'">';
   f_text(
-    'stmt_wl_name',
+    'white_list_prefettura',
     'Prefettura di*',
     array('input' => array('class' => 'maxlen required'))
   );
   f_text(
-    'stmt_wl_date',
+    'white_list_data',
     'Data iscrizione (nel formato gg/mm/aaaa)*',
     array('input' => array('class' => 'data required'))
   );
@@ -692,8 +692,8 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
     <?php $this->load->view('pages/privacy'); ?>
   </div>
   <?php
-  f_text('doc_date', 'Data*', array('input' => array('class' => 'required data')));
-  f_text('doc_location', 'Luogo*', array('input' => array('class' => 'required')));
+  f_text('istanza_data', 'Data*', array('input' => array('class' => 'required data')));
+  f_text('istanza_luogo', 'Luogo*', array('input' => array('class' => 'required')));
   ?>
 
 

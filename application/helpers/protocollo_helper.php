@@ -77,21 +77,21 @@ function create_xml ($dati,$protocollo_config,$file_name) {
   $pdf_base64 = encode($pdf_encode);
   //base64pdf($file_name);
   $dati_pdf = $documento_elettronico->addChild('dati',$pdf_base64);
-  
+
   $xml_string = $xml->asXML();
   //echo $xml_string;
   return $xml_string;
 }
 
-function encode ($pdfencode) { 
-    $data64 = ""; 
-    while (strlen($pdfencode) > 64) { 
-        $data64 .= substr($pdfencode, 0, 64) . "\n"; 
-        $pdfencode = substr($pdfencode,64); 
-    } 
-    $data64 .= $pdfencode; 
-    return $data64; 
-} 
+function encode ($pdfencode) {
+    $data64 = "";
+    while (strlen($pdfencode) > 64) {
+        $data64 .= substr($pdfencode, 0, 64) . "\n";
+        $pdfencode = substr($pdfencode,64);
+    }
+    $data64 .= $pdfencode;
+    return $data64;
+}
 
 
 function base64pdf ($file_nome) {
@@ -105,22 +105,22 @@ return  $pdf_base64;
 function data_it($data)
 {
   // Creo una array dividendo la data sulla base dello spazio
-  
+
   $date = explode(" ",$data);
    // Creo una array dividendo la data sulla base del trattino
   $array = explode ("-", $date[0]);
 
   // Riorganizzo gli elementi in stile DD/MM/YYYY
-  $data_it = $array[2]."/".$array[1]."/".$array[0]; 
+  $data_it = $array[2]."/".$array[1]."/".$array[0];
 
   // Restituisco il valore della data in formato italiano
-  return $data_it; 
+  return $data_it;
 }
 
 //MODIFICA DI SL PER IL CAMBIO PIATTAFORMA E-GRAMMATA 17/07/2014
 function create_hash ($xml_ws,$psw) {
 $concat_string = $xml_ws.$psw;
-$sha_string = sha1($concat_string,TRUE); 
+$sha_string = sha1($concat_string,TRUE);
 $hash = base64_encode($sha_string);
 return $hash;
 }
@@ -130,16 +130,16 @@ function ws_crea_anagrafica ($dati,$protocollo_config,$file_name) {
 
 try {
 	//$wsdl_url="https://protocollosvil.ente.regione.emr.it/axisSviluppo/services/WSProtocollazioneAllegatiBase64?wsdl";
-	
+
 	//MODIFICA DI SL PER IL CAMBIO PIATTAFORMA E-GRAMMATA 17/07/2014
 	$wsdl_url = "https://test-protocollo.ente.regione.emr.it/protoemilia/services/WSProtocollazioneAllegati?wsdl";
-	
+
 /*  $valid = checkdnsrr($wsdl_url, "ANY");
 	if(!$valid) {
-     
+
 
 $string = <<<XML
-<?xml version='1.0'?> 
+<?xml version='1.0'?>
     <Risposta>
       <Stato>
         <Codice>1</Codice>
@@ -151,7 +151,7 @@ XML;
 	$dummy_object = simplexml_load_string($string);
 
 	return $dummy_object;
-    
+
 }
 else {*/
 
@@ -161,26 +161,26 @@ else {*/
 	$xml_ws = create_xml($dati,$protocollo_config,$file_name);
 	//MODIFICA DI SL PER IL CAMBIO PIATTAFORMA E-GRAMMATA 17/07/2014
 	$hash = create_hash($xml_ws,$psw);
-    
+
 	$client= new SoapClient($wsdl_url);
-	
+
     $results = $client->serviceBase64($ente_id,$user,$psw,$wsdl_url,$xml_ws,$hash);
-	
+
 	$object = simplexml_load_string($results);
-	
+
 	return $object;
 	}
 /*}*/
 
 	catch (Exception $e) {
     var_dump($e->getMessage());
-	
+
 
 	}
 
-	
+
 }
-	
+
 
 
 ?>

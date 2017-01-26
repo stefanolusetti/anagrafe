@@ -18,17 +18,6 @@ $(document).ready(function() {
   $.validator.addMethod(
     "stmt__eligible",
     function(val, el){
-      /*
-        ██████  ███████ ██████  ██    ██  ██████
-        ██   ██ ██      ██   ██ ██    ██ ██
-        ██   ██ █████   ██████  ██    ██ ██   ███
-        ██   ██ ██      ██   ██ ██    ██ ██    ██
-        ██████  ███████ ██████   ██████   ██████
-      */
-      console.log('██'.repeat(10) + "\t" +  'que abemus aqui?' + "\t" + '██'.repeat(10));
-      console.log(jQuery("#sake_fix_flag").is(':checked'));
-      console.log(jQuery("#stmt_eligible").is(':checked'));
-      
       if (jQuery("#sake_fix_flag").is(':checked') && false == jQuery("#stmt_eligible").is(':checked')){
         return false;
       }
@@ -211,10 +200,6 @@ $(document).ready(function() {
         $('.soas').attr('disabled', 'disabled');
       }
     });
-
-    autocompleta_cache('birth_locality', 'birth_province');
-    autocompleta_cache('residence_locality', 'residence_province');
-    autocompleta_cache('company_locality', 'company_province');
 });
 
 function check_ateco() {

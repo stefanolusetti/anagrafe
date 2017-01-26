@@ -25,7 +25,7 @@ class Dichiarazione_model extends CI_Model
       $doc = $this->get_item($id);
       $doc['anagrafiche_antimafia'] = $this->get_doc_antimafia($id);
       foreach ($doc['anagrafiche_antimafia'] AS $i => $antimafia) {
-        $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_item_familiars($doc['anagrafiche_antimafia'][$i]['aaid']);
+        $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id']);
       }
       $doc['offices'] = $this->get_item_offices($id);
       return $doc;
@@ -35,7 +35,7 @@ class Dichiarazione_model extends CI_Model
   }
 
   public function get_item($id) {
-    $qhr = $this->db->get_where('docs', array('did' => $id));
+    $qhr = $this->db->get_where('esecutori', array('ID' => $id));
     return $qhr->row_array();
     /*
     $item['ateco_lista'] = build_other_fields($item['id'], 'ateco', 0);
@@ -60,21 +60,21 @@ class Dichiarazione_model extends CI_Model
 
   // id docs
   public function get_doc_antimafia($id) {
-    $query_antimafia = $this->db->get_where('anagrafiche_antimafia', array('did' => $id));
+    $query_antimafia = $this->db->get_where('anagrafiche_antimafia', array('esecutore_id' => $id));
     $item_antimafia = $query_antimafia->result_array();
     return $item_antimafia;
   }
 
   // id anagrafiche_antimafia
   public function get_item_familiars($id) {
-    $query_antimafia = $this->db->get_where('anagrafiche_familiari', array('aaid' => $id));
+    $query_antimafia = $this->db->get_where('anagrafiche_familiari', array('anagrafica_id' => $id));
     $item_antimafia = $query_antimafia->result_array();
     return $item_antimafia;
   }
 
   // id docs
   public function get_item_offices($id) {
-    $query_offices = $this->db->get_where('doc_offices', array('did' => $id));
+    $query_offices = $this->db->get_where('esecutori_imprese_partecipate', array('esecutore_id' => $id));
     $item_offices = $query_offices->result_array();
     return $item_offices;
   }
@@ -85,72 +85,88 @@ class Dichiarazione_model extends CI_Model
 
 
     $data = list_fields();
-    $data['crd'] = date('Y-m-d H:i:s');
-    $data['birth_date'] = parse_date($data['birth_date']);
-    $data['stmt_wl_date'] = parse_date($data['stmt_wl_date']);
-    $data['doc_date'] = parse_date($data['doc_date']);
-    $data['company_birthdate'] = parse_date($data['company_birthdate']);
-    $data['residence_city'] = $data['residence_locality']; // WTF? @TODO FIX!
+    $data['created_at'] = date('Y-m-d H:i:s');
+    $data['titolare_nascita_data'] = parse_date($data['titolare_nascita_data']);
+    $data['white_list_data'] = parse_date($data['white_list_data']);
+    $data['istanza_data'] = parse_date($data['istanza_data']);
+    $data['impresa_data_costituzione'] = parse_date($data['impresa_data_costituzione']);
 
     $data['stmt_wl'] = $data['stmt_wl'] == 'Yes' ? 1 : 0;
-    $data['stmt_wl_interest'] = $data['stmt_wl_interest'] == 'Yes' ? 1 : 0;
-    $data['sake_work'] = $this->input->post('sake_work_flag') == 'Yes' ? 1 : 0;
-    $data['sake_service'] = $this->input->post('sake_service_flag') == 'Yes' ? 1 : 0;
-    $data['sake_supply'] = $this->input->post('sake_supply_flag') == 'Yes' ? 1 : 0;
-    $data['sake_fix'] = $this->input->post('sake_fix_flag') == 'Yes' ? 1 : 0;
-    $data['stmt_eligible'] = $this->input->post('sake_eligible_flag') == 'Yes' ? 1 : 0;
+    $data['interesse_lavori'] = $this->input->post('interesse_lavori_flag') == 'Yes' ? 1 : 0;
+    $data['interesse_servizi'] = $this->input->post('interesse_servizi_flag') == 'Yes' ? 1 : 0;
+    $data['interesse_forniture'] = $this->input->post('interesse_forniture_flag') == 'Yes' ? 1 : 0;
+    $data['interesse_interventi'] = $this->input->post('interesse_interventi_flag') == 'Yes' ? 1 : 0;
+    $data['interesse_interventi_checkbox'] = $this->input->post('interesse_interventi_checkbox') == 'Yes' ? 1 : 0;
 
-    $data['sake_work_amount'] = parse_decimal($data['sake_work_amount']);
-    $data['sake_service_amount'] = parse_decimal($data['sake_service_amount']);
-    $data['sake_supply_amount'] = parse_decimal($data['sake_supply_amount']);
-    $data['sake_fix_amount'] = parse_decimal($data['sake_fix_amount']);
+    $data['interesse_lavori_importo'] = parse_decimal($data['interesse_lavori_importo']);
+    $data['interesse_servizi_importo'] = parse_decimal($data['interesse_servizi_importo']);
+    $data['interesse_forniture_importo'] = parse_decimal($data['interesse_forniture_importo']);
+    $data['interesse_interventi_importo'] = parse_decimal($data['interesse_interventi_importo']);
 
-    $data['company_num_admins'] = parse_decimal($data['company_num_admins']);
-    $data['company_num_attorney'] = parse_decimal($data['company_num_attorney']);
-    $data['company_num_majors'] = parse_decimal($data['company_num_majors']);
-    $data['company_num_majors_tmp'] = parse_decimal($data['company_num_majors_tmp']);
+    $data['impresa_num_amministratori'] = parse_decimal($data['impresa_num_amministratori']);
+    $data['impresa_num_procuratori'] = parse_decimal($data['impresa_num_procuratori']);
+    $data['impresa_num_sindaci'] = parse_decimal($data['impresa_num_sindaci']);
+    $data['impresa_num_sindaci_supplenti'] = parse_decimal($data['impresa_num_sindaci_supplenti']);
 
-    $data['company_field_none'] = $this->input->post('company_field_none') == 'Yes' ? 1 : 0;
-    $data['company_field_trasporto'] = $this->input->post('company_field_trasporto') == 'Yes' ? 1 : 0;
-    $data['company_field_rifiuti'] = $this->input->post('company_field_rifiuti') == 'Yes' ? 1 : 0;
-    $data['company_field_terra'] = $this->input->post('company_field_terra') == 'Yes' ? 1 : 0;
-    $data['company_field_bitume'] = $this->input->post('company_field_bitume') == 'Yes' ? 1 : 0;
-    $data['company_field_nolo'] = $this->input->post('company_field_nolo') == 'Yes' ? 1 : 0;
-    $data['company_field_ferro'] = $this->input->post('company_field_ferro') == 'Yes' ? 1 : 0;
-    $data['company_field_autotrasporto'] = $this->input->post('company_field_autotrasporto') == 'Yes' ? 1 : 0;
-    $data['company_field_guardiana'] = $this->input->post('company_field_guardiana') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_nessuno'] = $this->input->post('impresa_settore_nessuno') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_trasporto'] = $this->input->post('impresa_settore_trasporto') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_rifiuti'] = $this->input->post('impresa_settore_rifiuti') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_terra'] = $this->input->post('impresa_settore_terra') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_bitume'] = $this->input->post('impresa_settore_bitume') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_nolo'] = $this->input->post('impresa_settore_nolo') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_ferro'] = $this->input->post('impresa_settore_ferro') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_autotrasporto'] = $this->input->post('impresa_settore_autotrasporto') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_guardiana'] = $this->input->post('impresa_settore_guardiana') == 'Yes' ? 1 : 0;
 
-    $data['stato'] = NULL;
+    $data['stato'] = 0;
     $data['is_digital'] = 1;
     $data['uploaded'] = 0;
-    $data['uploaded_date'] = NULL;
+    $data['uploaded_at'] = NULL;
+    $data['updated_at'] = NULL;
+
+
+    $data['parere_dia'] = 0;
+    $data['parere_prefettura'] = 0;
+    $data['mail_prefettura'] = NULL;
+    $data['avvio_proc_sent'] = 0;
+    $data['pref_soll_30_sent'] = 0;
+    $data['pref_soll_75_sent'] = 0;
+    $data['dia_scadenza'] = NULL;
+    $data['pref_scadenza_30'] = NULL;
+    $data['pref_scadenza_75'] = NULL;
+    $data['bdna_protocollo'] = NULL;
+    $data['protocollo_struttura'] = NULL;
+
 
     $this->db->trans_start();
     $curr_error_handler = set_error_handler('db_transaction_error_handler');
     try {
-      if ($this->db->insert('docs', $data)) {
+      if ($this->db->insert('esecutori', $data)) {
         $doc_id = $this->db->insert_id();
         $anagrafica = $this->input->post('anagrafica');
+        /*
         $offices = $this->input->post('office');
 
         if(!empty($offices) && is_array($offices)){
           foreach ($offices as $office) {
             $this->db->insert(
-              'doc_offices',
+              'esecutori_imprese_partecipate',
               array(
-                'did' => $doc_id,
-                'name' => $office['name'],
+                'esecutore_id' => $doc_id,
+                'nome' => $office['nome'],
                 'cf' => $office['cf'],
-                'vat' => $office['vat'],
+                'piva' => $office['piva'],
               )
             );
           }
         }
+        */
+
 
         if ($anagrafica) {
           foreach ($_POST['anagrafica'] as $aidx => $anagrafica) {
             $data_anagrafiche = array(
-              'did' => $doc_id,
+              'esecutore_id' => $doc_id,
               'antimafia_nome' => $anagrafica['antimafia_nome'],
               'antimafia_cognome' => $anagrafica['antimafia_cognome'],
               'antimafia_comune_nascita' => $anagrafica['antimafia_comune_nascita'],
@@ -165,29 +181,35 @@ class Dichiarazione_model extends CI_Model
             );
             $this->db->insert('anagrafiche_antimafia', $data_anagrafiche);
             $id_anagrafica = $this->db->insert_id();
+
             if (isset ($anagrafica['f']) AND !empty($anagrafica['f'])){
               foreach ($anagrafica['f'] AS $familiar) {
                 $dati_familiare = array(
-                  'did' => $doc_id,
-                  'aaid' => $id_anagrafica,
+                  'esecutore_id' => $doc_id,
+                  'anagrafica_id' => $id_anagrafica,
                   'nome' => $familiar['name'],
-                  'cognome' => $familiar['lastname'],
+                  'cognome' => $familiar['titolare_cognome'],
                   'comune' => $familiar['comune'],
                   'data_nascita' => parse_date($familiar['data_nascita']),
                   'cf' => $familiar['cf'],
-                  'rid' => $familiar['role']
+                  'role_id' => $familiar['role']
                 );
                 $this->db->insert('anagrafiche_familiari', $dati_familiare);
               }
             }
           }
         }
+
       }
       $this->db->trans_commit();
-    } catch(Exception $e) {
+    }
+    catch(Exception $e) {
       $this->db->trans_rollback();
       // @Todo Messaggio?
-      echo '<h1>SI È VERIFICATO UN ERRORE.</h1>';
+      echo '<h1>SI È VERIFICATO UN ERRORE</h1>';
+      echo $e->getMessage() . '<br />';
+      echo $e->getLine() . '<br />';
+      echo $e->getFile() . '<br />';
     }
     set_error_handler($curr_error_handler);
     return $doc_id;
@@ -203,19 +225,19 @@ class Dichiarazione_model extends CI_Model
     $results = $query->result_array();
     $return = array();
     foreach($results AS $n => $v){
-      $return[$v['rid']] = $v['value'];
+      $return[$v['role_id']] = $v['value'];
     }
     return $return;
   }
 
-  public function get_company_shape_label($id) {
-    $query = $this->db->where('csid', (int)$id)->get('company_shapes');
+  public function get_forma_giuridica_label($id) {
+    $query = $this->db->where('forma_giuridica_id', (int)$id)->get('imprese_forme_giuridiche');
     $r = $query->result_array();
     return $r;
   }
 
-  public function get_company_shapes() {
-    $query = $this->db->get('company_shapes');
+  public function get_forme_giuridiche() {
+    $query = $this->db->get('imprese_forme_giuridiche');
     $r = $query->result_array();
     return $query->result_array();
   }

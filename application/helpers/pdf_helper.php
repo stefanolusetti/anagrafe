@@ -91,70 +91,70 @@ function create_pdf($id) {
   $CI =& get_instance();
   $doc = $CI->dichiarazione_model->get_document($id);
   if ($doc) {
-    $id_anno = substr($doc['doc_date'], 0, 4);
+    $id_anno = substr($doc['istanza_data'], 0, 4);
     $CI->load->helper('fdf');
 
-    if('Altro' == $doc['company_role']) {
-      $role_label = $doc['ruolo_richiedente'];
+    if('Altro' == $doc['titolare_rappresentanza']) {
+      $role_label = $doc['ruolo_richiedenteAAAAAAAAA'];
     }
     else {
-      $role_label = $doc['company_role'];
+      $role_label = $doc['titolare_rappresentanza'];
     }
 
-    $shapes = $CI->dichiarazione_model->get_company_shape_label($doc['company_shape']);
+    $shapes = $CI->dichiarazione_model->get_forma_giuridica_label($doc['forma_giuridica_id']);
     if (!empty($shapes)) {
       $shape_label = $shapes[0]['value'];
     }
 
-    $birth_locality = $doc['birth_locality'];
-    if ( !empty($doc['birth_nation']) ) {
-      $birth_locality .= sprintf(" (%s)", $doc['birth_nation']);
+    $titolare_nascita_comune = $doc['titolare_nascita_comune'];
+    if ( !empty($doc['titolare_nascita_nazione']) ) {
+      $titolare_nascita_comune .= sprintf(" (%s)", $doc['titolare_nascita_nazione']);
     }
 
     $index_data = array(
       'id_istanza' => $id,
       'id_anno' => $id_anno,
 
-      'nome_cognome' => $doc['name'] . ' ' . $doc['lastname'],
-      'birth_locality' => $birth_locality,
-      'birth_province' => $doc['birth_province'],
-      'birth_date' => format_date($doc['birth_date']),
+      'nome_cognome' => $doc['titolare_nome'] . ' ' . $doc['titolare_cognome'],
+      'titolare_nascita_comune' => $titolare_nascita_comune,
+      'titolare_nascita_provincia' => $doc['titolare_nascita_provincia'],
+      'titolare_nascita_data' => format_date($doc['titolare_nascita_data']),
       'residence_city' => $doc['residence_city'],
-      'residence_province' => $doc['residence_province'],
-      'residence_zip' => $doc['residence_zip'],
-      'residence_street' => $doc['residence_street'],
+      'titolare_res_provincia' => $doc['titolare_res_provincia'],
+      'titolare_res_cap' => $doc['titolare_res_cap'],
+      'titolare_res_via' => $doc['titolare_res_via'],
 
-      'company_role_label' => $role_label,
-      'company_name' => $doc['company_name'],
-      'company_birthdate' => format_date($doc['company_birthdate']),
-      'company_shape_label' => $shape_label,
+      'titolare_rappresentanza_label' => $role_label,
+      'ragione_sociale' => $doc['ragione_sociale'],
+      'impresa_data_costituzione' => format_date($doc['impresa_data_costituzione']),
+      'forma_giuridica_id_label' => $shape_label,
 
-      'company_locality' => $doc['company_locality'],
-      'company_zip' => $doc['company_zip'],
-      'company_province' => $doc['company_province'],
-      'company_street' => $doc['company_street'],
-      'company_num' => $doc['company_num'],
-      'company_phone' => $doc['company_phone'],
-      'company_mobile' => $doc['company_mobile'],
-      'company_fax' => $doc['company_fax'],
-      'company_vat' => $doc['company_vat'],
-      'company_cf' => $doc['company_cf'],
-      'company_pec' => $doc['company_pec'],
-      'company_mail' => $doc['company_mail'],
-      'company_offices' => $doc['company_altre_sedi'],
+      'sl_comune' => $doc['sl_comune'],
+      'sl_cap' => $doc['sl_cap'],
+      'sl_prov' => $doc['sl_prov'],
+      'sl_via' => $doc['sl_via'],
+      'sl_civico' => $doc['sl_civico'],
+      'sl_telefono' => $doc['sl_telefono'],
+      'sl_mobile' => $doc['sl_mobile'],
+      'sl_fax' => $doc['sl_fax'],
+      'partita_iva' => $doc['partita_iva'],
+      'codice_fiscale' => $doc['codice_fiscale'],
+      'impresa_pec' => $doc['impresa_pec'],
+      'impresa_email' => $doc['impresa_email'],
+      'company_offices' => $doc['impresa_altre_sedi'],
 
-      'rea_location' => $doc['rea_location'],
-      'rea_subscription' => $doc['rea_subscription'],
-      'rea_number' => $doc['rea_number'],
-      'company_social_subject' => $doc['company_social_subject'],
+      'rea_ufficio' => $doc['rea_ufficio'],
+      'rea_num_iscrizione' => $doc['rea_num_iscrizione'],
+      'rea_num' => $doc['rea_num'],
+      'impresa_soggetto_sociale' => $doc['impresa_soggetto_sociale'],
 
-      'company_num_admins' => $doc['company_num_admins'],
-      'company_num_attorney' => $doc['company_num_attorney'],
-      'company_num_majors' => $doc['company_num_majors'],
-      'company_num_majors_tmp' => $doc['company_num_majors_tmp'],
+      'impresa_num_amministratori' => $doc['impresa_num_amministratori'],
+      'impresa_num_procuratori' => $doc['impresa_num_procuratori'],
+      'impresa_num_sindaci' => $doc['impresa_num_sindaci'],
+      'impresa_num_sindaci_tmp' => $doc['impresa_num_sindaci_tmp'],
 
-      'doc_location' => $doc['doc_location'],
-      'doc_date' => format_date($doc['doc_date']),
+      'istanza_luogo' => $doc['istanza_luogo'],
+      'istanza_data' => format_date($doc['istanza_data']),
 /*
  ██████ ██   ██ ███████  ██████ ██   ██ ██████   ██████  ██   ██ ███████ ███████
 ██      ██   ██ ██      ██      ██  ██  ██   ██ ██    ██  ██ ██  ██      ██
@@ -165,37 +165,37 @@ function create_pdf($id) {
       'checkbox_checked' => 'Yes',
       'stmt_wl' => $doc['stmt_wl'] == 1 ? 'Yes' : 'No',
       'stmt_wl_no' => $doc['stmt_wl'] == 0 ? 'Yes' : 'No',
-      'stmt_wl_name' => $doc['stmt_wl_name'],
-      'stmt_wl_date' => empty($doc['stmt_wl_date']) ? '' : format_date($doc['stmt_wl_date']),
+      'white_list_prefettura' => $doc['white_list_prefettura'],
+      'white_list_data' => empty($doc['white_list_data']) ? '' : format_date($doc['white_list_data']),
       'stmt_eligible' => $doc['stmt_eligible'],
 
       'stmt_interest' => 'Yes',
-      'sake_work' => $doc['sake_work'] == 1 ? 'Yes' : 'No',
-      'sake_work_type' => $doc['sake_work_type'],
-      'sake_work_amount' => $doc['sake_work_amount'] == 0 ? '' : $doc['sake_work_amount'],
+      'interesse_lavori' => $doc['interesse_lavori'] == 1 ? 'Yes' : 'No',
+      'interesse_lavori_tipo' => $doc['interesse_lavori_tipo'],
+      'interesse_lavori_importo' => $doc['interesse_lavori_importo'] == 0 ? '' : $doc['interesse_lavori_importo'],
 
-      'sake_service' => $doc['sake_service'] == 1 ? 'Yes' : 'No',
-      'sake_service_type' => $doc['sake_service_type'],
-      'sake_service_amount' => $doc['sake_service_amount'] == 0 ? '' : $doc['sake_service_amount'],
+      'interesse_servizi' => $doc['interesse_servizi'] == 1 ? 'Yes' : 'No',
+      'interesse_servizi_tipo' => $doc['interesse_servizi_tipo'],
+      'interesse_servizi_importo' => $doc['interesse_servizi_importo'] == 0 ? '' : $doc['interesse_servizi_importo'],
 
-      'sake_supply' => $doc['sake_supply'] == 1 ? 'Yes' : 'No',
-      'sake_supply_type' => $doc['sake_supply_type'],
-      'sake_supply_amount' => $doc['sake_supply_amount'] == 0 ? '' : $doc['sake_supply_amount'],
+      'interesse_forniture' => $doc['interesse_forniture'] == 1 ? 'Yes' : 'No',
+      'interesse_forniture_tipo' => $doc['interesse_forniture_tipo'],
+      'interesse_forniture_importo' => $doc['interesse_forniture_importo'] == 0 ? '' : $doc['interesse_forniture_importo'],
 
-      'sake_fix' => $doc['sake_fix'] == 1 ? 'Yes' : 'No',
-      'sake_fix_type' => $doc['sake_fix_type'],
-      'sake_fix_amount' => $doc['sake_fix_amount'] == 0 ? '' : $doc['sake_fix_amount'],
+      'interesse_interventi' => $doc['interesse_interventi'] == 1 ? 'Yes' : 'No',
+      'interesse_interventi_tipo' => $doc['interesse_interventi_tipo'],
+      'interesse_interventi_importo' => $doc['interesse_interventi_importo'] == 0 ? '' : $doc['interesse_interventi_importo'],
 
-      'company_field_none' => $doc['company_field_none'] == 1 ? 'Yes' : 'No',
+      'impresa_settore_nessuno' => $doc['impresa_settore_nessuno'] == 1 ? 'Yes' : 'No',
 
-      'company_field_trasporto' => $doc['company_field_trasporto'] == 1 ? 'Yes' : 'No',
-      'company_field_rifiuti' => $doc['company_field_rifiuti'] == 1 ? 'Yes' : 'No',
-      'company_field_terra' => $doc['company_field_terra'] == 1 ? 'Yes' : 'No',
-      'company_field_bitume' => $doc['company_field_bitume'] == 1 ? 'Yes' : 'No',
-      'company_field_nolo' => $doc['company_field_nolo'] == 1 ? 'Yes' : 'No',
-      'company_field_ferro' => $doc['company_field_ferro'] == 1 ? 'Yes' : 'No',
-      'company_field_autotrasporto' => $doc['company_field_autotrasporto'] == 1 ? 'Yes' : 'No',
-      'company_field_guardiana' => $doc['company_field_guardiana'] == 1 ? 'Yes' : 'No',
+      'impresa_settore_trasporto' => $doc['impresa_settore_trasporto'] == 1 ? 'Yes' : 'No',
+      'impresa_settore_rifiuti' => $doc['impresa_settore_rifiuti'] == 1 ? 'Yes' : 'No',
+      'impresa_settore_terra' => $doc['impresa_settore_terra'] == 1 ? 'Yes' : 'No',
+      'impresa_settore_bitume' => $doc['impresa_settore_bitume'] == 1 ? 'Yes' : 'No',
+      'impresa_settore_nolo' => $doc['impresa_settore_nolo'] == 1 ? 'Yes' : 'No',
+      'impresa_settore_ferro' => $doc['impresa_settore_ferro'] == 1 ? 'Yes' : 'No',
+      'impresa_settore_autotrasporto' => $doc['impresa_settore_autotrasporto'] == 1 ? 'Yes' : 'No',
+      'impresa_settore_guardiana' => $doc['impresa_settore_guardiana'] == 1 ? 'Yes' : 'No',
     );
 
     $fdf = new CerthideaFDF();
@@ -263,15 +263,15 @@ function create_pdf($id) {
           $anagrafica_data["nome_cognome_$j"] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome'];
           $anagrafica_data["cf_$j"] = $anagrafica['antimafia_cf'];
           $anagrafica_data["ruolo_$j"] = $role_list[$anagrafica['role_id']];
-          $anagrafica_data["birth_locality_$j"] = $anagrafica['antimafia_comune_nascita'];
-          $anagrafica_data["birth_province_$j"] = $anagrafica['antimafia_provincia_nascita'];
-          $anagrafica_data["birth_date_$j"] = format_date($anagrafica['antimafia_data_nascita']);
+          $anagrafica_data["titolare_nascita_comune_$j"] = $anagrafica['antimafia_comune_nascita'];
+          $anagrafica_data["titolare_nascita_provincia_$j"] = $anagrafica['antimafia_provincia_nascita'];
+          $anagrafica_data["titolare_nascita_data_$j"] = format_date($anagrafica['antimafia_data_nascita']);
 
           $anagrafica_data["residence_city_$j"] = $anagrafica['antimafia_comune_residenza'];
-          $anagrafica_data["residence_province_$j"] = $anagrafica['antimafia_provincia_residenza'];
-          $anagrafica_data["residence_zip_$j"] = $anagrafica['antimafia_civico_residenza'];
-          $anagrafica_data["residence_street_$j"] = $anagrafica['antimafia_via_residenza'];
-          $anagrafica_data["residence_number_$j"] = $anagrafica['antimafia_civico_residenza'];
+          $anagrafica_data["titolare_res_provincia_$j"] = $anagrafica['antimafia_provincia_residenza'];
+          $anagrafica_data["titolare_res_cap_$j"] = $anagrafica['antimafia_civico_residenza'];
+          $anagrafica_data["titolare_res_via_$j"] = $anagrafica['antimafia_via_residenza'];
+          $anagrafica_data["titolare_res_civicober_$j"] = $anagrafica['antimafia_civico_residenza'];
 
         }
         //$fdf->addPage('anagrafiche-componenti.pdf', $anagrafica_data);
@@ -298,9 +298,9 @@ function create_pdf($id) {
 
           $familiari_data["nome_cognome_$j"] = $familiare['nome'] . ' ' . $familiare['cognome'];
           $familiari_data["cf_$j"] = $familiare['cf'];
-          $familiari_data["birth_locality_$j"] = $familiare['comune'];
-          $familiari_data["birth_province_$j"] = $familiare['provincia_nascita'];
-          $familiari_data["birth_date_$j"] = format_date($familiare['data_nascita']);
+          $familiari_data["titolare_nascita_comune_$j"] = $familiare['comune'];
+          $familiari_data["titolare_nascita_provincia_$j"] = $familiare['provincia_nascita'];
+          $familiari_data["titolare_nascita_data_$j"] = format_date($familiare['data_nascita']);
         }
         //$fdf->addPage('anagrafiche-familiari.pdf', $familiari_data);
         $_pages[] = array('file' => 'anagrafiche-familiari.pdf', 'data' => $familiari_data);
@@ -388,7 +388,7 @@ function pdfmd5($id){
 
 function email_message($item, $hash){
     $url = site_url("domanda/upload/{$hash}");
-    $msg = "Gentile {$item['titolare_nome']}, \nin allegato trova il modulo PDF da Lei compilato.\n".
+    $msg = "Gentile {$item['name']}, \nin allegato trova il modulo PDF da Lei compilato.\n".
             "Per completare l'iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di firmare digitalmente ".
             "il file qui allegato e di caricare quindi il file in formato P7M tramite la funzione disponibile ".
             "al seguente indirizzo web:\n\n {$url}".
@@ -404,14 +404,15 @@ function email_message($item, $hash){
 ███████ ██      ██ ██   ██ ██ ███████ ███████
 */
 function send_welcome_email($id) {
+  return true; // @DEBUG
   $CI =& get_instance();
   $doc = $CI->dichiarazione_model->get_document($id);
 
-  $hash = hash('md5', $doc['company_name']);
+  $hash = hash('md5', $doc['ragione_sociale']);
   $CI->db->where('did', $doc['did'])->update('docs', array('hash' => $hash));
 
   $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
-  $CI->email->to($doc['company_pec']);
+  $CI->email->to($doc['impresa_pec']);
   $CI->email->subject('Domanda di iscrizione Anagrafe Antimafia degli Esecutori');
   $CI->email->message(email_message_new($doc, $hash));
   /*
@@ -431,7 +432,7 @@ function email_message_new($doc, $hash){
     <b>ATTENZIONE:</b> Non rispondere a questa PEC. Seguire le istruzioni per concludere l’iscrizione.
     </p>
     <p>
-      Gentile {$doc['name']} {$doc['lastname']},<br />Per completare la domanda di iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di collegarsi al seguente indirizzo web:</p>
+      Gentile {$doc['name']} {$doc['titolare_cognome']},<br />Per completare la domanda di iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di collegarsi al seguente indirizzo web:</p>
     <p><a href=\"{$url}\">{$url}</a></p>
     <p>
       <b>Attenzione:</b>
@@ -462,9 +463,10 @@ function email_message_new($doc, $hash){
 
 
 function send_thanks_mail($doc) {
+  return true; // @DEBUG
   $CI =& get_instance();
   $data_caricamento = date('d/m/Y');
-  $codice = $doc['did'] . '-' . substr($doc['doc_date'], 0, 4);
+  $codice = $doc['did'] . '-' . substr($doc['istanza_data'], 0, 4);
   $url = site_url("elenco");
 
   $fileinfo = create_pdf($doc['did']);
@@ -474,14 +476,14 @@ function send_thanks_mail($doc) {
   $msg ="<p>
   <strong>ATTENZIONE:</strong> Non rispondere a questa PEC. Per qualsiasi comunicazione utilizzare l’indirizzo: (XXXXXXXX)
   </p>
-  <p>Gentile {$doc['name']} {$doc['lastname']},</p>
+  <p>Gentile {$doc['name']} {$doc['titolare_cognome']},</p>
   <p>
     la procedura di presentazione della sua pratica è terminata in data {$data_caricamento} e ha numero {$codice}.</p>".
       "<p>In allegato troverà il suo modulo di iscrizione.</p>".
       "<p>\n\nCordiali Saluti\n <br /><em>Struttura di Missione Prevenzione e Contrasto Antimafia Sisma</em></p>";
 
   $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
-  $CI->email->to($doc['company_pec']);
+  $CI->email->to($doc['impresa_pec']);
   $CI->email->subject('Domanda di iscrizione Anagrafe Antimafia degli Esecutori ricevuta');
   $CI->email->message($msg);
 
@@ -503,8 +505,8 @@ function send_thanks_mail($doc) {
 
   $CI->email->subject(sprintf(
     "Domanda iscrizione anagrafica antimafia %s %s %s",
-    $doc['company_name'],
-    $doc['company_vat'],
+    $doc['ragione_sociale'],
+    $doc['partita_iva'],
     $codice
   ));
   $CI->email->message("in allegato CSV e PDF");

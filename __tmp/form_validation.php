@@ -7,7 +7,7 @@
 $config = array(
   'domanda' => array(
     array(
-      'field' => 'titolare_nome',
+      'field' => 'name',
       'label' => 'Nome del dichiarante',
       'rules' => 'required|max_length[200]',
     ),
