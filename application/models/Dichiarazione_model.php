@@ -90,6 +90,7 @@ class Dichiarazione_model extends CI_Model
     $data['white_list_data'] = parse_date($data['white_list_data']);
     $data['istanza_data'] = parse_date($data['istanza_data']);
     $data['impresa_data_costituzione'] = parse_date($data['impresa_data_costituzione']);
+    $data['titolare_rappresentanza_altro'] = $this->input->post('ruolo_richiedente');
 
     $data['stmt_wl'] = $data['stmt_wl'] == 'Yes' ? 1 : 0;
     $data['interesse_lavori'] = $this->input->post('interesse_lavori_flag') == 'Yes' ? 1 : 0;
@@ -143,8 +144,14 @@ class Dichiarazione_model extends CI_Model
     try {
       if ($this->db->insert('esecutori', $data)) {
         $doc_id = $this->db->insert_id();
+        $codice = create_codice_istanza($doc_id);
+
+        $this->db->where('ID', $doc_id)->update(
+          'esecutori',
+          array('codice_istanza' => $codice)
+        );
+
         $anagrafica = $this->input->post('anagrafica');
-        /*
         $offices = $this->input->post('office');
 
         if(!empty($offices) && is_array($offices)){
@@ -153,15 +160,13 @@ class Dichiarazione_model extends CI_Model
               'esecutori_imprese_partecipate',
               array(
                 'esecutore_id' => $doc_id,
-                'nome' => $office['nome'],
+                'nome' => $office['name'],
                 'cf' => $office['cf'],
-                'piva' => $office['piva'],
+                'piva' => $office['vat'],
               )
             );
           }
         }
-        */
-
 
         if ($anagrafica) {
           foreach ($_POST['anagrafica'] as $aidx => $anagrafica) {

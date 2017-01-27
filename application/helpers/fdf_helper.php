@@ -23,14 +23,19 @@ class CerthideaFDF {
                 ██      ██    ██ ██  ██ ██      ██    ██    ██   ██ ██    ██ ██         ██
 ███████ ███████  ██████  ██████  ██   ████ ███████    ██    ██   ██  ██████   ██████    ██
 */
-  public function __construct() {
+  public function __construct($name = false) {
     $this->_pages = array();
     // Hash che vale solo per una singola chiamata.
     $this->_tmpHash = uniqid();
     // Stabilisco il path sul server dove i file di questo documento saranno ospitati
     $this->_currPath = self::TMP_PATH . $this->_tmpHash;
     // Filename arrandom.
-    $this->_outputFileName = md5(uniqid()) . '.pdf';
+    if ( false == $name ) {
+      $this->_outputFileName = md5(uniqid()) . '.pdf';
+    }
+    else {
+      $this->_outputFileName = $name . '.pdf';
+    }
   }
 
 /*

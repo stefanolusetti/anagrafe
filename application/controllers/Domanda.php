@@ -133,11 +133,20 @@ class Domanda extends CI_Controller
 */
 
     public function test($id = false){
-      $item = $this->dichiarazione_model->get_document($id);
-      $this->load->view('templates/header');
-      $this->load->view('templates/headbar');
-      $this->parser->parse('domanda/uploaded', $item);
-      $this->load->view('templates/footer');
+      $csv = export_antimafia_components($id);
+      echo "<h7>CSV debug@" .__FILE__.":".__LINE__."</h7><pre>";
+      var_dump($csv);
+      echo "</pre>";
+
+      $pdf = create_pdf($id);
+      echo "<h7>PDF debug@" .__FILE__.":".__LINE__."</h7><pre>";
+      var_dump($pdf);
+      echo "</pre>";
+
+      $codice = create_codice_istanza($id);
+      echo "<h7>CODICE debug@" .__FILE__.":".__LINE__."</h7><pre>";
+      var_dump($codice);
+      echo "</pre>";
     }
 
 /*
@@ -154,7 +163,7 @@ class Domanda extends CI_Controller
     $item = valid_hash_new($hash);
     if ($item) {
       if ($this->input->post()) {
-        $config['allowed_types'] = 'p7m';
+        $config['allowed_types'] = 'jpg|pdf|tiff|tif|png|jpeg';
         $config['upload_path'] = './uploads/';
         $config['overwrite'] = true;
         $config['file_titolare_nome'] = $item['did'].'_'.get_year($item['istanza_data']).'.p7m';

@@ -243,14 +243,30 @@ function antimafia_description ($id) {
 	}
 
 
+function create_codice_istanza($id) {
+  $CI =& get_instance();
+  $documento = $CI->dichiarazione_model->get_document($id);
+  return sprintf(
+    "%s_%s_%s",
+    'AE',
+    str_pad($id, 6, '0', STR_PAD_LEFT),
+    substr($documento['istanza_data'], 0, 4)
+  );
+}
+
 function export_antimafia_components($id){
   $CI =& get_instance();
   $CI->load->helper('file');
   $role_list = $CI->dichiarazione_model->get_roles();
   $documento = $CI->dichiarazione_model->get_document($id);
-  $shapes = $CI->dichiarazione_model->get_forma_giuridica_label($documento['forma_giuridica_id']);
-  if (!empty($shapes)) {
-    $shape_label = $shapes[0]['value'];
+  if ( 0 == $documento['forma_giuridica_id'] ) {
+    $shape_label = $documento['impresa_forma_giuridica_altro'];
+  }
+  else {
+    $shapes = $CI->dichiarazione_model->get_forma_giuridica_label($documento['forma_giuridica_id']);
+    if (!empty($shapes)) {
+      $shape_label = $shapes[0]['valore'];
+    }
   }
   $columns = array(
     array( 'label' => 'Prog.', 'field' => 'n' ),
@@ -277,7 +293,7 @@ function export_antimafia_components($id){
   $n = 1;
   if ( !empty($documento['anagrafiche_antimafia']) ) {
     foreach ($documento['anagrafiche_antimafia'] AS $anagrafica) {
-      $is_socio_maggioranza = $role_list[$anagrafica['role_id']] == 24 ? 'X' : '';
+      $is_socio_maggioranza = $anagrafica['role_id'] == 24 ? 'X' : '';
       $csv->addRow(array(
         'n' => $n,
 
@@ -318,7 +334,7 @@ function export_antimafia_components($id){
             'data_nascita' => format_date($familiare['data_nascita']),
             'luogo_nascita' => $familiare['comune'],
             'codice_fiscale' => $familiare['cf'],
-            'ruolo' => $role_list[$familiare['rid']],
+            'ruolo' => $role_list[$familiare['role_id']],
 
             'socio_maggioranza' => '',
 
@@ -329,7 +345,7 @@ function export_antimafia_components($id){
       }
     }
     $csv->create();
-    return $csv->writeToFile($documento['did'] .'-' . substr($documento['istanza_data'], 0, 4) . '.csv');
+    return $csv->writeToFile($documento['codice_istanza'] . '.csv');
   }
 }
 

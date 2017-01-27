@@ -94,16 +94,21 @@ function create_pdf($id) {
     $id_anno = substr($doc['istanza_data'], 0, 4);
     $CI->load->helper('fdf');
 
-    if('Altro' == $doc['titolare_rappresentanza']) {
-      $role_label = $doc['ruolo_richiedenteAAAAAAAAA'];
+    if('Altro' == $doc['titolare_rappresentanza'] || empty($doc['titolare_rappresentanza'])) {
+      $role_label = $doc['titolare_rappresentanza_altro'];
     }
     else {
       $role_label = $doc['titolare_rappresentanza'];
     }
 
-    $shapes = $CI->dichiarazione_model->get_forma_giuridica_label($doc['forma_giuridica_id']);
-    if (!empty($shapes)) {
-      $shape_label = $shapes[0]['value'];
+    if ( 0 == $doc['forma_giuridica_id']) {
+      $shape_label = $doc['impresa_forma_giuridica_altro'];
+    }
+    else {
+      $shapes = $CI->dichiarazione_model->get_forma_giuridica_label($doc['forma_giuridica_id']);
+      if (!empty($shapes)) {
+        $shape_label = $shapes[0]['valore'];
+      }
     }
 
     $titolare_nascita_comune = $doc['titolare_nascita_comune'];
@@ -114,13 +119,14 @@ function create_pdf($id) {
     $index_data = array(
       'id_istanza' => $id,
       'id_anno' => $id_anno,
+      'codice_istanza' => $doc['codice_istanza'],
 
       'nome_cognome' => $doc['titolare_nome'] . ' ' . $doc['titolare_cognome'],
       'titolare_nascita_comune' => $titolare_nascita_comune,
       'titolare_nascita_provincia' => $doc['titolare_nascita_provincia'],
       'titolare_nascita_data' => format_date($doc['titolare_nascita_data']),
-      'residence_city' => $doc['residence_city'],
       'titolare_res_provincia' => $doc['titolare_res_provincia'],
+      'titolare_res_comune' => $doc['titolare_res_comune'],
       'titolare_res_cap' => $doc['titolare_res_cap'],
       'titolare_res_via' => $doc['titolare_res_via'],
 
@@ -141,7 +147,7 @@ function create_pdf($id) {
       'codice_fiscale' => $doc['codice_fiscale'],
       'impresa_pec' => $doc['impresa_pec'],
       'impresa_email' => $doc['impresa_email'],
-      'company_offices' => $doc['impresa_altre_sedi'],
+      'impresa_altre_sedi' => $doc['impresa_altre_sedi'],
 
       'rea_ufficio' => $doc['rea_ufficio'],
       'rea_num_iscrizione' => $doc['rea_num_iscrizione'],
@@ -151,10 +157,9 @@ function create_pdf($id) {
       'impresa_num_amministratori' => $doc['impresa_num_amministratori'],
       'impresa_num_procuratori' => $doc['impresa_num_procuratori'],
       'impresa_num_sindaci' => $doc['impresa_num_sindaci'],
-      'impresa_num_sindaci_tmp' => $doc['impresa_num_sindaci_tmp'],
+      'impresa_num_sindaci_supplenti' => $doc['impresa_num_sindaci_supplenti'],
 
-      'istanza_luogo' => $doc['istanza_luogo'],
-      'istanza_data' => format_date($doc['istanza_data']),
+      'istanza_luogo_data' => $doc['istanza_luogo'] . ', ' . format_date($doc['istanza_data']),
 /*
  ██████ ██   ██ ███████  ██████ ██   ██ ██████   ██████  ██   ██ ███████ ███████
 ██      ██   ██ ██      ██      ██  ██  ██   ██ ██    ██  ██ ██  ██      ██
@@ -167,7 +172,7 @@ function create_pdf($id) {
       'stmt_wl_no' => $doc['stmt_wl'] == 0 ? 'Yes' : 'No',
       'white_list_prefettura' => $doc['white_list_prefettura'],
       'white_list_data' => empty($doc['white_list_data']) ? '' : format_date($doc['white_list_data']),
-      'stmt_eligible' => $doc['stmt_eligible'],
+      'interesse_interventi_checkbox' => $doc['interesse_interventi_checkbox'],
 
       'stmt_interest' => 'Yes',
       'interesse_lavori' => $doc['interesse_lavori'] == 1 ? 'Yes' : 'No',
@@ -198,7 +203,7 @@ function create_pdf($id) {
       'impresa_settore_guardiana' => $doc['impresa_settore_guardiana'] == 1 ? 'Yes' : 'No',
     );
 
-    $fdf = new CerthideaFDF();
+    $fdf = new CerthideaFDF($doc['codice_istanza']);
     //$fdf->addPage('indice.pdf', $index_data);
     $_pages[] = array('file' => 'indice.pdf', 'data' => $index_data);
 
@@ -216,13 +221,14 @@ function create_pdf($id) {
       for ( $i = 0; $i < $_num_pages; $i++ ) {
         $office_data = array(
           'id_istanza' => $id,
-          'id_anno' => $id_anno
+          'id_anno' => $id_anno,
+          'codice_istanza' => $doc['codice_istanza'],
         );
         for ( $j = 0; $j < 12; $j++ ) {
           if (!empty($doc_offices)) {
             $office = array_shift($doc_offices);
-            $office_data["name_$j"] = $office['name'];
-            $office_data["piva_$j"] = $office['vat'];
+            $office_data["name_$j"] = $office['nome'];
+            $office_data["piva_$j"] = $office['piva'];
             $office_data["cf_$j"] = $office['cf'];
           }
         }
@@ -246,7 +252,8 @@ function create_pdf($id) {
       for ( $i = 0; $i < $_num_pages; $i++ ) {
         $anagrafica_data = array(
           'id_istanza' => $id,
-          'id_anno' => $id_anno
+          'id_anno' => $id_anno,
+          'codice_istanza' => $doc['codice_istanza'],
         );
         for ( $j = 0; $j < 4; $j++ ) {
           if ( empty($doc['anagrafiche_antimafia']) ) {
@@ -263,15 +270,14 @@ function create_pdf($id) {
           $anagrafica_data["nome_cognome_$j"] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome'];
           $anagrafica_data["cf_$j"] = $anagrafica['antimafia_cf'];
           $anagrafica_data["ruolo_$j"] = $role_list[$anagrafica['role_id']];
-          $anagrafica_data["titolare_nascita_comune_$j"] = $anagrafica['antimafia_comune_nascita'];
-          $anagrafica_data["titolare_nascita_provincia_$j"] = $anagrafica['antimafia_provincia_nascita'];
-          $anagrafica_data["titolare_nascita_data_$j"] = format_date($anagrafica['antimafia_data_nascita']);
+          $anagrafica_data["birth_locality_$j"] = $anagrafica['antimafia_comune_nascita'];
+          $anagrafica_data["birth_province_$j"] = $anagrafica['antimafia_provincia_nascita'];
+          $anagrafica_data["birth_date_$j"] = format_date($anagrafica['antimafia_data_nascita']);
 
           $anagrafica_data["residence_city_$j"] = $anagrafica['antimafia_comune_residenza'];
-          $anagrafica_data["titolare_res_provincia_$j"] = $anagrafica['antimafia_provincia_residenza'];
-          $anagrafica_data["titolare_res_cap_$j"] = $anagrafica['antimafia_civico_residenza'];
-          $anagrafica_data["titolare_res_via_$j"] = $anagrafica['antimafia_via_residenza'];
-          $anagrafica_data["titolare_res_civicober_$j"] = $anagrafica['antimafia_civico_residenza'];
+          $anagrafica_data["residence_province_$j"] = $anagrafica['antimafia_provincia_residenza'];
+          $anagrafica_data["residence_street_$j"] = $anagrafica['antimafia_via_residenza'];
+          $anagrafica_data["residence_number_$j"] = $anagrafica['antimafia_civico_residenza'];
 
         }
         //$fdf->addPage('anagrafiche-componenti.pdf', $anagrafica_data);
@@ -285,7 +291,8 @@ function create_pdf($id) {
       for ( $i = 0; $i < $_num_pages; $i++ ) {
         $familiari_data = array(
           'id_istanza' => $id,
-          'id_anno' => $id_anno
+          'id_anno' => $id_anno,
+          'codice_istanza' => $doc['codice_istanza'],
         );
         for ( $j = 0; $j < 6; $j++ ) {
           if ( empty($familiars) ) {
@@ -293,14 +300,13 @@ function create_pdf($id) {
           }
           $familiare = array_shift($familiars);
 
-          $familiari_data["role_$j"] = $role_list[$familiare['rid']];
+          $familiari_data["role_$j"] = $role_list[$familiare['role_id']];
           $familiari_data["parent_$j"] = $familiare['parent'];
 
           $familiari_data["nome_cognome_$j"] = $familiare['nome'] . ' ' . $familiare['cognome'];
           $familiari_data["cf_$j"] = $familiare['cf'];
-          $familiari_data["titolare_nascita_comune_$j"] = $familiare['comune'];
-          $familiari_data["titolare_nascita_provincia_$j"] = $familiare['provincia_nascita'];
-          $familiari_data["titolare_nascita_data_$j"] = format_date($familiare['data_nascita']);
+          $familiari_data["birth_locality_$j"] = $familiare['comune'];
+          $familiari_data["birth_date_$j"] = format_date($familiare['data_nascita']);
         }
         //$fdf->addPage('anagrafiche-familiari.pdf', $familiari_data);
         $_pages[] = array('file' => 'anagrafiche-familiari.pdf', 'data' => $familiari_data);

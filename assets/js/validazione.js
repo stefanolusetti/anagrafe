@@ -18,7 +18,7 @@ $(document).ready(function() {
   $.validator.addMethod(
     "stmt__eligible",
     function(val, el){
-      if (jQuery("#sake_fix_flag").is(':checked') && false == jQuery("#stmt_eligible").is(':checked')){
+      if (jQuery("#interesse_interventi_flag").is(':checked') && false == jQuery("#interesse_interventi_checkbox").is(':checked')){
         return false;
       }
     },
