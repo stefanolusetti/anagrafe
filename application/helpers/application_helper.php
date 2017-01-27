@@ -135,9 +135,8 @@ function valid_hash_new($hash){
     return FALSE;
   }
   $CI =& get_instance();
-  $query = $CI -> db -> get_where('docs', array('hash' => $hash, 'uploaded != ' => '1'), 1, 0);
+  $query = $CI -> db -> get_where('esecutori', array('hash' => $hash, 'uploaded != ' => '1'), 1, 0);
   $results = $query->result_array();
-  log_message('debug', print_r($results, TRUE));
   return $results ? $results[0] : FALSE;
 }
 

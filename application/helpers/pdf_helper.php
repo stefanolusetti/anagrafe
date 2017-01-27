@@ -410,12 +410,11 @@ function email_message($item, $hash){
 ███████ ██      ██ ██   ██ ██ ███████ ███████
 */
 function send_welcome_email($id) {
-  return true; // @DEBUG
   $CI =& get_instance();
   $doc = $CI->dichiarazione_model->get_document($id);
 
   $hash = hash('md5', $doc['ragione_sociale']);
-  $CI->db->where('did', $doc['did'])->update('docs', array('hash' => $hash));
+  $CI->db->where('ID', $doc['ID'])->update('esecutori', array('hash' => $hash));
 
   $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
   $CI->email->to($doc['impresa_pec']);
@@ -438,7 +437,7 @@ function email_message_new($doc, $hash){
     <b>ATTENZIONE:</b> Non rispondere a questa PEC. Seguire le istruzioni per concludere l’iscrizione.
     </p>
     <p>
-      Gentile {$doc['name']} {$doc['titolare_cognome']},<br />Per completare la domanda di iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di collegarsi al seguente indirizzo web:</p>
+      Gentile {$doc['titolare_nome']} {$doc['titolare_cognome']},<br />Per completare la domanda di iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di collegarsi al seguente indirizzo web:</p>
     <p><a href=\"{$url}\">{$url}</a></p>
     <p>
       <b>Attenzione:</b>
@@ -469,20 +468,19 @@ function email_message_new($doc, $hash){
 
 
 function send_thanks_mail($doc) {
-  return true; // @DEBUG
   $CI =& get_instance();
   $data_caricamento = date('d/m/Y');
-  $codice = $doc['did'] . '-' . substr($doc['istanza_data'], 0, 4);
+  $codice = $doc['codice_istanza'];
   $url = site_url("elenco");
 
-  $fileinfo = create_pdf($doc['did']);
-  $csv = export_antimafia_components($doc['did']);
+  $fileinfo = create_pdf($doc['ID']);
+  $csv = export_antimafia_components($doc['ID']);
 
   // Email utente
   $msg ="<p>
   <strong>ATTENZIONE:</strong> Non rispondere a questa PEC. Per qualsiasi comunicazione utilizzare l’indirizzo: (XXXXXXXX)
   </p>
-  <p>Gentile {$doc['name']} {$doc['titolare_cognome']},</p>
+  <p>Gentile {$doc['titolare_nome']} {$doc['titolare_cognome']},</p>
   <p>
     la procedura di presentazione della sua pratica è terminata in data {$data_caricamento} e ha numero {$codice}.</p>".
       "<p>In allegato troverà il suo modulo di iscrizione.</p>".
@@ -502,12 +500,16 @@ function send_thanks_mail($doc) {
 
   $CI->email->clear(TRUE);
 
+
+
+
   // Email interna
   $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
-
-  $CI->email->to('anagrafeantimafiasisma@pec.interno.it');
-  $CI->email->cc('luigi.carbone@interno.it');
-  $CI->email->bcc('info@certhidea.it');
+  //@debug
+  $CI->email->to('dp@certhidea.it');
+  //$CI->email->to('anagrafeantimafiasisma@pec.interno.it');
+  //$CI->email->cc('luigi.carbone@interno.it');
+  //$CI->email->bcc('info@certhidea.it');
 
   $CI->email->subject(sprintf(
     "Domanda iscrizione anagrafica antimafia %s %s %s",

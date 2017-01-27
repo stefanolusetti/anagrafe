@@ -7,7 +7,7 @@
     La preghiamo di prendere nota del codice assegnato al documento che dovrà essere indicato nelle eventuali successive comunicazioni:
   </p>
   <div style="text-align: center;">
-    <span class="doc_code"><?php printf("%s-%s", $did, substr($istanza_data, 0, 4)); ?></span>
+    <span class="doc_code"><?php echo $codice_istanza; ?></span>
   </div>
   <p>
     Riceverà all'indirizzo email pec da lei indicato il modulo da lei compilato.

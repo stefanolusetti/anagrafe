@@ -95,7 +95,7 @@ class Domanda extends CI_Controller
           $this->parser->parse('domanda/new', $data);
           $this->load->view('templates/footer');
         }
-        elseif (array_key_exists('start', $sessione) OR true) { //@debug
+        elseif (array_key_exists('start', $sessione)) {
           $id = $this->dichiarazione_model->set_statement();
           if ($id) {
             $document_data = $this->dichiarazione_model->get_document($id);
@@ -164,13 +164,14 @@ class Domanda extends CI_Controller
     if ($item) {
       if ($this->input->post()) {
         $config['allowed_types'] = 'jpg|pdf|tiff|tif|png|jpeg';
+        $config['max_size'] = '2700';
         $config['upload_path'] = './uploads/';
         $config['overwrite'] = true;
-        $config['file_titolare_nome'] = $item['did'].'_'.get_year($item['istanza_data']).'.p7m';
+        $config['file_name'] = 'CI_' . $item['codice_istanza'];
         $this->load->library('upload', $config);
         if ($this->upload->do_upload('userfile')) {
           if ( send_thanks_mail($item) ) {
-            $this->db->where('did', $item['did'])->update( 'docs',
+            $this->db->where('ID', $item['ID'])->update( 'esecutori',
               array('stato' => 0, 'uploaded' => 1, 'uploaded_at' => date('Y-m-d H:i:s'))
             );
             $this->load->view('templates/header');

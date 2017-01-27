@@ -85,6 +85,10 @@ class Dichiarazione_model extends CI_Model
 
 
     $data = list_fields();
+
+    $data['impresa_email'] = '';
+    $data['rea_num_iscrizione'] = '';
+
     $data['created_at'] = date('Y-m-d H:i:s');
     $data['titolare_nascita_data'] = parse_date($data['titolare_nascita_data']);
     $data['white_list_data'] = parse_date($data['white_list_data']);

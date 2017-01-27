@@ -250,13 +250,13 @@ echo form_open('domanda/nuova', array('target' => '_blank'));
   );
 
 
-
+/*
   f_text(
     'impresa_email',
     'Casella e-mail*',
     array('input' => array('class' => 'required email'))
   );
-
+*/
   f_text(
     'impresa_pec',
     "Casella PEC (inserire email valida per l'invio del modulo da firmare digitalmente)*",
@@ -265,7 +265,7 @@ echo form_open('domanda/nuova', array('target' => '_blank'));
 
   echo '<h4>Iscrizione nel Registro delle Imprese presso la C.C.I.A.A.</h4>';
   f_text('rea_ufficio', 'Registro delle Imprese di *', array('input' => array('class' => 'required maxlen')));
-  f_text('rea_num_iscrizione', 'Numero di iscrizione*', array('input' => array('class' => 'required maxlen')));
+  //f_text('rea_num_iscrizione', 'Numero di iscrizione', array('input' => array('class' => 'required maxlen')));
   f_text('rea_num', 'Numero di R.E.A.*', array('input' => array('class' => 'required maxlen')));
   f_text(
     'impresa_data_costituzione',

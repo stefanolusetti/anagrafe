@@ -21,6 +21,7 @@ $(document).ready(function() {
       if (jQuery("#interesse_interventi_flag").is(':checked') && false == jQuery("#interesse_interventi_checkbox").is(':checked')){
         return false;
       }
+      return true;
     },
     "Campo obbligatorio"
   );

@@ -116,11 +116,13 @@ $config = array(
       'label' => 'Codice Fiscale Società',
       'rules' => 'required|max_length[16]|min_length[11]',
     ),
+    /*
     array(
       'field' => 'impresa_email',
       'label'   => 'Email sede legale',
       'rules'   => 'required|valid_email'
     ),
+    */
     array(
       'field' => 'impresa_pec',
       'label'   => 'Email Certificata PEC sede legale',
@@ -153,11 +155,13 @@ $config = array(
       'label' => 'Ufficio Registro delle imprese',
       'rules' => 'required|max_length[200]',
     ),
+    /*
     array(
       'field' => 'rea_num_iscrizione',
       'label' => 'Numero di iscrizione registro delle imprese',
       'rules' => 'required|max_length[200]',
     ),
+    */
     array(
       'field' => 'rea_num',
       'label' => 'Numero R.E.A.',
