@@ -148,9 +148,9 @@ function list_fields()
         $data[$value] = strip_tags($CI->input->post($value));
     }
 
-    unset($data['did']);
-    unset($data['upd']);
-    unset($data['DID']);
+    @unset($data['did']);
+    @unset($data['upd']);
+    @unset($data['ID']);
     return $data;
 }
 
