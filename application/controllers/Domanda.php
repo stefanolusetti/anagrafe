@@ -28,9 +28,12 @@ class Domanda extends CI_Controller
         $this->load->helper('captcha');
     }
 
-    public function index()
-    {
-        $this->nuova();
+    public function index() {
+      //$this -> nuova();
+      $this -> load -> view('templates/header');
+      $this -> load -> view('templates/headbar');
+      $this -> load -> view('domanda/temp');
+      $this -> load -> view('templates/footer');
     }
 
 /*
@@ -163,7 +166,7 @@ class Domanda extends CI_Controller
     $item = valid_hash_new($hash);
     if ($item) {
       if ($this->input->post()) {
-        $config['allowed_types'] = 'jpg|pdf|tiff|tif|png|jpeg';
+        $config['allowed_types'] = array('jpg','pdf','tiff','tif','png','jpeg');
         $config['max_size'] = '2700';
         $config['upload_path'] = './uploads/';
         $config['overwrite'] = true;
@@ -291,38 +294,18 @@ class Domanda extends CI_Controller
     }
 
     public function _sake(){
-      $sakes = array('work' => 'Lavori', 'service' => 'Servizi', 'supply' => 'Forniture', 'fix' => 'Interventi di immediata riparazione');
-      $els = array('type', 'amount');
+      $sakes = array('lavori' => 'Lavori', 'servizi' => 'Servizi', 'forniture' => 'Forniture', 'interventi' => 'Interventi di immediata riparazione');
 
       $__post = $this->input->post();
       $abemus_data = false;
       foreach ($sakes as $sake_type => $sake_label) {
-        $correct_data = true;
-
-        if(isset($__post['sake_' . $sake_type . '_flag']) && 'Yes' == $__post['sake_' . $sake_type . '_flag']) {
+        if(isset($__post['interesse_' . $sake_type . '_flag']) && 'Yes' == $__post['interesse_' . $sake_type . '_flag']) {
           $abemus_data = true;
-          /*
-          foreach($els AS $el){
-            if (empty($__post['sake_' . $sake_type . '_' . $el])){
-              $this->form_validation->set_message('_sake', 'Il campo <em>'.$sake_label.'</em> contiene campi vuoti.');
-              $correct_data = false;
-              return false;
-            }
-            if(!is_numeric($__post['sake_' . $sake_type . '_amount'])){
-              $this->form_validation->set_message('_sake', 'L\'importo deve essere numerico.');
-              $correct_data = false;
-              return false;
-            }
-          }
-          */
         }
       }
 
       if(false == $abemus_data){
         $this->form_validation->set_message('_sake', 'Il campo <em>%s</em> &egrave; vuoto. Deve essere compilato <em>almeno un campo</em>.');
-      }
-      if(false == $correct_data){
-        return false;
       }
       return true;
     }

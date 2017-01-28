@@ -1,6 +1,6 @@
 <div id="searchbar">
     <?php 
-    echo form_open('admin/login') ?>
+    echo form_open('Admin/login') ?>
         <div class="fieldarea">
             <?php f_text('admin_user', 'User'); ?>
             <?php f_password('admin_pwd', 'Password'); ?>

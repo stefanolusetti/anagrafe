@@ -53,9 +53,10 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-//define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
-define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
-
+	#define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+	
+	define('ENVIRONMENT', 'development');
+	#define('ENVIRONMENT', 'production');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -64,7 +65,8 @@ define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'developm
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
  */
-switch (ENVIRONMENT)
+
+ switch (ENVIRONMENT)
 {
 	case 'development':
 		error_reporting(-1);
@@ -88,7 +90,28 @@ switch (ENVIRONMENT)
 		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
 		echo 'The application environment is not set correctly.';
 		exit(1); // EXIT_ERROR
+} 
+/*
+if (defined('ENVIRONMENT'))
+{
+	switch (ENVIRONMENT)
+	{
+		case 'development':
+			error_reporting(E_ALL);
+			//error_reporting(0);
+		break;
+	
+		case 'testing':
+		case 'production':
+			error_reporting(0);
+		break;
+
+		default:
+			exit('The application environment is not set correctly.');
+	}
 }
+
+*/
 
 /*
  *---------------------------------------------------------------

@@ -14,6 +14,44 @@ function list_soas($dichiarazione_id)
     endif;
 }
 
+function set_search_querystring_esecutori () {
+	$CI =& get_instance();
+    $items = array('ID', 'ragione_sociale', 'partita_iva', 'codice_fiscale','uploaded_at');
+    $items_dropdown = array ('stato');
+	$params = array();
+	$params_dropdown = array();
+    $date_array= array('uploaded_at');
+    foreach ($items as $item) {
+        $parameter = $CI -> input -> get($item);
+        $params[$item] = empty($parameter) ? "" : $parameter;
+        if(in_array($item, $date_array))
+        {
+            $params[$item] = partial_parse_date($parameter);
+        }
+
+    }
+
+	foreach ($items_dropdown as $item_dropdown) {
+	$parameter_dropdown = $CI -> input -> get($item_dropdown);
+	if($parameter_dropdown == "")
+	$params[$item_dropdown]="";
+	else
+	$params[$item_dropdown]= $parameter_dropdown;
+	}
+
+    $order_by = $CI -> input -> get('order_by');
+    $order_by = empty($order_by) ? "id desc" : $order_by;
+	if (($order_by=="ragione_sociale asc") or ($order_by=="ragione_sociale desc") or ($order_by=="ID desc") or ($order_by=="ID asc") )  {
+    $qs = array_merge($params,$params_dropdown,array('order_by' => $order_by));
+    return array('params' => $params,'order_by' => $order_by, 'qs' => $qs);
+   }
+   else {
+   $qs = array_merge($params, $params_dropdown, array('order_by' => $order_by));
+   return array('params' => $params,'order_by' => "id desc", 'qs' => $qs);
+
+   }
+}
+
 function list_atecos($dichiarazione_id)
 {
     $CI =& get_instance();
@@ -154,7 +192,14 @@ function legenda(){
                     'protesti' => array('0' => 'non fatta', '1' => 'in attesa', '2' => 'protestato', '3' => 'non protestato', '4' => 'scaduto'),
                     '5bis' => array('0' => 'non soggetto', '1' => 'soggetto', '2' => 'in attesa', '3' => 'pubblicato prefettura'),
                     'pubblicato' => array('1' => 'pubblicato', '0' => 'non pubblicato'),
-                    'login' => array('1' => 'login', '2' => 'cred. errate', '3' => 'sospeso', '4' => 'logout')
+                    'login' => array('1' => 'login', '2' => 'cred. errate', '3' => 'sospeso', '4' => 'logout'),
+					'stato' => array('1' => 'iscritto', '2' => 'iscritto provvisoriamente', '0' => 'in richiesta', '3' => 'cancellato'),
+					'parere_dia' => array ('0'=>'no','1'=>'si'),
+					'parere_prefettura' => array ('0'=>'no','1'=>'si'),
+					'avvio_proc_sent' => array ('0'=>'no','1'=>'si'),
+					'pref_soll_30_sent' => array ('0'=>'no','1'=>'si'),
+					'pref_soll_75_sent' => array ('0'=>'no','1'=>'si')
+
     );
     return $result;
 }
@@ -211,6 +256,7 @@ function protesti_description ($id) {
 	}
 
 
+
 function antimafia_description ($id) {
 	$CI =& get_instance();
 	$query = $CI -> db -> get_where('dichiaraziones', array('id' => $id));
@@ -240,6 +286,7 @@ function antimafia_description ($id) {
 	}
 	return $message;
 	}
+
 
 
 function create_codice_istanza($id) {

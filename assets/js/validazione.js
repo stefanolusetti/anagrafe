@@ -9,6 +9,30 @@ $(document).ready(function() {
     "Inserire una data nel formato gg/mm/aaaa"
   );
 
+  $.validator.addMethod('_interessi', function(v,e){
+      if (
+        !jQuery("#interesse_lavori_flag").is(':checked')
+        && !jQuery("#interesse_servizi_flag").is(':checked')
+        && !jQuery("#interesse_forniture_flag").is(':checked')
+        && !jQuery("#interesse_interventi_flag").is(':checked')
+      ) {
+        return false;
+      }
+      return true;
+    },
+    "Selezionare almeno un valore."
+  );
+
+  $.validator.addMethod('_thefields', function(v,e){
+      if (0 == jQuery(".company_fields:checked").length && jQuery("#impresa_settore_nessuno:checked").length == 0) {
+        return false;
+      }
+      return true;
+    },
+    "Selezionare almeno un valore."
+  );
+
+
   $.validator.addMethod("anno", function(value, element) {
       return value.match(/^\d\d\d\d$/);
     },

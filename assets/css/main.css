@@ -59,6 +59,14 @@ body {
 	height: 67px;
 }
 
+.container_governo {
+	background-color:#00264D;
+	position:absolute;
+	width: 937px;
+	height: 67px;
+
+}
+
 #governo {
 	text-decoration: none;
 	border: none;
@@ -407,7 +415,8 @@ table.elenco tr td.left {
 table.elenco tr td.smallbox {
 	padding: 8px;
 	/*text-align: center;*/
-	background-color: #F0F0F0;
+	/*background-color: #F0F0F0;*/
+	background-color: #e6e6e6;
 }
 
 table.elenco tr td.smallbox input[type=checkbox]{
@@ -608,7 +617,7 @@ a.button,  table.elenco tr td a.button {
 	display: block;
 	padding: 2px 3px;
 	/*background: #006311;*/
-	background:#00264D;
+	background:#0066CC;
 	text-align: center;
 	font-size: 0.8em;
 	margin: 3px 10px 0 0;
@@ -637,11 +646,17 @@ a.button.hidden,  table.elenco tr td a.button.hidden{
 
 
 a.button.unlock, table.elenco tr td a.button.unlock {
-	background-color: red;
+	/*background-color: red;*/
+	background-color:#0066CC;
+	margin-top:30px;
+	margin-bottom:30px;
 }
 
 a.button.lock,  table.elenco tr td a.button.lock{
-	background-color: #002166;
+	/*background-color: #002166;*/
+	background-color:#00264D;
+	margin-top:30px;
+	margin-bottom:30px;
 }
 
 a.button.spec,  table.elenco tr td a.button.spec{
@@ -764,11 +779,11 @@ width:auto;
 }
 
 .riferimento{
-width:auto;
+width:100px;
 word-wrap: break-word;
 }
 .azienda {
-width:auto;
+width:125px;
 word-wrap: break-word;
 }
 

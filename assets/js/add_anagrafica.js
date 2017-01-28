@@ -261,7 +261,7 @@ function addAnagrafica(e){
 */
 function addOffice(e){
   (function(index){
-    var template = '<div class="office container" id="ofel-###"><div class="field "><label for="office###name">Ragione Sociale impresa partecipata*<a href="#" data-elid="###" class="removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="office[###][name]" value="" id="office###name" class="required maxlen"></div><div class="field "><label for="office###vat">Partita IVA impresa partecipata</label><input type="text" name="office[###][vat]" value="" id="office###vat" class="required maxlen piva"></div><div class="field "><label for="office###cf">Codice Fiscale impresa partecipata</label><input type="text" name="office[###][cf]" value="" id="office###cf" class="required maxlen cf"></div><div class="resizer"></div></div>';
+    var template = '<div class="office container" id="ofel-###"><div class="field "><label for="office###name">Ragione Sociale impresa partecipata*<a href="#" data-elid="###" class="removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="office[###][name]" value="" id="office###name" class="required maxlen"></div><div class="field "><label for="office###vat">Partita IVA impresa partecipata*</label><input type="text" name="office[###][vat]" value="" id="office###vat" class="required maxlen piva"></div><div class="field "><label for="office###cf">Codice Fiscale impresa partecipata*</label><input type="text" name="office[###][cf]" value="" id="office###cf" class="required maxlen cf"></div><div class="resizer"></div></div>';
     var element = template.split('###').join(index);
     jQuery('.offices').prepend(jQuery(element));
     subOfficeEventHandlers();
@@ -297,7 +297,7 @@ function addFamiliar(e){
     // *** = numero familiare da visualizzare
     var template = '<div class="box-familiare" id="fam-###-@@@"><hr />\
       <a href="#anagrafiche" class="removeThisFamiliar" data-victim="fam-###-@@@" data-elid="###" data-elfid="@@@">Rimuovi Familiare Convivente Maggiorenne</a> \
-      <div class="field"> \
+      <div class="field hidden"> \
         <label>Ruolo</label> \
         <select name="anagrafica[###][f][@@@][role]" id="anagrafica[###][f][@@@][role]"> \
         ' + roles_options + '\
@@ -318,6 +318,12 @@ function addFamiliar(e){
       <div class="field"> \
         <label for="anagrafica[###][f][@@@][comune]">Comune di nascita*</label> \
         <input type="text" name="anagrafica[###][f][@@@][comune]" value="" id="anagrafica_###_f_@@@_comune" class="required maxlen" /> \
+      </div> \
+      <div class="field"> \
+        <label for="anagrafica[###][f][@@@][provincia]">Provincia di nascita*</label> \
+        <select name="anagrafica[###][f][@@@][provincia]" id="anagrafica_###_f_@@@_provincia"> \
+        ' + provincie_options + '\
+        </select>\
       </div> \
       <div class="field"> \
         <label for="anagrafica[###][f][@@@][cf]">Codice Fiscale*</label> \

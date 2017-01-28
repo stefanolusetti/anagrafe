@@ -150,7 +150,7 @@ function list_fields()
 
     unset($data['did']);
     unset($data['upd']);
-    unset($data['DID']);
+    unset($data['ID']);
     return $data;
 }
 

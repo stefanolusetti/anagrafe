@@ -1,7 +1,5 @@
 <ul class="submenu">
-    <li>
-        <a href="<?php echo site_url("users/logs"); ?>">Logs</a>
-    </li>
+    
     <li class="selected">Utenti</li>
 </ul>
 <table class="elenco">

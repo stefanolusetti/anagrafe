@@ -478,7 +478,7 @@ function send_thanks_mail($doc) {
 
   // Email utente
   $msg ="<p>
-  <strong>ATTENZIONE:</strong> Non rispondere a questa PEC. Per qualsiasi comunicazione utilizzare l’indirizzo: (XXXXXXXX)
+  <strong>ATTENZIONE:</strong> Non rispondere a questa PEC. Per avere supporto in fase di compilazione della domanda di iscrizione o per qualsiasi domanda è disponibile il numero di telefono 06/46529517 con i seguenti orari: dalle 9 alle 12 e dalle 15 alle 17.
   </p>
   <p>Gentile {$doc['titolare_nome']} {$doc['titolare_cognome']},</p>
   <p>
@@ -506,10 +506,9 @@ function send_thanks_mail($doc) {
   // Email interna
   $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
   //@debug
-  $CI->email->to('dp@certhidea.it');
-  //$CI->email->to('anagrafeantimafiasisma@pec.interno.it');
-  //$CI->email->cc('luigi.carbone@interno.it');
-  //$CI->email->bcc('info@certhidea.it');
+  //$CI->email->to('dp@certhidea.it');
+  $CI->email->to('anagrafeantimafiasisma@pec.interno.it');
+  $CI->email->cc(array('luigi.carbone@interno.it', 'info@certhidea.it'));
 
   $CI->email->subject(sprintf(
     "Domanda iscrizione anagrafica antimafia %s %s %s",

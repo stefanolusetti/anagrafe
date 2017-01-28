@@ -13,6 +13,283 @@ class Admin_model extends CI_Model {
         $this->load->helper('pdf');
     }
     
+	
+	
+	public function add_data ($data_user) {
+		$this->db->insert('esecutori', $data_user);
+	}
+	
+	public function check_upload ($data_user) {
+		 $query = $this->db
+                        ->from('esecutori')
+						->where('partita_iva',$data_user['partita_iva'])
+                        ->get();
+		$result = $query->result_array();
+		return ($result);
+	}
+    
+	
+	public function find_items_esecutori_iscritti ($ask, $offset = 0, $limit = 25) {
+		
+		 if ($ask == FALSE)
+        {
+            $rowcount = $this->db
+                        ->from('esecutori')
+						->where('stato',1)
+                        ->order_by('uploaded_at', 'ASC')
+                        ->limit($limit, $offset)
+                        ->count_all_results();
+                        
+            $query = $this->db
+                        ->from('esecutori')
+						->where('stato',1)
+                        ->order_by('uploaded_at', 'ASC')
+                        ->limit($limit, $offset)
+                        ->get();
+            
+        }
+		
+		
+		
+	else if ($ask['tipo_attivita'] != FALSE) { 
+		
+		$rowcount = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',1)
+						->where($ask['tipo_attivita'],1)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->count_all_results();
+                        
+            $query = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',1)
+						->where($ask['tipo_attivita'],1)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->limit($limit, $offset)
+                        ->get();
+						
+						}
+		
+		
+		
+		
+	
+	else {
+		
+		$rowcount = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',1)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->count_all_results();
+                        
+            $query = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',1)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->limit($limit, $offset)
+                        ->get();
+						
+						}
+						
+						
+						
+						
+						
+		
+		$result = $query->result_array();
+        $result['rowcount'] = $rowcount;
+        log_message('error', "totale record: " . $result['rowcount']);
+        return $result;
+	
+	}
+	
+	
+	public function find_items_esecutori_iscritti_provv ($ask, $offset = 0, $limit = 25) {
+		
+		if ($ask == FALSE)
+        {
+            $rowcount = $this->db
+                        ->from('esecutori')
+						->where('stato',2)
+                        ->order_by('uploaded_at', 'ASC')
+                        ->limit($limit, $offset)
+                        ->count_all_results();
+                        
+            $query = $this->db
+                        ->from('esecutori')
+						->where('stato',2)
+                        ->order_by('uploaded_at', 'ASC')
+                        ->limit($limit, $offset)
+                        ->get();
+            
+        }
+		
+		
+	
+	else if ($ask['tipo_attivita'] != FALSE) { 
+		
+		$rowcount = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',2)
+						->where($ask['tipo_attivita'],1)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->count_all_results();
+                        
+            $query = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',2)
+						->where($ask['tipo_attivita'],1)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->limit($limit, $offset)
+                        ->get();
+						
+						}
+	else {
+		
+		$rowcount = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',2)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->count_all_results();
+                        
+            $query = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',2)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->limit($limit, $offset)
+                        ->get();
+		
+		
+		
+		
+		
+		
+		
+	}
+		
+		$result = $query->result_array();
+        $result['rowcount'] = $rowcount;
+        log_message('error', "totale record: " . $result['rowcount']);
+        return $result;
+	
+	}
+	
+		public function find_items_esecutori_richiesta ($ask, $offset = 0, $limit = 25) {
+		
+		if ($ask == FALSE)
+        {
+            $rowcount = $this->db
+                        ->from('esecutori')
+						->where('stato',0)
+                        ->order_by('uploaded_at', 'ASC')
+                        ->limit($limit, $offset)
+                        ->count_all_results();
+                        
+            $query = $this->db
+                        ->from('esecutori')
+						->where('stato',0)
+                        ->order_by('uploaded_at', 'ASC')
+                        ->limit($limit, $offset)
+                        ->get();
+            
+        }
+		
+			
+	else if ($ask['tipo_attivita'] != FALSE) { 
+		
+		$rowcount = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',0)
+						->where($ask['tipo_attivita'],1)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->count_all_results();
+                        
+            $query = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',0)
+						->where($ask['tipo_attivita'],1)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->limit($limit, $offset)
+                        ->get();
+						
+						}
+		
+		
+	
+	else {
+		
+		$rowcount = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',0)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->count_all_results();
+                        
+            $query = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+						->where('stato',0)
+                        ->like('ragione_sociale', $ask['ragione_sociale'])
+                        ->like('partita_iva', $ask['partita_iva'])
+						->like('codice_fiscale', $ask['codice_fiscale'])
+                        ->limit($limit, $offset)
+                        ->get();
+						
+						}
+		
+		$result = $query->result_array();
+        $result['rowcount'] = $rowcount;
+        log_message('error', "totale record: " . $result['rowcount']);
+        return $result;
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
      public function find_items($ask, $offset = 0, $limit = 10){
         $province_cratere = array('BO','MO','PR','RA','RN','FE','RE','RO','MN','FC','PC');
         if ($ask == FALSE)
@@ -615,6 +892,30 @@ else {
         return $result;
     }
 	
+	/*Funzione di visualizzazione degli esecutori in istruttoria */
+	
+	    public function search_esecutori($params,$sort, $offset, $limit){
+        
+        $result = array();
+        
+        $rowcount = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+                        ->like($params)
+                        ->count_all_results();
+        
+        $query = $this->db
+                        ->select('*')
+                        ->from('esecutori')
+                        ->like($params)
+                        ->order_by($sort)
+                        ->limit($limit, $offset)
+                        ->get();
+                        
+        $result['statements'] = $query->result_array();
+        $result['count'] = $rowcount;
+        return $result;
+    }
 
     
     public function setMD5(){

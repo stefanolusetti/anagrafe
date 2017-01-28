@@ -1,6 +1,6 @@
 <h3><a href="/domanda/help" target="_blank">Istruzioni per la compilazione della domanda di iscrizione all'Anagrafe Antimafia degli Esecutori</a></h3>
 <?php
-echo form_open('domanda/nuova', array('target' => '_blank'));
+echo form_open('domanda/nuova', array('target' => '_blank')); //@debug
 ?>
 
   <h2>Anagrafica del richiedente</h2>
@@ -289,7 +289,7 @@ f_checkbox('impresa_settore_ferro', 'Fornitura di ferro lavorato', array('input'
 f_checkbox('impresa_settore_autotrasporto', 'Autotrasporto conto terzi', array('input' => array('class' => 'company_fields')));
 f_checkbox('impresa_settore_guardiana', 'Guardiania dei cantieri', array('input' => array('class' => 'company_fields')));
 
-f_checkbox('impresa_settore_nessuno', 'Nessuna delle precedenti');
+f_checkbox('impresa_settore_nessuno', 'Nessuna delle precedenti', array('input' => array('class' => '_thefields')));
 ?>
 <h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2>
 <a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a>
@@ -305,12 +305,12 @@ if (isset($offices) AND !empty($offices)) {
     );
     f_text(
       'office[' . $key . '][vat]',
-      'Partita IVA impresa partecipata',
+      'Partita IVA impresa partecipata*',
       array('input' => array('class' => 'required maxlen'))
     );
     f_text(
       'office[' . $key . '][cf]',
-      'Codice Fiscale impresa partecipata',
+      'Codice Fiscale impresa partecipata*',
       array('input' => array('class' => 'required maxlen'))
     );
     echo '<div class="resizer"></div></div>';
@@ -361,7 +361,7 @@ if (isset($offices) AND !empty($offices)) {
   f_checkbox(
     'interesse_lavori_flag',
     '<b>Lavori</b>',
-    array('input' => array('class' => 'elToggler ', 'data-el' => 'interesse_lavori_wrapper'))
+    array('input' => array('class' => 'elToggler _interessi', 'data-el' => 'interesse_lavori_wrapper'))
   );
   echo '<div id="interesse_lavori_wrapper" class="' . $interesse_lavori_tipo_class . '">';
   f_text(
@@ -565,7 +565,7 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
           $fam_prefix . 'role]',
           'Ruolo*',
           $options_fam_users,
-          array('input' => array('class' => 'required'))
+          array('input' => array('class' => 'required'), 'field' => array('class' => 'hidden'))
         );
         f_text(
           $fam_prefix . 'name]',
@@ -587,7 +587,12 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
           'Comune di nascita*',
           array('input' => array('class' => 'required maxlen'))
         );
-
+        f_select(
+          $fam_prefix . 'provincia]',
+          'Provincia di nascita*',
+          opzioni_provincie(),
+          array('input' => array('class' => 'required maxlen'))
+        );
         f_text(
           $fam_prefix . 'cf]',
           'Codice Fiscale*',

@@ -30,7 +30,8 @@ class SimpleUserAuth
         
         $post_pwd = $this -> ci -> input -> post('admin_pwd');
         
-        if (($users) && ($users[0]['pwd'] == crypt($post_pwd, $users[0]['pwd']))) 
+        //if (($users) && ($users[0]['pwd'] == crypt($post_pwd, $users[0]['pwd']))) 
+			if (($users) && ($users[0]['pwd'] == password_verify($post_pwd, $users[0]['pwd'])))
         {
             $this->ci->session->set_userdata(array('logged_in' => TRUE, 
                                                    'user_id' => $users[0]['ID']));
@@ -43,7 +44,8 @@ class SimpleUserAuth
                       'user_id' => $users[0]['ID'],
                       'campo' => 'login',
                       'valore' => '1',
-                      'created_at' => date("Y-m-d H:i:s"));
+                      'created_at' => date("Y-m-d H:i:s"),
+					  'target' => '0');
             $this->ci->db->insert('logs', $data);
             
             return TRUE;
@@ -59,7 +61,8 @@ class SimpleUserAuth
                       'user_id' => $users[0]['ID'],
                       'campo' => 'login',
                       'valore' => '2',
-                      'created_at' => date("Y-m-d H:i:s"));
+                      'created_at' => date("Y-m-d H:i:s"),
+					  'target' => '0');
                 $this->ci->db->insert('logs', $data);
                 
                 
@@ -75,7 +78,8 @@ class SimpleUserAuth
                       'user_id' => $users[0]['ID'],
                       'campo' => 'login',
                       'valore' => '3',
-                      'created_at' => date("Y-m-d H:i:s"));
+                      'created_at' => date("Y-m-d H:i:s"),
+					  'target' => '0');
                     $this->ci->db->insert('logs', $data);
                 }
             }
@@ -114,7 +118,8 @@ class SimpleUserAuth
                       'user_id' => $this->ci->session->userdata('user_id'),
                       'campo' => 'login',
                       'valore' => '4',
-                      'created_at' => date("Y-m-d H:i:s"));
+                      'created_at' => date("Y-m-d H:i:s"),
+					  'target' => '0');
         $this->ci->db->insert('logs', $data);
         
         //$this->ci->session->set_userdata( array('logged_in' => FALSE) );

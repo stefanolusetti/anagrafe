@@ -1,34 +1,39 @@
-<p>
-  L’accesso all’applicazione web per la compilazione e l’invio online della domanda di iscrizione all’Anagrafe Antimafia degli Esecutori avviene tramite il sito https://anagrafe.sisma2016.gov.it/
+<div class="padded">
+  <p>
+  Per effettuare l’iscrizione è necessario disporre di una Casella di Posta Elettronica Certificata (PEC).
 </p>
 <p>
-  Per effettuare l’iscrizione è necessario possedere una Casella di Posta Elettronica Certificata (PEC). Di seguito viene descritta la procedura necessaria per eseguire l’iscrizione all’Anagrafe Antimafia degli Esecutori da parte degli operatori economici:
+  Di seguito viene descritta la procedura necessaria per richiedere l’iscrizione all’Anagrafe Antimafia degli Esecutori da parte degli operatori economici:
 </p>
+
 <ul>
   <li>
-    Aprire un browser compatibile con l’applicazione web: Chrome 55 o superiore, Firefox 50 o superiore, Internet Explorer 9 o superiore. Javascript deve essere abilitato.
+    Collegarsi all’indirizzo https://anagrafe.sisma2016.gov.it/  (il browser utilizzato deve essere compatibile con l’applicazione web: Chrome 55 o superiore, Firefox 50 o superiore, Internet Explorer 9 o superiore. Javascript deve essere abilitato)
   </li>
   <li>
-    Collegarsi all’indirizzo https://anagrafe.sisma2016.gov.it/
+    Compilare i campi presenti nel form. I campi contrassegnati da * sono obbligatori.
   </li>
   <li>
-    Compilare i campi presenti nella form. I campi contrassegnati da * sono obbligatori.
-  </li>
-  <li>
-    Prestare attenzione all’indirizzo PEC richiesto: verrà utilizzato per terminare la procedura di iscrizione.
-  </li>
-  <li>
-    In particolare inserire le informazioni relative a tutti i soggetti previsti dall’art.85 del decreto legislativo n. 159/2011 e ai loro familiari conviventi.  È possibile inserire o eliminare l’anagrafica di un soggetto previsto dall’art.85 del decreto legislativo n. 159/2011 selezionando i link “Aggiungi anagrafica” e “Rimuovi anagrafica”. É possibile inserire o eliminare un familiare convivente selezionando i link “Aggiungi Familiare Convivente Maggiorenne” e “Rimuovi Convivente Maggiorenne”.
+    Inserire le informazioni relative a tutti i soggetti previsti dall’art.85 del decreto legislativo n. 159/2011 e ai loro familiari conviventi. È possibile inserire o eliminare l’anagrafica di un soggetto selezionando i link “Aggiungi anagrafica” e “Rimuovi anagrafica”. É possibile inserire o eliminare un familiare convivente selezionando i link “Aggiungi Familiare Convivente Maggiorenne” e “Rimuovi Familiare Convivente Maggiorenne”.
   </li>
   <li>
     Al termine della compilazione cliccare sul pulsante “Genera richiesta”.
   </li>
   <li>
-    L’applicativo invierà all’indirizzo PEC indicato in fase di iscrizione un link univoco a cui collegarsi.
+    L’applicativo invierà all’indirizzo PEC indicato in fase di iscrizione un link a cui collegarsi.
   </li>
   <li>
-    Il richiedente l’iscrizione, dopo essersi collegato all’indirizzo contenuto nella PEC dovrà caricare un file contenente la scannerizzazione fronte e retro della propria carta d’identità in corso di validità.<br />
-    <strong>ATTENZIONE:</strong>
+    Il richiedente l’iscrizione, dopo essersi collegato all’indirizzo indicato nella PEC, dovrà caricare un unico file contenente la scansione fronte e retro del proprio documento di identità in corso di validità (si consiglia di inviare un file in formato pdf; sono comunque accettati i seguenti formati: tiff, jpg, jpeg). Verranno accettati solamente file non superiori ai 2.5 MB di dimensione.
+  </li>
+  <li>
+    L’indirizzo PEC inserito sarà utilizzato per ricevere la conferma della corretta ricezione della richiesta.
+  </li>
+</ul>
+
+<h3>ATTENZIONE:</h3>
+<ul>
+  <li>
+    La procedura di presentazione dell’istanza è terminata dopo aver caricato il file contenente la scansione del documento di identità del richiedente. Il sistema invierà quindi una ulteriore PEC contenente il modulo compilato precedentemente dall’utente e il numero identificativo, da utilizzare nelle eventuali comunicazioni successive.
     <ul class="highlight">
       <li>
         Si consiglia di inviare un file in format pdf. Sono comunque accettati i seguenti formati: tiff, jpg, jpeg.
@@ -45,9 +50,7 @@
     </ul>
   </li>
   <li>
-    La procedura di presentazione della pratica è terminata dopo aver caricato il file contenente la scannerizzazione del documento di identità del richiedente. Il sistema invierà quindi una ulteriore PEC contenente il modulo compilato precedentemente dall’utente e un numero identificativo della pratica, da utilizzare nelle eventuali comunicazioni successive.
-  </li>
-  <li>
-    Per avere supporto in fase di compilazione della domanda di iscrizione o per qualsiasi domanda è possibile telefonare a questo numero: [XXXXXXXXXXXXXXXX] o in alternative scrivere a questo indirizzo email: [XXXXXXXXXXXXXXXXXXXXXXXX]
+    Per avere supporto in fase di compilazione della domanda di iscrizione o per qualsiasi domanda è disponibile il numero di telefono 06/46529517 con i seguenti orari: dalle 9 alle 12 e dalle 15 alle 17.
   </li>
 </ul>
+</div>
