@@ -168,6 +168,11 @@ $config = array(
       'rules' => 'required|max_length[200]',
     ),
     array(
+      'field' => 'titolare_rappresentanza',
+      'label' => 'Tipo di Rappresentanza',
+      'rules' => 'callback_titolare_rappresentanza'
+    ),
+    array(
       'field' => 'stmt_wl_interest',
       'label' => 'Attività',
       'rules' => 'callback__sake',
@@ -175,12 +180,32 @@ $config = array(
     array(
       'field' => 'white_list_prefettura',
       'label' => 'Nome Prefettura',
-      'rules' => 'max_length[200]',
+      'rules' => 'callback_white_list_prefettura',
+    ),
+    array(
+      'field' => 'interesse_interventi_flag',
+      'label' => 'Interventi di immediata riparazione',
+      'rules' => 'callback_interesse_interventi_flag',
+    ),
+    array(
+      'field' => 'check_anagrafiche',
+      'label' => 'Anagrafiche dei componenti',
+      'rules' => 'callback_check_anagrafiche'
+    ),
+    array(
+      'field' => 'check_settori',
+      'label' => 'Settori Impresa',
+      'rules' => 'callback_check_settori'
+    ),
+    array(
+      'field' => 'check_attivita',
+      'label' => 'Attività Impresa',
+      'rules' => 'callback_check_attivita'
     ),
     array(
       'field' => 'white_list_data',
       'label' => 'Data iscrizione white list prefettura',
-      'rules' => 'callback__controlla_data_opzionale',
+      'rules' => 'callback_white_list_data',
     ),
     array(
       'field' => 'stmt_eligible',

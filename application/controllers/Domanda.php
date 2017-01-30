@@ -32,11 +32,14 @@ class Domanda extends CI_Controller
       //add the header here
       $piva = $this->input->post('partita_iva');
       header('Content-Type: application/json');
+      /*
       $is_valid = $this->dichiarazione_model->_partita_iva_exists($piva);
       if ( ! $is_valid ) {
         $response = 'La partita IVA inserita è già presente. Non è possibile presentare due richieste per la stessa impresa.';
       }
-      else  if ( 11 != strlen($piva) ) {
+
+      else  */
+      if ( 11 != strlen($piva) ) {
         $response = 'La partita IVA deve contenere 11 caratteri.';
       }
       else {
@@ -247,12 +250,207 @@ class Domanda extends CI_Controller
 ██      ██    ██ ██   ██ ██  ██  ██     ██      ██   ██ ██      ██      ██   ██ ██   ██ ██      ██  ██       ██
 ██       ██████  ██   ██ ██      ██      ██████ ██   ██ ███████ ███████ ██████  ██   ██  ██████ ██   ██ ███████
 */
+  public function titolare_rappresentanza($val){
+    if ( 'Altro' == $val && empty($this->input->post('ruolo_richiedente')) ) {
+      $this->form_validation->set_message('titolare_rappresentanza', 'Se indicato Altro, specificare');
+      return false;
+    }
+
+    if ( is_null($this->input->post('stmt_wl')) ) {
+      $this->form_validation->set_message('stmt_wl', 'Indicare.');
+      return false;
+    }
+
+    return true;
+  }
+
+  public function interesse_interventi_flag($val) {
+    if ( 'Yes' == $this->input->post('interesse_interventi_flag') && 'Yes' != $this->input->post('interesse_interventi_checkbox')) {
+      $this->form_validation->set_message('interesse_interventi_flag', 'La dichiarazione è obbligatoria.');
+      return false;
+    }
+    return true;
+  }
+
+  public function check_attivita($val) {
+    $attivita = array(
+      'interesse_lavori_flag',
+      'interesse_servizi_flag',
+      'interesse_forniture_flag',
+      'interesse_interventi_flag'
+    );
+    $any_selected = false;
+    foreach ( $attivita AS $att ) {
+      if ( 'Yes' == $this->input->post($att) ) {
+        $any_selected = true;
+      }
+    }
+    if ( false == $any_selected ) {
+      $this->form_validation->set_message('check_attivita', 'Indicare almeno un valore.');
+      return false;
+    }
+    return true;
+  }
+
+  public function check_settori($val){
+    $settori = array(
+      'impresa_settore_trasporto',
+      'impresa_settore_rifiuti',
+      'impresa_settore_terra',
+      'impresa_settore_bitume',
+      'impresa_settore_nolo',
+      'impresa_settore_ferro',
+      'impresa_settore_autotrasporto',
+      'impresa_settore_guardiana',
+    );
+    //impresa_settore_nessuno
+    $any_selected = false;
+    foreach ($settori AS $settore) {
+      if ( 'Yes' == $this->input->post($settore) ) {
+        $any_selected = true;
+      }
+    }
+    if ( false == $any_selected && 'Yes' != $this->input->post('impresa_settore_nessuno')) {
+      $this->form_validation->set_message('check_settori', 'Indicare almeno un valore.');
+      return false;
+    }
+    return true;
+  }
+    /**
+     * Anagrafiche, usiamo un singolo campo (check_anagrafiche) per mostrare l'errore di validazione.
+     **/
+    public function check_anagrafiche($val){
+      $anagrafiche = $this->input->post('anagrafica');
+      if ( !empty($anagrafiche) ) {
+        foreach ( $anagrafiche AS $anagrafica ) {
+          if ( empty($anagrafica['antimafia_role']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Ruolo componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_nome']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Nome componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_cognome']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Cognome componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_data_nascita']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Data di nascita componente è obbligatorio');
+            return false;
+          }
+          else {
+            $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
+            if (preg_match($format, $anagrafica['antimafia_data_nascita']) == false) {
+              $this->form_validation->set_message('check_anagrafiche', 'Data di nascita componente deve contenere una data nel formato gg/mm/yyyy');
+              return false;
+            }
+          }
+          if ( empty($anagrafica['antimafia_comune_nascita']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Comune di nascita  componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_provincia_nascita']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Provincia di nascita componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_cf']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Codice Fiscale componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_comune_residenza']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Comune residenza componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_provincia_residenza']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Provincia residenza componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_via_residenza']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Via residenza  componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_civico_residenza']) ) {
+            $this->form_validation->set_message('check_anagrafiche', 'Civico residenza componente è obbligatorio');
+            return false;
+          }
+          if ( !empty($anagrafica['f']) ) {
+            foreach ( $anagrafica['f'] AS $familiare ) {
+              if ( empty($familiare['role']) ) {
+                $this->form_validation->set_message('check_anagrafiche', 'Ruolo familiare è obbligatorio');
+                return false;
+              }
+              if ( empty($familiare['name']) ) {
+                $this->form_validation->set_message('check_anagrafiche', 'Nome del familiare convivente è obbligatorio');
+                return false;
+              }
+              if ( empty($familiare['titolare_cognome']) ) {
+                $this->form_validation->set_message('check_anagrafiche', 'Cognome del familiare convivente è obbligatorio');
+                return false;
+              }
+              if ( empty($familiare['data_nascita']) ) {
+                $this->form_validation->set_message('check_anagrafiche', 'Data di nascita del familiare convivente è obbligatorio');
+                return false;
+              }
+              else {
+                $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
+                if (preg_match($format, $familiare['data_nascita']) == false) {
+                  $this->form_validation->set_message('check_anagrafiche', 'Data di nascita familiare convivente deve contenere una data nel formato gg/mm/yyyy');
+                  return false;
+                }
+              }
+
+              if ( empty($familiare['comune']) ) {
+                $this->form_validation->set_message('check_anagrafiche', 'Comune di nascita del familiare convivente è obbligatorio');
+                return false;
+              }
+              if ( empty($familiare['provincia']) ) {
+                $this->form_validation->set_message('check_anagrafiche', 'Provincia di nascita del familiare convivente è obbligatorio');
+                return false;
+              }
+              if ( empty($familiare['cf']) ) {
+                $this->form_validation->set_message('check_anagrafiche', 'Codice Fiscale del familiare convivente è obbligatorio');
+                return false;
+              }
+            }
+          }
+        }
+      }
+      return true;
+    }
+
     public function _forma_giuridica_id_check($val){
       if (1 == (int)$val) {
         $this->form_validation->set_message('forma_giuridica_id', 'Il campo <em>%s</em> è obbligatorio.');
         return false;
       }
       return true;
+    }
+
+    public function white_list_prefettura($val) {
+      $is = $this->input->post('stmt_wl');
+      if ( TRUE && 'Yes' == $is && empty($val) ) {
+        $this->form_validation->set_message('white_list_prefettura', 'Inserire il campo <em>%s</em>');
+        return false;
+      }
+      return true;
+    }
+
+    public function white_list_data($val) {
+      $is = $this->input->post('stmt_wl');
+      if ( 'Yes' == $is ) {
+        $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
+        if (preg_match($format, $val) == false) {
+          $this->form_validation->set_message('white_list_data', 'Il campo <em>%s</em> deve contenere una data nel formato gg/mm/yyyy');
+          return false;
+        }
+        else {
+          return true;
+        }
+      }
+      else {
+        return true;
+      }
     }
 
     public function _stmt_eligible($val){
@@ -268,7 +466,6 @@ class Domanda extends CI_Controller
 
     public function _controlla_data($str)
     {
-
         $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
         if (preg_match($format, $str) == false) {
             $this->form_validation->set_message('_controlla_data', 'Il campo <em>%s</em> deve contenere una data nel formato gg/mm/yyyy');

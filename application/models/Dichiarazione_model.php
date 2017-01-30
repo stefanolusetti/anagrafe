@@ -109,15 +109,15 @@ class Dichiarazione_model extends CI_Model
     $data['interesse_interventi'] = $this->input->post('interesse_interventi_flag') == 'Yes' ? 1 : 0;
     $data['interesse_interventi_checkbox'] = $this->input->post('interesse_interventi_checkbox') == 'Yes' ? 1 : 0;
 
-    $data['interesse_lavori_importo'] = parse_decimal($data['interesse_lavori_importo']);
-    $data['interesse_servizi_importo'] = parse_decimal($data['interesse_servizi_importo']);
-    $data['interesse_forniture_importo'] = parse_decimal($data['interesse_forniture_importo']);
-    $data['interesse_interventi_importo'] = parse_decimal($data['interesse_interventi_importo']);
+    $data['interesse_lavori_importo'] = $data['interesse_lavori_importo'];
+    $data['interesse_servizi_importo'] = $data['interesse_servizi_importo'];
+    $data['interesse_forniture_importo'] = $data['interesse_forniture_importo'];
+    $data['interesse_interventi_importo'] = $data['interesse_interventi_importo'];
 
-    $data['impresa_num_amministratori'] = parse_decimal($data['impresa_num_amministratori']);
-    $data['impresa_num_procuratori'] = parse_decimal($data['impresa_num_procuratori']);
-    $data['impresa_num_sindaci'] = parse_decimal($data['impresa_num_sindaci']);
-    $data['impresa_num_sindaci_supplenti'] = parse_decimal($data['impresa_num_sindaci_supplenti']);
+    $data['impresa_num_amministratori'] = (int)$data['impresa_num_amministratori'];
+    $data['impresa_num_procuratori'] = (int)$data['impresa_num_procuratori'];
+    $data['impresa_num_sindaci'] = (int)$data['impresa_num_sindaci'];
+    $data['impresa_num_sindaci_supplenti'] = (int)$data['impresa_num_sindaci_supplenti'];
 
     $data['impresa_settore_nessuno'] = $this->input->post('impresa_settore_nessuno') == 'Yes' ? 1 : 0;
     $data['impresa_settore_trasporto'] = $this->input->post('impresa_settore_trasporto') == 'Yes' ? 1 : 0;
@@ -222,9 +222,9 @@ class Dichiarazione_model extends CI_Model
       $this->db->trans_rollback();
       // @Todo Messaggio?
       echo '<h1>SI È VERIFICATO UN ERRORE</h1>';
-      echo $e->getMessage() . '<br />';
-      echo $e->getLine() . '<br />';
-      echo $e->getFile() . '<br />';
+      //echo $e->getMessage() . '<br />';
+      //echo $e->getLine() . '<br />';
+      //echo $e->getFile() . '<br />';
     }
     set_error_handler($curr_error_handler);
     return $doc_id;

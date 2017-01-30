@@ -217,22 +217,22 @@ function addAnagrafica(e){
         <input type="text" name="anagrafica[###][antimafia_cf]" value="" id="anagrafica[###][antimafia_cf]" class="required cfp" /> \
       </div> \
       <div class="field"> \
-        <label for="antimafia_comune_residenza">Comune di Residenza</label> \
-        <input type="text" name="anagrafica[###][antimafia_comune_residenza]" value="" id="anagrafica_###_antimafia_comune_residenza" /> \
+        <label for="antimafia_comune_residenza">Comune di Residenza*</label> \
+        <input type="text" name="anagrafica[###][antimafia_comune_residenza]" value="" id="anagrafica_###_antimafia_comune_residenza" class="required" /> \
       </div> \
       <div class="field"> \
-        <label for="antimafia_provincia_residenza">Provincia di residenza</label> \
-        <select name="anagrafica[###][antimafia_provincia_residenza]" id="anagrafica_###_antimafia_provincia_residenza"> \
+        <label for="antimafia_provincia_residenza">Provincia di residenza*</label> \
+        <select name="anagrafica[###][antimafia_provincia_residenza]" id="anagrafica_###_antimafia_provincia_residenza"  class="required"> \
         ' + provincie_options + '\
         </select>\
       </div> \
       <div class="field"> \
-        <label for="antimafia_via_residenza">Via</label> \
-        <input type="text" name="anagrafica[###][antimafia_via_residenza]" value="" id="anagrafica[###][antimafia_via_residenza]" /> \
+        <label for="antimafia_via_residenza">Via residenza*</label> \
+        <input type="text" name="anagrafica[###][antimafia_via_residenza]" value="" id="anagrafica[###][antimafia_via_residenza]"  class="required" /> \
       </div> \
       <div class="field"> \
-        <label for="antimafia_civico_residenza">Civico</label> \
-        <input type="text" name="anagrafica[###][antimafia_civico_residenza]" value="" id="anagrafica[###][antimafia_civico_residenza]" /> \
+        <label for="antimafia_civico_residenza">Civico residenza*</label> \
+        <input type="text" name="anagrafica[###][antimafia_civico_residenza]" value="" id="anagrafica[###][antimafia_civico_residenza]"  class="required" /> \
       </div> \
       <a href="#anagrafiche" class="addFamiliar" data-elid="###">Aggiungi Familiare Convivente Maggiorenne</a> | <a href="#anagrafiche" class="removeFamiliar" data-victim="anel-###" data-elid="###">Rimuovi Anagrafica</a> \
       <div class="familiars" data-elid="###"></div> \

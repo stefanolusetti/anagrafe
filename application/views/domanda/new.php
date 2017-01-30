@@ -280,6 +280,11 @@ echo form_open('domanda/nuova'); //@debug
 ?>
 <h4>L'impresa opera in uno dei seguenti settori:</h4>
 <?php
+f_checkbox(
+  'check_settori',
+  'Settori',
+  array('input' => array('class' => 'hidden'), 'field' => array('class' => 'labelhidden'))
+);
 f_checkbox('impresa_settore_trasporto', 'Trasporto di materiali a discarica conto terzi', array('input' => array('class' => 'company_fields')));
 f_checkbox('impresa_settore_rifiuti', 'Trasporto e smaltimento di rifiuti', array('input' => array('class' => 'company_fields')));
 f_checkbox('impresa_settore_terra', 'Estrazione, fornitura e trasporto di terra e materiali inerti', array('input' => array('class' => 'company_fields')));
@@ -355,6 +360,11 @@ if (isset($offices) AND !empty($offices)) {
   ██   ██    ██       ██    ██   ████   ██    ██    ██   ██
 */
   echo '<h2>Interessato allo svolgimento delle seguenti attività (è necessario selezionare almeno una voce)</h2>';
+  f_checkbox(
+    'check_attivita',
+    'Attività',
+    array('input' => array('class' => 'hidden'), 'field' => array('class' => 'labelhidden'))
+  );
   echo f_hidden('stmt_wl_interest');
   // Work
   echo '<div id="stmt_wl_interest_more" class="">';
@@ -456,6 +466,13 @@ if (isset($offices) AND !empty($offices)) {
 
 <div class="container">
     <a name="anagrafiche"></a>
+<?php
+f_checkbox(
+  'check_anagrafiche',
+  'Anagrafiche',
+  array('input' => array('class' => 'hidden'), 'field' => array('class' => 'labelhidden'))
+);
+?>
     <a href="#anagrafiche" class="add addAnagrafica">Aggiungi anagrafica</a> | <a href="#" class="reset resetAnagrafiche">Cancella tutto</a><br>
     <div class="inputs"><?php
 /*
@@ -527,8 +544,8 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
 
     f_text(
       $prefix . 'antimafia_comune_residenza]',
-      'Comune Residenza',
-      array('input' => array('class' => ''))
+      'Comune Residenza*',
+      array('input' => array('class' => 'required'))
     );
     f_select(
       $prefix . 'antimafia_provincia_residenza]',
@@ -538,13 +555,13 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
     );
     f_text(
       $prefix . 'antimafia_via_residenza]',
-      'Via Residenza',
-      array('input' => array('class' => ''))
+      'Via Residenza*',
+      array('input' => array('class' => 'required'))
     );
     f_text(
       $prefix . 'antimafia_civico_residenza]',
-      'Civico Rediernza',
-      array('input' => array('class' => ''))
+      'Civico Residenza*',
+      array('input' => array('class' => 'required'))
     );
 
     echo str_replace(

@@ -919,3 +919,11 @@ ul.highlight{
 .padded{
   padding: 0px 15px 0px 15px;
 }
+
+
+.labelhidden label{
+  display: none !important;
+}
+.labelhidden label.errormsg{
+  display: block !important;
+}

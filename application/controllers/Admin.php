@@ -150,14 +150,15 @@ class Admin extends CI_Controller {
 			$interesse_servizi =$objWorksheet->getCellByColumnAndRow(3,$i)->getValue();
 			$interesse_forniture =$objWorksheet->getCellByColumnAndRow(4,$i)->getValue();
 			$interesse_interventi =$objWorksheet->getCellByColumnAndRow(5,$i)->getValue();
-			$ragione_sociale = $objWorksheet->getCellByColumnAndRow(6,$i)->getValue();
-			$sl_via=$objWorksheet->getCellByColumnAndRow(7,$i)->getValue();
-			$sl_civico=$objWorksheet->getCellByColumnAndRow(8,$i)->getValue();
-			$sl_comune=$objWorksheet->getCellByColumnAndRow(9,$i)->getValue();
-			$sl_prov=$objWorksheet->getCellByColumnAndRow(10,$i)->getValue();
-			$sl_cap=$objWorksheet->getCellByColumnAndRow(11,$i)->getValue();
-			$bdna_protocollo=$objWorksheet->getCellByColumnAndRow(12,$i)->getValue();
-			$stmt_wl=$objWorksheet->getCellByColumnAndRow(13,$i)->getValue();
+			$forma_giuridica_id=$objWorksheet->getCellByColumnAndRow(6,$i)->getValue();
+			$ragione_sociale = $objWorksheet->getCellByColumnAndRow(7,$i)->getValue();
+			$sl_via=$objWorksheet->getCellByColumnAndRow(8,$i)->getValue();
+			$sl_civico=$objWorksheet->getCellByColumnAndRow(9,$i)->getValue();
+			$sl_comune=$objWorksheet->getCellByColumnAndRow(10,$i)->getValue();
+			$sl_prov=$objWorksheet->getCellByColumnAndRow(11,$i)->getValue();
+			$sl_cap=$objWorksheet->getCellByColumnAndRow(12,$i)->getValue();
+			$bdna_protocollo=$objWorksheet->getCellByColumnAndRow(13,$i)->getValue();
+			$stmt_wl=$objWorksheet->getCellByColumnAndRow(14,$i)->getValue();
 			$uploaded_at = date("Y_m_d H:i:s");
 			$created_at = date("Y_m_d H:i:s");
 			//$dia_scadenza = date(("Y_m_d H:i:s"), strtotime("+10 days"));
@@ -165,11 +166,11 @@ class Admin extends CI_Controller {
 			//$pref_scadenza_75 = date(("Y_m_d H:i:s"), strtotime("+75 days"));
 			//$data_iscrizione_temp=$objWorksheet->getCellByColumnAndRow(5,$i)->getValue();
 			//$data_iscrizione = PHPExcel_Shared_Date::ExcelToPHPObject($data_iscrizione_temp)->format('Y-m-d');
-			$stato=$objWorksheet->getCellByColumnAndRow(14,$i)->getValue();
+			$stato=$objWorksheet->getCellByColumnAndRow(15,$i)->getValue();
 			//$istanza_luogo=NULL;
 
 			
-			$data_user = array('codice_fiscale' => $codice_fiscale,'partita_iva' => $partita_iva,'interesse_lavori' => $interesse_lavori,'interesse_servizi' => $interesse_servizi,'interesse_forniture' => $interesse_forniture,'interesse_interventi' => $interesse_interventi, 'ragione_sociale' => $ragione_sociale,'sl_via' => $sl_via,
+			$data_user = array('codice_fiscale' => $codice_fiscale,'partita_iva' => $partita_iva,'interesse_lavori' => $interesse_lavori,'interesse_servizi' => $interesse_servizi,'interesse_forniture' => $interesse_forniture,'interesse_interventi' => $interesse_interventi,'forma_giuridica_id'=>$forma_giuridica_id, 'ragione_sociale' => $ragione_sociale,'sl_via' => $sl_via,
 			'sl_civico' => $sl_civico,'sl_comune' => $sl_comune,'sl_prov' => $sl_prov,'sl_cap' => $sl_cap,'bdna_protocollo' => $bdna_protocollo,'stmt_wl'=> $stmt_wl,
 			'uploaded_at' => $uploaded_at,'created_at' => $created_at,'stato' => $stato
 			);
