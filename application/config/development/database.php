@@ -52,9 +52,9 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['database'] = 'anagrafe_definitivo';
-$db['default']['username'] = 'merito';
-$db['default']['password'] = 'rermerito';
+$db['default']['database'] = 'anagrafe';
+$db['default']['username'] = 'anagrafe';
+$db['default']['password'] = 'cip3ciop';
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

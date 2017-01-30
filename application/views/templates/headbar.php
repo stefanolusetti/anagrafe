@@ -27,7 +27,7 @@
          }
          echo anchor('/domanda/help', 'Istruzioni', $attr); ?>
         </li>
-        <li>
+       <!-- <li>
          <?php 
          $attr = array();
          $attr['title'] = "Iscritti";
@@ -44,7 +44,7 @@
 		 if($current_url->router->fetch_method()=='iscritti_provv')
             $attr['class'] = 'selected';
          echo anchor('/elenco/iscritti_provv', 'Iscritti provvisoriamente', $attr); ?>
-        </li>
+        </li>-->
         <?php if(logged_in()): ?>
 		<li>
          <?php 

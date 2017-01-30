@@ -1,6 +1,6 @@
 <h3><a href="/domanda/help" target="_blank">Istruzioni per la compilazione della domanda di iscrizione all'Anagrafe Antimafia degli Esecutori</a></h3>
 <?php
-echo form_open('domanda/nuova', array('target' => '_blank')); //@debug
+echo form_open('domanda/nuova'); //@debug
 ?>
 
   <h2>Anagrafica del richiedente</h2>

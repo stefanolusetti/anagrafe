@@ -29,11 +29,11 @@ class Domanda extends CI_Controller
     }
 
     public function index() {
-      //$this -> nuova();
-      $this -> load -> view('templates/header');
-      $this -> load -> view('templates/headbar');
-      $this -> load -> view('domanda/temp');
-      $this -> load -> view('templates/footer');
+      $this -> nuova();
+      //$this -> load -> view('templates/header');
+      //$this -> load -> view('templates/headbar');
+      //$this -> load -> view('domanda/temp');
+      //$this -> load -> view('templates/footer');
     }
 
 /*

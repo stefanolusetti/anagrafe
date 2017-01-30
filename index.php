@@ -54,9 +54,8 @@
  * NOTE: If you change these, also change the error_reporting() code below
  */
 	#define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
-	
-	define('ENVIRONMENT', 'development');
-	#define('ENVIRONMENT', 'production');
+define('ENVIRONMENT', 'development');
+//define('ENVIRONMENT', 'production');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -90,7 +89,7 @@
 		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
 		echo 'The application environment is not set correctly.';
 		exit(1); // EXIT_ERROR
-} 
+}
 /*
 if (defined('ENVIRONMENT'))
 {
@@ -100,7 +99,7 @@ if (defined('ENVIRONMENT'))
 			error_reporting(E_ALL);
 			//error_reporting(0);
 		break;
-	
+
 		case 'testing':
 		case 'production':
 			error_reporting(0);

@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://anagrafe.lan';
+$config['base_url']	= 'https://anagrafe.lan';
 #$config['base_url']	= 'http://merito.nginx.lan/';
 $config['exclude_logging'] = array(E_STRICT,E_NOTICE);
 
