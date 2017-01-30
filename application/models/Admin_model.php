@@ -30,19 +30,19 @@ class Admin_model extends CI_Model {
     
 	
 	public function find_items_esecutori_iscritti ($ask, $offset = 0, $limit = 25) {
-		
+		$id_stato = array('1', '2');
 		 if ($ask == FALSE)
         {
             $rowcount = $this->db
                         ->from('esecutori')
-						->where('stato',1)
+						->where_in('stato',$id_stato)
                         ->order_by('uploaded_at', 'ASC')
                         ->limit($limit, $offset)
                         ->count_all_results();
                         
             $query = $this->db
                         ->from('esecutori')
-						->where('stato',1)
+						->where_in('stato',$id_stato)
                         ->order_by('uploaded_at', 'ASC')
                         ->limit($limit, $offset)
                         ->get();
@@ -56,7 +56,7 @@ class Admin_model extends CI_Model {
 		$rowcount = $this->db
                         ->select('*')
                         ->from('esecutori')
-						->where('stato',1)
+						->where_in('stato',$id_stato)
 						->where($ask['tipo_attivita'],1)
                         ->like('ragione_sociale', $ask['ragione_sociale'])
                         ->like('partita_iva', $ask['partita_iva'])
@@ -66,7 +66,7 @@ class Admin_model extends CI_Model {
             $query = $this->db
                         ->select('*')
                         ->from('esecutori')
-						->where('stato',1)
+						->where_in('stato',$id_stato)
 						->where($ask['tipo_attivita'],1)
                         ->like('ragione_sociale', $ask['ragione_sociale'])
                         ->like('partita_iva', $ask['partita_iva'])
@@ -85,7 +85,7 @@ class Admin_model extends CI_Model {
 		$rowcount = $this->db
                         ->select('*')
                         ->from('esecutori')
-						->where('stato',1)
+						->where_in('stato',$id_stato)
                         ->like('ragione_sociale', $ask['ragione_sociale'])
                         ->like('partita_iva', $ask['partita_iva'])
 						->like('codice_fiscale', $ask['codice_fiscale'])
@@ -94,7 +94,7 @@ class Admin_model extends CI_Model {
             $query = $this->db
                         ->select('*')
                         ->from('esecutori')
-						->where('stato',1)
+						->where_in('stato',$id_stato)
                         ->like('ragione_sociale', $ask['ragione_sociale'])
                         ->like('partita_iva', $ask['partita_iva'])
 						->like('codice_fiscale', $ask['codice_fiscale'])

@@ -20,6 +20,16 @@ function f_text($campo, $etichetta, $args = null)
     echo '</div>';
 }
 
+function f_text_custom_value($campo, $etichetta, $opzioni, $valore, $args = null)
+{
+    $id = str_replace(array('[', ']'), '', $campo);
+    $opzioni = extract_args($args, $id);
+    echo   "<div class='field'><label for='{$id}'>{$etichetta}</label>".
+      "<input type='text' name='{$campo}' value='{$valore}' {$opzioni['input']}/>";
+    echo mostra_errore($campo);
+    echo '</div>';
+}
+
 function f_textarea($campo, $etichetta, $args = null)
 {
     $id = str_replace(array('[', ']'), '', $campo);

@@ -506,16 +506,30 @@ function send_thanks_mail($doc) {
   // Email interna
   $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
   //@debug
-  //$CI->email->to('dp@certhidea.it');
-  $CI->email->to('anagrafeantimafiasisma@pec.interno.it');
-  $CI->email->cc(array('luigi.carbone@interno.it', 'info@certhidea.it'));
 
-  $CI->email->subject(sprintf(
-    "Domanda iscrizione anagrafica antimafia %s %s %s",
-    $doc['ragione_sociale'],
-    $doc['partita_iva'],
-    $codice
-  ));
+  if ( 'development' == ENVIRONMENT ) {
+    $CI->email->to('dp@certhidea.it');
+    $CI->email->subject(sprintf(
+      "[DEBUG] - Domanda iscrizione anagrafica antimafia %s %s %s %s",
+      $doc['ragione_sociale'],
+      $doc['partita_iva'],
+      $doc['codice_fiscale'],
+      $codice
+    ));
+  }
+  else if ( 'production' == ENVIRONMENT ) {
+    $CI->email->to('anagrafeantimafiasisma@pec.interno.it');
+    $CI->email->cc(array('luigi.carbone@interno.it', 'info@certhidea.it'));
+    $CI->email->subject(sprintf(
+      "Domanda iscrizione anagrafica antimafia %s %s %s %s",
+      $doc['ragione_sociale'],
+      $doc['partita_iva'],
+      $doc['codice_fiscale'],
+      $codice
+    ));
+  }
+
+
   $CI->email->message("in allegato CSV e PDF");
   $CI->email->attach(
     $fileinfo['path'],

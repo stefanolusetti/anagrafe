@@ -129,7 +129,7 @@ echo form_open('domanda/nuova'); //@debug
   f_text(
     'partita_iva',
     'Partita IVA*',
-    array('input' => array('class' => 'required piva'))
+    array('input' => array('class' => '_piva_unique'))
   );
   f_text(
     'codice_fiscale',
@@ -697,7 +697,7 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
     <?php $this->load->view('pages/privacy'); ?>
   </div>
   <?php
-  f_text('istanza_data', 'Data*', array('input' => array('class' => 'required data')));
+  f_text_custom_value('istanza_data', 'Data*', array('input' => array('class' => 'required data')), $istanza_data_default);
   f_text('istanza_luogo', 'Luogo*', array('input' => array('class' => 'required')));
   ?>
 

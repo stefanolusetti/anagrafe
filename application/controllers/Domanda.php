@@ -28,6 +28,23 @@ class Domanda extends CI_Controller
         $this->load->helper('captcha');
     }
 
+    public function check_piva() {
+      //add the header here
+      $piva = $this->input->post('partita_iva');
+      header('Content-Type: application/json');
+      $is_valid = $this->dichiarazione_model->_partita_iva_exists($piva);
+      if ( ! $is_valid ) {
+        $response = 'La partita IVA inserita è già presente. Non è possibile presentare due richieste per la stessa impresa.';
+      }
+      else  if ( 11 != strlen($piva) ) {
+        $response = 'La partita IVA deve contenere 11 caratteri.';
+      }
+      else {
+        $response = true;
+      }
+      echo json_encode( $response );
+    }
+
     public function index() {
       $this -> nuova();
       //$this -> load -> view('templates/header');
@@ -71,6 +88,7 @@ class Domanda extends CI_Controller
           $data['stmt_wl_no_checked'] = 'No' == $this->input->post('stmt_wl') ? ' checked="checked" ' : '';
 
           $data['antimafias'] = false;
+          $data['istanza_data_default'] = $this->input->post('istanza_data') ? $this->input->post('istanza_data') : date('d/m/Y');
 
           $offices = $this->input->post('office');
           $data['stmt_wl_class'] = 'Yes' == $this->input->post('stmt_wl') ? '' : 'hidden';

@@ -13,10 +13,15 @@ class Dichiarazione_model extends CI_Model
 
   public function get_items($id = false) {
     if (false === $id) {
-      $query = $this->db->get('docs');
+      $query = $this->db->get('esecutori');
       return $query->result_array();
     }
     return $this->get_item($id);
+  }
+
+  public function _partita_iva_exists($piva) {
+    $query = $this->db->select('*')->from('esecutori')->where('partita_iva', $piva)->get();
+    return 0 == $query->num_rows();
   }
 
   // Load and return the full document.
@@ -85,7 +90,8 @@ class Dichiarazione_model extends CI_Model
 
 
     $data = list_fields();
-
+    $data['partita_iva'] = strtoupper($data['partita_iva']);
+    $data['codice_fiscale'] = strtoupper($data['codice_fiscale']);
     $data['impresa_email'] = '';
     $data['rea_num_iscrizione'] = '';
 
@@ -165,8 +171,8 @@ class Dichiarazione_model extends CI_Model
               array(
                 'esecutore_id' => $doc_id,
                 'nome' => $office['name'],
-                'cf' => $office['cf'],
-                'piva' => $office['vat'],
+                'cf' => strtoupper($office['cf']),
+                'piva' => strtoupper($office['vat']),
               )
             );
           }
@@ -185,7 +191,7 @@ class Dichiarazione_model extends CI_Model
               'antimafia_provincia_nascita' => $anagrafica['antimafia_provincia_nascita'],
               'antimafia_via_residenza' => $anagrafica['antimafia_via_residenza'],
               'antimafia_civico_residenza' => $anagrafica['antimafia_civico_residenza'],
-              'antimafia_cf' => $anagrafica['antimafia_cf'],
+              'antimafia_cf' => strtoupper($anagrafica['antimafia_cf']),
               'role_id' => $anagrafica['antimafia_role']
             );
             $this->db->insert('anagrafiche_antimafia', $data_anagrafiche);
@@ -200,7 +206,7 @@ class Dichiarazione_model extends CI_Model
                   'cognome' => $familiar['titolare_cognome'],
                   'comune' => $familiar['comune'],
                   'data_nascita' => parse_date($familiar['data_nascita']),
-                  'cf' => $familiar['cf'],
+                  'cf' => strtoupper($familiar['cf']),
                   'role_id' => $familiar['role']
                 );
                 $this->db->insert('anagrafiche_familiari', $dati_familiare);

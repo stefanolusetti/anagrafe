@@ -27,16 +27,17 @@
          }
          echo anchor('/domanda/help', 'Istruzioni', $attr); ?>
         </li>
-       <!-- <li>
+       <li>
          <?php 
          $attr = array();
-         $attr['title'] = "Iscritti";
+         $attr['title'] = "Elenco";
 		 $current_url =& get_instance();
 		 
          if($current_url->router->fetch_method()=='iscritti')
             $attr['class'] = 'selected';
-         echo anchor('/elenco/iscritti', 'Iscritti', $attr); ?>
+         echo anchor('/elenco/iscritti', 'Elenco', $attr); ?>
         </li>
+		<!--
 		 <li>
          <?php 
          $attr = array();

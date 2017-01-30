@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  window._pivaTimeout = false;
   $('input[name=tipo_contratto_altri]').attr('disabled', 'disabled');
   $('input[name=tipo_impresa_altri]').attr('disabled', 'disabled');
   $('.soas').attr('disabled', 'disabled');
@@ -154,6 +155,16 @@ $(document).ready(function() {
         cf: {
           required: true,
           rangelength: [16, 16]
+        },
+        partita_iva: {
+          required: true,
+          remote: {
+            url: '/domanda/check_piva',
+            type: "post",
+            data: {
+              piva: jQuery("#partita_iva").val()
+            }
+          }
         }
       },
       errorPlacement: function(error, element) {
