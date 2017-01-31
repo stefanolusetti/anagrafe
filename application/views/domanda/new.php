@@ -1,6 +1,6 @@
 <h3><a href="/domanda/help" target="_blank">Istruzioni per la compilazione della domanda di iscrizione all'Anagrafe Antimafia degli Esecutori</a></h3>
 <?php
-echo form_open('domanda/nuova'); //@debug
+echo form_open('domanda/nuova', array('target' => '_blank')); //@debug
 ?>
 
   <h2>Anagrafica del richiedente</h2>
@@ -259,7 +259,7 @@ echo form_open('domanda/nuova'); //@debug
 */
   f_text(
     'impresa_pec',
-    "Casella PEC (inserire email valida per l'invio del modulo da firmare digitalmente)*",
+    "Casella PEC*",
     array('input' => array('class' => 'required email'))
   );
 
@@ -676,45 +676,18 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
   );
   echo '</div>';
 
-
-
-
-
-
-
-
-
-  /*
-  f_checkbox('noprotesti_sino', 'di non aver subito protesti cambiari e/o di assegni nell’ultimo quinquennio (ai sensi degli artt. 68-73 legge cambiaria);',
-        array('input' => array('class' => 'required')));
-  f_checkbox('antimafia_sino', 'che nei propri confronti non sussistono le cause di decadenza, di sospensione o di divieto di cui all’art. 67 del D.Lgs. 6 settembre 2011, n. 159);',
-        array('input' => array('class' => 'required')));
-  f_checkbox('ateco_sino', 'di essere in possesso dei Codici Identificativi Ateco relativi alla lettera F e/o R, di cui alla “Tabella dei titoli a sei cifre della classificazione delle attività economiche Ateco 2007”, pubblicati nel sito dell’ISTAT',
-        array('input' => array('class' => 'required')));
-
   ?>
-  <h2>Si impegna*</h2>
-  <?php
-  f_checkbox('sopralluoghi_sino', 'a garantire, durante l’esecuzione dei lavori, l’accesso e lo svolgimento dei sopralluoghi da parte degli organismi paritetici di settore presenti sul territorio ove si svolgono i lavori stessi, ai sensi dell’art. 51, comma 6 del D.lgs. 81/2008 e s.m.i. e dell’art. 13, comma 2 della L.R. 11/2010;',
-        array('input' => array('class' => 'required')));
-  f_checkbox('sico_sino', 'a trasmettere la notifica preliminare agli enti competenti tramite il sistema informatico SICO ai sensi dell’allegato 1) parte integrante alla deliberazione di Giunta regionale n.  637/2011.',
-        array('input' => array('class' => 'required')));
-  f_checkbox('iscrizionecassa_sino', 'al rispetto, fermo restando gli accordi posti in essere nella regione Emilia-Romagna, degli accordi territoriali ed in particolare all’obbligo dell’iscrizione alla Cassa Edile territorialmente competente rispetto all’ubicazione del cantieri',
-        array('input' => array('class' => 'required')));
-  f_checkbox('ccnledilizia_sino', 'ad applicare, per le lavorazioni previste nell’ambito della sfera di applicazione del CCNL dell’edilizia, integralmente la contrattazione collettiva dell’edilizia',
-        array('input' => array('class' => 'required')));
-  f_checkbox('ccnlaltro_sino', 'ad applicare, per le lavorazioni non comprese nell\'ambito della sfera dell’edilizia, il CCNL corrispondente, siglato dalle organizzazioni sindacali confederali maggiormente rappresentative sul piano nazionale',
-        array('input' => array('class' => 'required')));
-        */
-  ?>
-
-
   <h4>Informativa privacy</h4>
   <div class="field fixed">
     <?php $this->load->view('pages/privacy'); ?>
   </div>
   <?php
-  f_text_custom_value('istanza_data', 'Data*', array('input' => array('class' => 'required data')), $istanza_data_default);
+  f_text_custom_value(
+    'istanza_data',
+    'Data*',
+    $istanza_data_default,
+    array('input' => array('class' => 'required data'))
+  );
   f_text('istanza_luogo', 'Luogo*', array('input' => array('class' => 'required')));
   ?>
 

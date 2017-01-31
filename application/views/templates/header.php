@@ -35,7 +35,7 @@
 			</div>
 			</div>
 			<h1>
-				Imprese richiedenti iscrizione all'Anagrafe Antimafia degli Esecutori
+				Anagrafe Antimafia degli Esecutori
 			<span>ANAGRAFE ANTIMAFIA DEGLI ESECUTORI</span>
 			</h1>
 

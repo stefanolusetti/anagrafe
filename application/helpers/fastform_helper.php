@@ -20,7 +20,8 @@ function f_text($campo, $etichetta, $args = null)
     echo '</div>';
 }
 
-function f_text_custom_value($campo, $etichetta, $opzioni, $valore, $args = null)
+
+function f_text_custom_value($campo, $etichetta, $valore, $args = null)
 {
     $id = str_replace(array('[', ']'), '', $campo);
     $opzioni = extract_args($args, $id);
@@ -66,6 +67,34 @@ function f_select($campo, $etichetta, $options, $args = null)
     echo form_dropdown($campo, $options, $valore, $opzioni['input']);
     mostra_errore($campo);
     echo '</div>';
+}
+
+function f_text_print($value, $label){
+  printf(
+    '<div class="field inpreview"><label>%s</label><div class="preview-field">%s</div></div>',
+    $label, $value
+  );
+}
+
+function f_checkbox_print($value, $label, $is_literal = false, $size = 1) {
+  if ( true == $is_literal ) {
+    $value = $value;
+  }
+  else {
+    $value = 1 == (int)$value ? 'X' : '';
+  }
+  printf(
+    '<div class="field inpreview inpreview-chk"><div class="fake-checkbox %s">%s</div><label>%s</label><div class="resizer"></div></div>',
+    'size-' . $size,
+    $value,
+    $label
+  );
+}
+function f_textarea_print($value, $label){
+  printf(
+    '<div class="field inpreview"><label>%s</label><div class="preview-field preview-textarea">%s</div></div>',
+    $label, $value
+  );
 }
 
 function f_checkbox($campo, $etichetta, $args = null)

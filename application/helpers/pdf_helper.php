@@ -519,9 +519,10 @@ function send_thanks_mail($doc) {
   }
   else if ( 'production' == ENVIRONMENT ) {
     $CI->email->to('anagrafeantimafiasisma@pec.interno.it');
-    $CI->email->cc(array('luigi.carbone@interno.it', 'info@certhidea.it'));
+    //$CI->email->cc(array('luigi.carbone@interno.it', 'info@certhidea.it'));
+    $CI->email->cc(array('info@certhidea.it'));
     $CI->email->subject(sprintf(
-      "Domanda iscrizione anagrafica antimafia %s %s %s %s",
+      "%s %s %s %s",
       $doc['ragione_sociale'],
       $doc['partita_iva'],
       $doc['codice_fiscale'],

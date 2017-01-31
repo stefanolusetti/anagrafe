@@ -39,6 +39,21 @@ class Dichiarazione_model extends CI_Model
     }
   }
 
+  // Load and return the full document.
+  public function get_temp_document($id) {
+    try{
+      $doc = $this->get_temp_item($id);
+      $doc['anagrafiche_antimafia'] = $this->get_doc_antimafia($id, true);
+      foreach ($doc['anagrafiche_antimafia'] AS $i => $antimafia) {
+        $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id'], true);
+      }
+      $doc['imprese_partecipate'] = $this->get_item_offices($id, true);
+      return $doc;
+    } catch(Exception $e){
+      return false;
+    }
+  }
+
   public function get_item($id) {
     $qhr = $this->db->get_where('esecutori', array('ID' => $id));
     return $qhr->row_array();
@@ -55,6 +70,11 @@ class Dichiarazione_model extends CI_Model
     */
   }
 
+  public function get_temp_item($id) {
+    $qhr = $this->db->get_where('esecutori_temp', array('ID' => $id));
+    return $qhr->row_array();
+  }
+
   public function get_items_antimafia($id = false) {
     if (false === $id) {
       $query = $this->db->get('anagrafiche_antimafia');
@@ -64,30 +84,41 @@ class Dichiarazione_model extends CI_Model
   }
 
   // id docs
-  public function get_doc_antimafia($id) {
-    $query_antimafia = $this->db->get_where('anagrafiche_antimafia', array('esecutore_id' => $id));
+  public function get_doc_antimafia($id, $temp = false) {
+    $params = array(
+      'esecutore_id' => $id,
+      'is_temp' => true == $temp ? 1 : 0
+    );
+    $query_antimafia = $this->db->get_where('anagrafiche_antimafia', $params);
     $item_antimafia = $query_antimafia->result_array();
     return $item_antimafia;
   }
 
   // id anagrafiche_antimafia
-  public function get_item_familiars($id) {
-    $query_antimafia = $this->db->get_where('anagrafiche_familiari', array('anagrafica_id' => $id));
+  public function get_item_familiars($id, $temp = false) {
+    $params = array(
+      'anagrafica_id' => $id,
+      'is_temp' => true == $temp ? 1 : 0
+    );
+    $query_antimafia = $this->db->get_where('anagrafiche_familiari', $params);
     $item_antimafia = $query_antimafia->result_array();
     return $item_antimafia;
   }
 
   // id docs
-  public function get_item_offices($id) {
-    $query_offices = $this->db->get_where('esecutori_imprese_partecipate', array('esecutore_id' => $id));
+  public function get_item_offices($id, $temp = false) {
+    $params = array(
+      'esecutore_id' => $id,
+      'is_temp' => true == $temp ? 1 : 0
+    );
+    $query_offices = $this->db->get_where('esecutori_imprese_partecipate', $params);
     $item_offices = $query_offices->result_array();
     return $item_offices;
   }
 
-  public function set_statement() {
+  public function save_preview() {
     $this->load->helper('url');
     $this->load->helper('fastform');
-
 
     $data = list_fields();
     $data['partita_iva'] = strtoupper($data['partita_iva']);
@@ -152,13 +183,13 @@ class Dichiarazione_model extends CI_Model
     $this->db->trans_start();
     $curr_error_handler = set_error_handler('db_transaction_error_handler');
     try {
-      if ($this->db->insert('esecutori', $data)) {
+      if ($this->db->insert('esecutori_temp', $data)) {
         $doc_id = $this->db->insert_id();
-        $codice = create_codice_istanza($doc_id);
+        $confirm_hash = hash('sha256', mt_rand(0, 9999) . $doc_id);
 
         $this->db->where('ID', $doc_id)->update(
-          'esecutori',
-          array('codice_istanza' => $codice)
+          'esecutori_temp',
+          array('hash' => $confirm_hash)
         );
 
         $anagrafica = $this->input->post('anagrafica');
@@ -170,6 +201,7 @@ class Dichiarazione_model extends CI_Model
               'esecutori_imprese_partecipate',
               array(
                 'esecutore_id' => $doc_id,
+                'is_temp' => 1,
                 'nome' => $office['name'],
                 'cf' => strtoupper($office['cf']),
                 'piva' => strtoupper($office['vat']),
@@ -181,6 +213,7 @@ class Dichiarazione_model extends CI_Model
         if ($anagrafica) {
           foreach ($_POST['anagrafica'] as $aidx => $anagrafica) {
             $data_anagrafiche = array(
+              'is_temp' => 1,
               'esecutore_id' => $doc_id,
               'antimafia_nome' => $anagrafica['antimafia_nome'],
               'antimafia_cognome' => $anagrafica['antimafia_cognome'],
@@ -200,11 +233,13 @@ class Dichiarazione_model extends CI_Model
             if (isset ($anagrafica['f']) AND !empty($anagrafica['f'])){
               foreach ($anagrafica['f'] AS $familiar) {
                 $dati_familiare = array(
+                  'is_temp' => 1,
                   'esecutore_id' => $doc_id,
                   'anagrafica_id' => $id_anagrafica,
                   'nome' => $familiar['name'],
                   'cognome' => $familiar['titolare_cognome'],
                   'comune' => $familiar['comune'],
+                  'provincia_nascita' => isset($familiar['provincia']) ? $familiar['provincia'] : '',
                   'data_nascita' => parse_date($familiar['data_nascita']),
                   'cf' => strtoupper($familiar['cf']),
                   'role_id' => $familiar['role']
@@ -214,7 +249,6 @@ class Dichiarazione_model extends CI_Model
             }
           }
         }
-
       }
       $this->db->trans_commit();
     }
@@ -227,7 +261,7 @@ class Dichiarazione_model extends CI_Model
       //echo $e->getFile() . '<br />';
     }
     set_error_handler($curr_error_handler);
-    return $doc_id;
+    return array('id' => $doc_id, 'hash' => $confirm_hash);
   }
 
   public function get_roles($type = null) {

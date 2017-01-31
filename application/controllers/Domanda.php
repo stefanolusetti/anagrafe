@@ -69,7 +69,7 @@ class Domanda extends CI_Controller
             $this->output->enable_profiler(true);
         }
 
-        $data['title'] = 'Iscrizione Elenco di Merito';
+        $data['title'] = 'Iscrizione Anagrafe Antimafia degli Esecutori';
 
         #le regole di validazione sono contenute nel file config/form_validation.php
 
@@ -120,33 +120,48 @@ class Domanda extends CI_Controller
           $this->load->view('templates/footer');
         }
         elseif (array_key_exists('start', $sessione)) {
-          $id = $this->dichiarazione_model->set_statement();
-          if ($id) {
-            $document_data = $this->dichiarazione_model->get_document($id);
+          $temp = $this->dichiarazione_model->save_preview();
+          if ($temp) {
+            redirect('/domanda/anteprima/' . $temp['hash'] . '/' . $temp['id']);
           }
-          $data['submitted'] = true;
-          $stato = send_welcome_email($id);
-
-          if (true === $stato) {
-            $data['mittente'] = $document_data['titolare_nome'] . ' ' . $document_data['titolare_cognome'];
-            $data['sl_pec'] = $document_data['impresa_pec'];
-
-            $this->session->unset_userdata('start');
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/headbar');
-            $this->parser->parse('domanda/sent', $data);
-          }
-          else {
-            $data['errore'] = ENVIRONMENT == 'development' ? $this->email->print_debugger() : 'si &egrave; verificato un errore nella spedizione del messaggio';
-            $this->parser->parse('domanda/errore_invio', $data);
-          }
-          $this->load->view('templates/footer');
         }
         else {
           //redirect('/domanda/nuova', 'refresh');
           redirect('/domanda/nuovamentequitato', 'refresh');
         }
     }
+
+  public function anteprima ( $hash, $id ) {
+    $data = $this->dichiarazione_model->get_temp_document($id);
+    $this->load->view('templates/header', $data);
+    $this->load->view('templates/headbar');
+    $this->parser->parse('domanda/anteprima', $data);
+    $this->load->view('templates/footer');
+  }
+
+  public function conferma_modulo ( $hash, $id ) {
+    $real_id = $this->dichiarazione_model->confirm_module( $id, $hash );
+    if ( false === $real_id ) {
+      $document_data = $this->dichiarazione_model->get_document($real_id);
+      $stato = send_welcome_email($real_id);
+      if (true === $stato) {
+        $data = array(
+          'mittente' => $document_data['titolare_nome'] . ' ' . $document_data['titolare_cognome'],
+          'sl_pec' => $document_data['impresa_pec']
+        );
+
+        $this->session->unset_userdata('start');
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/headbar');
+        $this->parser->parse('domanda/sent', $data);
+      }
+      else {
+        $data['errore'] = ENVIRONMENT == 'development' ? $this->email->print_debugger() : 'si &egrave; verificato un errore nella spedizione del messaggio';
+        $this->parser->parse('domanda/errore_invio', $data);
+      }
+      $this->load->view('templates/footer');
+    }
+  }
 
 /*
 ████████ ███████ ███████ ████████ ██    ██████  ███████ ██████  ██    ██  ██████
@@ -157,6 +172,18 @@ class Domanda extends CI_Controller
 */
 
     public function test($id = false){
+      $fields = $this->db->list_fields('esecutori');
+      /*
+      ██████  ███████ ██████  ██    ██  ██████
+      ██   ██ ██      ██   ██ ██    ██ ██
+      ██   ██ █████   ██████  ██    ██ ██   ███
+      ██   ██ ██      ██   ██ ██    ██ ██    ██
+      ██████  ███████ ██████   ██████   ██████
+      */
+      echo "<h7>FIELDS! debug@" .__FILE__.":".__LINE__."</h7><pre>";
+      var_dump($fields);
+      echo "</pre>";
+      /*
       $csv = export_antimafia_components($id);
       echo "<h7>CSV debug@" .__FILE__.":".__LINE__."</h7><pre>";
       var_dump($csv);
@@ -171,6 +198,7 @@ class Domanda extends CI_Controller
       echo "<h7>CODICE debug@" .__FILE__.":".__LINE__."</h7><pre>";
       var_dump($codice);
       echo "</pre>";
+      */
     }
 
 /*
@@ -415,6 +443,10 @@ class Domanda extends CI_Controller
             }
           }
         }
+      }
+      else {
+        $this->form_validation->set_message('check_anagrafiche', 'Inserire almeno un\'anagrafica.');
+        return false;
       }
       return true;
     }

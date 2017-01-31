@@ -920,10 +920,134 @@ ul.highlight{
   padding: 0px 15px 0px 15px;
 }
 
-
+.resizer{
+  clear: both;
+}
 .labelhidden label{
   display: none !important;
 }
 .labelhidden label.errormsg{
   display: block !important;
+}
+
+div.inpreview label{
+  font-size: 0.70em;
+  text-transform: uppercase;
+}
+
+.preview-field{
+  font-size: 1.2em;
+  display: block;
+  width: 98%;
+  padding: 2px 1%;
+  margin: 0 0 0 0;
+  background-color: #E4E4E4;
+  border: 1px solid #ccc;
+  min-height: 27px;
+}
+
+.preview-textarea{
+  white-space: pre-wrap;
+  font-size: 1em;
+}
+
+form hr{
+  border-width: 0px 0px 4px 1px;
+  border-style: dashed;
+  border-color: #ddd;
+  padding: 10px 0px;
+}
+
+
+.preview h3{
+  background-color: transparent;
+  margin: 0px;
+  padding: 10px 10px 10px 40px;
+}
+
+form .inpreview-chk{}
+form .inpreview-chk label{
+  font-size: 1.1em;
+  text-transform: none;
+  float: left;
+  margin-left: 10px;
+}
+form .inpreview-chk .fake-checkbox{
+  width: 25px;
+  height: 25px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 1.7em;
+  font-weight: bold;
+  line-height: 24px;
+  float: left;
+}
+form .inpreview-chk .fake-checkbox.size-2{
+  width: 50px;
+  text-align: right;
+  padding-right: 5px;
+}
+.impresa{
+  margin-bottom: 15px;
+  background-color: #EFEFEF;
+  padding: 5px 0px;
+}
+.warning{
+  text-align: center;
+    font-size: 1.2em;
+    background-color: #FCF8E3;
+    border-radius: 2px;
+    color: #8a6d3b;
+    border: 1px solid #faebcc;
+    padding: 5px 5px;
+    margin: 5px 15px;
+}
+.warning em{
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.error{
+  text-align: center;
+    font-size: 1.2em;
+    background-color: #FCE7E3;
+    border-radius: 2px;
+    color: #8A4C3B;
+    border: 1px solid #FAD8CC;
+    padding: 5px 5px;
+    margin: 5px 15px;
+}
+.error em{
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.half .field.inpreview{
+  width: 436px;
+}
+
+.preview-anagrafica.even{
+  background-color: #EFEFEF;
+}
+form .preview-anagrafica.odd .field{
+  background-color: #ffffff;
+}
+.preview-familiari{
+  border: 1px solid #dbdbdb;
+  margin-left: 0px;
+  border-width: 1px 0px 1px 0px;
+}
+.preview-familiari hr.resizer{
+  border-width: 1px;
+}
+
+.preview-familiari .preview-familiare{
+  border-width: 0px 0px 1px 0px;
+  border-style: dashed;
+  border-color: #dbdbdb;
+  margin-bottom: 15px;
+}
+.preview-familiari .preview-familiare:last-child{
+  border-width: 0 !important;
 }
