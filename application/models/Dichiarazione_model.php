@@ -53,6 +53,25 @@ class Dichiarazione_model extends CI_Model
       return false;
     }
   }
+  // Load and return the full document.
+  public function get_temp_document_by_hash($hash) {
+    try{
+      $doc = $this->get_temp_item_by_hash($hash);
+      if ( $doc ) {
+        $doc['anagrafiche_antimafia'] = $this->get_doc_antimafia($doc['ID'], true);
+        foreach ($doc['anagrafiche_antimafia'] AS $i => $antimafia) {
+          $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id'], true);
+        }
+        $doc['imprese_partecipate'] = $this->get_item_offices($doc['ID'], true);
+        return $doc;
+      }
+      else {
+        throw new Exception('Hash is not valid.');
+      }
+    } catch(Exception $e){
+      return false;
+    }
+  }
 
   public function get_item($id) {
     $qhr = $this->db->get_where('esecutori', array('ID' => $id));
@@ -74,6 +93,12 @@ class Dichiarazione_model extends CI_Model
     $qhr = $this->db->get_where('esecutori_temp', array('ID' => $id));
     return $qhr->row_array();
   }
+
+  public function get_temp_item_by_hash($hash) {
+    $qhr = $this->db->get_where('esecutori_temp', array('hash' => $hash));
+    return $qhr->row_array();
+  }
+
 
   public function get_items_antimafia($id = false) {
     if (false === $id) {
@@ -185,7 +210,7 @@ class Dichiarazione_model extends CI_Model
     try {
       if ($this->db->insert('esecutori_temp', $data)) {
         $doc_id = $this->db->insert_id();
-        $confirm_hash = hash('sha256', mt_rand(0, 9999) . $doc_id);
+        $confirm_hash = hash('sha256', 'anagrafe-antimafia-' . $doc_id);
 
         $this->db->where('ID', $doc_id)->update(
           'esecutori_temp',

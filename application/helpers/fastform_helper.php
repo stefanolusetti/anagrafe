@@ -20,6 +20,270 @@ function f_text($campo, $etichetta, $args = null)
     echo '</div>';
 }
 
+function f_text_formdata($campo, $etichetta, $args = null) {
+  $CI =& get_instance();
+  $errores = $CI->form_validation->error_array();
+  $id = str_replace(array('[', ']'), '', $campo);
+  //$valore = set_value($campo);
+  $valore = last_value_form($campo);
+  $opzioni = extract_args($args, $id);
+  echo "<div class='{$opzioni['field']}'><label for='{$id}'>{$etichetta}</label><input type='text' name='{$campo}' value='{$valore}' {$opzioni['input']}/>";
+  if ( isset($errores[$campo]) ) {
+    echo "<label for='{$campo}' class='errormsg'>'.$errores[$campo].'</label>";
+  }
+  echo '</div>';
+}
+
+function polish_date(&$data) {
+  if ( isset($data['titolare_nascita_data']) ) {
+    $data['titolare_nascita_data'] = grind_date($data['titolare_nascita_data']);
+  }
+  else {
+    $data['titolare_nascita_data'] = '';
+  }
+
+  if ( isset($data['impresa_data_costituzione']) ) {
+    $data['impresa_data_costituzione'] = grind_date($data['impresa_data_costituzione']);
+  }
+  else {
+    $data['impresa_data_costituzione'] = '';
+  }
+  if ( isset($data['white_list_data']) ) {
+    $data['white_list_data'] = grind_date($data['white_list_data']);
+  }
+  else {
+    $data['white_list_data'] = '';
+  }
+
+  if ( isset($data['istanza_data']) ) {
+    $data['istanza_data'] = grind_date($data['istanza_data']);
+  }
+  else {
+    $data['istanza_data'] = '';
+  }
+  if ( isset($data['anagrafiche_antimafia']) ) {
+    foreach ( $data['anagrafiche_antimafia'] AS $af => $anagrafica ) {
+      $data['anagrafiche_antimafia'][$af]['antimafia_data_nascita'] = grind_date($data['anagrafiche_antimafia'][$af]['antimafia_data_nascita']);
+      if( isset($anagrafica['familiari']) ) {
+        foreach ( $anagrafica['familiari'] AS $nf => $familiare ){
+
+          $data['anagrafiche_antimafia'][$af]['familiari'][$nf]['data_nascita'] = grind_date($data['anagrafiche_antimafia'][$af]['familiari'][$nf]['data_nascita']);
+        }
+      }
+    }
+  }
+}
+
+function grind_date($val = false){
+  if ( empty($val) ) {
+    return '';
+  }
+  else {
+    return date('d/m/Y', strtotime($val));
+  }
+}
+function f_radio_edit($object, $key, $label, $classes = '', $attrs = '', $_value = '1') {
+  $value = isset($object[$key]) ? $object[$key] : '';
+  $CI =& get_instance();
+  $errores = $CI->form_validation->error_array();
+  $errore = '';
+  if ( isset($errores[$key]) ) {
+    $errore = '<label for="' . $key . '" class="errormsg">' . $errores[$key] . '</label>';
+  }
+  if ( 1 == $value || '1' === $value ) {
+    $checked = ' checked="checked" ';
+  }
+  else {
+    $checked = '';
+  }
+  $idField = grind_key($key);
+  printf(
+    '<div class="field inpreview checkbox">
+      <input type="radio" %s id="%s" name="%s" value="%s" class="preview-field %s" %s>
+      <label for="%s">%s</label>
+      %s
+      <div class="resizer"></div>
+      </div>',
+    $attrs,
+    $idField,
+    $key,
+    $_value,
+    $classes,
+    $checked,
+    $key,
+    $label,
+    $errore
+  );
+}
+function f_checkbox_edit($object, $key, $label, $classes = '', $attrs = '') {
+  $value = isset($object[$key]) ? $object[$key] : '';
+  $CI =& get_instance();
+  $errores = $CI->form_validation->error_array();
+  $errore = '';
+  if ( isset($errores[$key]) ) {
+    $errore = '<label for="' . $key . '" class="errormsg">' . $errores[$key] . '</label>';
+  }
+  if ( 1 == $value || '1' === $value ) {
+    $checked = ' checked="checked" ';
+  }
+  else {
+    $checked = '';
+  }
+  $idField = grind_key($key);
+  printf(
+    '<div class="field inpreview checkbox">
+      <input type="checkbox" %s id="%s" name="%s" value="1" class="preview-field %s" %s>
+      <label for="%s">%s</label>
+      %s
+      <div class="resizer"></div>
+      </div>',
+    $attrs,
+    $key,
+    $idField,
+    $classes,
+    $checked,
+    $key,
+    $label,
+    $errore
+  );
+}
+
+function f_textarea_edit ( $object, $key, $label, $classes = '', $rows = 4) {
+  $value = isset($object[$key]) ? $object[$key] : '';
+  $CI =& get_instance();
+  $errores = $CI->form_validation->error_array();
+  $errore = '';
+  if ( isset($errores[$key]) ) {
+    $errore = '<label for="' . $key . '" class="errormsg">' . $errores[$key] . '</label>';
+  }
+  $idField = grind_key($key);
+  printf(
+    '<div class="field inpreview">
+      <label>%s</label>
+      <textarea id="%s" name="%s" class="preview-field %s" rows="%s">%s</textarea>
+      %s
+      </div>',
+    $label,
+    $idField,
+    $key,
+    $classes,
+    $rows,
+    $value,
+    $errore
+  );
+}
+
+function f_text_edit ( $object, $key, $label, $classes = '' ){
+  if ( stristr($key, 'imprese_partecipate') ) {
+    preg_match_all('#imprese_partecipate\[([0-9]+)\]\[(.*)\]#', $key, $matches);
+    $n = isset($matches[1][0]) ? $matches[1][0] : '';
+    $_k = isset($matches[2][0]) ? $matches[2][0] : '';
+    if( isset($object['imprese_partecipate'][$n][$_k]) ) {
+      $value = $object['imprese_partecipate'][$n][$_k];
+    }
+    else {
+      $value = '';
+    }
+  }
+  else if ( preg_match('#anagrafiche_antimafia\[([0-9]+)\]\[familiari\]\[([0-9]+)\]\[(.*)\]#', $key) ) {
+    preg_match_all('#anagrafiche_antimafia\[([0-9]+)\]\[familiari\]\[([0-9]+)\]\[(.*)\]#', $key, $matches);
+    $n = isset($matches[1][0]) ? $matches[1][0] : '';
+    $f = isset($matches[2][0]) ? $matches[2][0] : '';
+    $_k = isset($matches[3][0]) ? $matches[3][0] : '';
+    if( isset($object['anagrafiche_antimafia'][$n]['familiari'][$f][$_k]) ) {
+      $value = $object['anagrafiche_antimafia'][$n]['familiari'][$f][$_k];
+    }
+    else {
+      $value = '';
+    }
+  }
+  else if ( preg_match('#anagrafiche_antimafia\[([0-9]+)\]\[(.*)\]#', $key) ) {
+    preg_match_all('#anagrafiche_antimafia\[([0-9]+)\]\[(.*)\]#', $key, $matches);
+    $n = isset($matches[1][0]) ? $matches[1][0] : '';
+    $_k = isset($matches[2][0]) ? $matches[2][0] : '';
+    if( isset($object['anagrafiche_antimafia'][$n][$_k]) ) {
+      $value = $object['anagrafiche_antimafia'][$n][$_k];
+    }
+    else {
+      $value = '';
+    }
+  }
+  else {
+    $value = isset($object[$key]) ? $object[$key] : '';
+  }
+
+  $CI =& get_instance();
+  $errores = $CI->form_validation->error_array();
+  $errore = '';
+  if ( isset($errores[$key]) ) {
+    $errore = '<label for="' . $key . '" class="errormsg">' . $errores[$key] . '</label>';
+  }
+  $idField = grind_key($key);
+  printf(
+    '<div class="field inpreview">
+      <label>%s</label>
+      <input type="text" id="%s" name="%s" class="preview-field %s" value="%s"/>
+      %s
+      </div>',
+    $label,
+    $idField,
+    $key,
+    $classes,
+    $value,
+    $errore
+  );
+}
+function grind_key($key){
+  $idField = str_replace(array('][', '['), '_', $key);
+  $idField = str_replace(array('__', ']'), array('_', ''), $idField);
+  return $idField;
+}
+function f_select_edit ( $object, $key, $label, $options, $classes = '') {
+  if ( preg_match('#anagrafiche_antimafia\[([0-9]+)\]\[familiari\]\[([0-9]+)\]\[(.*)\]#', $key) ) {
+    preg_match_all('#anagrafiche_antimafia\[([0-9]+)\]\[familiari\]\[([0-9]+)\]\[(.*)\]#', $key, $matches);
+    $n = isset($matches[1][0]) ? $matches[1][0] : '';
+    $f = isset($matches[2][0]) ? $matches[2][0] : '';
+    $_k = isset($matches[3][0]) ? $matches[3][0] : '';
+    if( isset($object['anagrafiche_antimafia'][$n]['familiari'][$f][$_k]) ) {
+      $value = $object['anagrafiche_antimafia'][$n]['familiari'][$f][$_k];
+    }
+    else {
+      $value = '';
+    }
+  }
+  else if ( stristr($key, 'anagrafiche_antimafia') ) {
+    preg_match_all('#anagrafiche_antimafia\[([0-9]+)\]\[(.*)\]#', $key, $matches);
+    $n = isset($matches[1][0]) ? $matches[1][0] : '';
+    $_k = isset($matches[2][0]) ? $matches[2][0] : '';
+    if( isset($object['anagrafiche_antimafia'][$n][$_k]) ) {
+      $value = $object['anagrafiche_antimafia'][$n][$_k];
+    }
+    else {
+      $value = '';
+    }
+  }
+  else {
+    $value = isset($object[$key]) ? $object[$key] : null;
+  }
+  $CI =& get_instance();
+  $errores = $CI->form_validation->error_array();
+  $errore = '';
+  if ( isset($errores[$key]) ) {
+    $errore = '<label for="' . $key . '" class="errormsg">' . $errores[$key] . '</label>';
+  }
+  $idField = grind_key($key);
+  printf(
+    '<div class="field inpreview select">
+      <label>%s</label>
+      %s
+      %s
+      </div>',
+    $label,
+    form_dropdown($key, $options, $value, array('class' => $classes, 'id' => $idField)),
+    $errore
+  );
+}
+
 
 function f_text_custom_value($campo, $etichetta, $valore, $args = null)
 {
@@ -299,35 +563,59 @@ function opzioni_soa()
     return $result;
 }
 
-function mostra_errore($campo)
-{
-    if ($msg = form_error($campo)) {
-        echo "<label for='{$campo}' class='errormsg'>{$msg}</label>";
-    }
+function mostra_errore($campo) {
+  if ($msg = form_error($campo)) {
+    echo "<label for='{$campo}' class='errormsg'>{$msg}</label>";
+  }
 }
 
-function last_value($campo)
-{
-    $CI = &get_instance();
-    $pattern = "/^([a-zA-Z0-9_]{1,})\[([a-zA-Z0-9_]{1,})\]$/";
-    if (preg_match($pattern, $campo, $nome)) {
-        $valore = $CI->input->post($nome[1]);
-        if (empty($valore)) {
-            $valore = $CI->input->get($nome[1]);
-        }
-        if ($valore) {
-            if (array_key_exists($nome[2], $valore)) {
-                return $valore[$nome[2]];
-            }
-        }
-    } else {
-        $valore = $CI->input->post($campo);
-        if (empty($valore)) {
-            $valore = $CI->input->get($campo);
-        }
-
-        return $valore;
+function last_value_form ( $campo ) {
+  $CI = &get_instance();
+  $formdata = $CI->session->userdata('formdata');
+  $pattern = "/^([a-zA-Z0-9_]{1,})\[([a-zA-Z0-9_]{1,})\]$/";
+  if ( preg_match($pattern, $campo, $nome) ) {
+    $valore = $CI->input->post($nome[1]);
+    if ( empty($valore) ) {
+      $valore = $CI->input->get($nome[1]);
     }
+    if ( $valore ) {
+      if ( array_key_exists($nome[2], $valore) ) {
+        return $valore[$nome[2]];
+      }
+    }
+  }
+  else {
+    $valore = $CI->input->post($campo);
+    if ( is_null($valore) ) {
+      if ( isset($formdata[$campo]) ) {
+        $valore = $formdata[$campo];
+      }
+    }
+    return $valore;
+  }
+}
+
+function last_value ( $campo ) {
+  $CI = &get_instance();
+  $pattern = "/^([a-zA-Z0-9_]{1,})\[([a-zA-Z0-9_]{1,})\]$/";
+  if ( preg_match($pattern, $campo, $nome) ) {
+    $valore = $CI->input->post($nome[1]);
+    if ( empty($valore) ) {
+      $valore = $CI->input->get($nome[1]);
+    }
+    if ( $valore ) {
+      if ( array_key_exists($nome[2], $valore) ) {
+        return $valore[$nome[2]];
+      }
+    }
+  }
+  else {
+    $valore = $CI->input->post($campo);
+    if (empty($valore)) {
+      $valore = $CI->input->get($campo);
+    }
+    return $valore;
+  }
 }
 
 /*

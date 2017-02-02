@@ -285,11 +285,37 @@ if ( 1 == (int)$stmt_wl ) {
   echo '</div>';
 }
 else {
-  f_checkbox_print(0, 'Non iscritto alla White List');
+  f_checkbox_print(1, 'Non iscritto alla White List');
 }
 ?><hr class="resizer" /><h2>Dati Istanza</h2><div class="half"><?php
 f_text_print(date('d/m/Y', strtotime($istanza_data)), 'Data istanza');
 f_text_print($istanza_luogo, 'Luogo istanza');
 ?></div>
-<div class="resizer"></div>
+<hr class="resizer" />
+  <div class="half-button">
+    <p>
+      Se alcuni dati sono errati:
+    </p>
+    <a href="/domanda/edit/<?php echo $hash . '/' . $ID; ?>" class="modifica">Modifica i dati</a>
+  </div>
+  <div class="half-button">
+    <p>
+      Se tutti i dati sono corretti:
+    </p>
+    <a href="/domanda/confirm/<?php echo $hash . '/' . $ID; ?>" class="conferma">Invia il modulo</a>
+  </div>
 </form>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

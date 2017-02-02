@@ -1,6 +1,6 @@
 <h3><a href="/domanda/help" target="_blank">Istruzioni per la compilazione della domanda di iscrizione all'Anagrafe Antimafia degli Esecutori</a></h3>
 <?php
-echo form_open('domanda/nuova', array('target' => '_blank')); //@debug
+echo form_open('domanda/nuova', array('target' => '_blank', 'class' => 'preview')); //@debug
 ?>
 
   <h2>Anagrafica del richiedente</h2>
@@ -18,7 +18,7 @@ echo form_open('domanda/nuova', array('target' => '_blank')); //@debug
   birth_city
 */
 
-  f_text('titolare_nome', 'Nome*',
+  f_text_formdata('titolare_nome', 'Nome*',
     array('input' => array('class' => 'required maxlen'))
   );
 
@@ -76,7 +76,7 @@ echo form_open('domanda/nuova', array('target' => '_blank')); //@debug
     array('input' => array('class' => 'required maxlen'))
   );
   ?>
-  <h2>Anagrafica dell'azienda</h2>
+  <hr class="resizer" /><h2>Anagrafica dell'azienda</h2>
   <?php
 /*
   ██████  ██████  ███    ███ ██████   █████  ███    ██ ██    ██      ██
@@ -129,7 +129,7 @@ echo form_open('domanda/nuova', array('target' => '_blank')); //@debug
   f_text(
     'partita_iva',
     'Partita IVA*',
-    array('input' => array('class' => '_piva_unique'))
+    array('input' => array('class' => 'required maxlen'))
   );
   f_text(
     'codice_fiscale',
@@ -246,7 +246,7 @@ echo form_open('domanda/nuova', array('target' => '_blank')); //@debug
   f_textarea(
     'impresa_altre_sedi',
     'Sedi secondarie e Unità Locali',
-    array('input' => array('style' => 'width: 100%', 'rows' => 3))
+    array('input' => array('class' => 'maxlen500', 'style' => 'width: 100%', 'rows' => 3))
   );
 
 
@@ -275,10 +275,10 @@ echo form_open('domanda/nuova', array('target' => '_blank')); //@debug
   f_textarea(
     'impresa_soggetto_sociale',
     'Oggetto Sociale',
-    array('input' => array('style' => 'width:100%', 'rows' => 4))
+    array('input' => array('class' => 'maxlen500', 'style' => 'width:100%', 'rows' => 4))
   );
 ?>
-<h4>L'impresa opera in uno dei seguenti settori:</h4>
+<hr class="resizer" /><h4>L'impresa opera in uno dei seguenti settori:</h4>
 <?php
 f_checkbox(
   'check_settori',
@@ -296,7 +296,7 @@ f_checkbox('impresa_settore_guardiana', 'Guardiania dei cantieri', array('input'
 
 f_checkbox('impresa_settore_nessuno', 'Nessuna delle precedenti', array('input' => array('class' => '_thefields')));
 ?>
-<h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2>
+<hr class="resizer" /><h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2>
 <a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a>
 <div class="offices">
 <?php
@@ -305,7 +305,7 @@ if (isset($offices) AND !empty($offices)) {
     echo '<div class="office container" id="ofel-0">';
     f_text(
       'office[' . $key . '][name]',
-      'Ragione Sociale impresa partecipata <a href="#" data-elid="0" class="removeOffice" data-victim="ofel-0">Rimuovi Impresa</a>',
+      'Ragione Sociale impresa partecipata <a href="#" data-elid="0" class="rm removeOffice" data-victim="ofel-0">Rimuovi Impresa</a>',
       array('input' => array('class' => 'required maxlen'))
     );
     f_text(
@@ -324,7 +324,7 @@ if (isset($offices) AND !empty($offices)) {
 ?>
 </div>
 <?php
-  echo '<h4>Consiglio di amministrazione</h4>';
+  echo '<hr class="resizer" /><h4>Consiglio di amministrazione</h4>';
   f_text(
     'impresa_num_amministratori',
     'Numero componenti in carica',
@@ -359,7 +359,7 @@ if (isset($offices) AND !empty($offices)) {
   ██   ██    ██       ██    ██  ██  ██  ██    ██    ██   ██
   ██   ██    ██       ██    ██   ████   ██    ██    ██   ██
 */
-  echo '<h2>Interessato allo svolgimento delle seguenti attività (è necessario selezionare almeno una voce)</h2>';
+  echo '<hr class="resizer" /><h2>Interessato allo svolgimento delle seguenti attività (è necessario selezionare almeno una voce)</h2>';
   f_checkbox(
     'check_attivita',
     'Attività',
@@ -460,7 +460,7 @@ if (isset($offices) AND !empty($offices)) {
 
 
     <div class="field_antimafia">
-  <h2> Anagrafiche dei componenti<br><br>
+  <hr class="resizer" /><h2> Anagrafiche dei componenti<br><br>
   Inserire i dati richiesti per tutti i soggetti previsti dal DLgs. n. 159/2011 art.85 e ss.mm.ii.</h2>
 
 
@@ -486,10 +486,10 @@ f_checkbox(
 if (isset($anagrafiche) AND !empty($anagrafiche)) {
   $a_head = '<div id="anel-!!!" class="anagrafica anagrafica-box el-!!!" data-elid="!!!">
     <h2>Anagrafica del componente</h2>';
-  $a_foot = '<a href="#anagrafiche" class="addFamiliar" data-elid="!!!">Aggiungi Componente Familiare</a> | <a href="#anagrafiche" class="removeFamiliar" data-victim="anel-!!!" data-elid="!!!">Rimuovi Anagrafica</a>
+  $a_foot = '<a href="#anagrafiche" class="add addFamiliar" data-elid="!!!">Aggiungi Componente Familiare</a> | <a href="#anagrafiche" class="removeFamiliar" data-victim="anel-!!!" data-elid="!!!">Rimuovi Anagrafica</a>
   <div class="familiars" data-elid="!!!">';
   $f_head = '<div class="box-familiare" id="fam-###-@@@"><hr />
-    <a href="#anagrafiche" class="removeThisFamiliar" data-victim="fam-###-@@@" data-elid="###" data-elfid="@@@">Rimuovi Componente Familiare</a>';
+    <a href="#anagrafiche" class="rm removeThisFamiliar" data-victim="fam-###-@@@" data-elid="###" data-elfid="@@@">Rimuovi Componente Familiare</a>';
   $f_foot = '<div class="resizer"></div></div>';
 
   $options_key_users = opzioni_ruoli_anagrafiche(0);
@@ -631,7 +631,7 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
   </div>
 
 
-  <h2>Dichiara*</h2>
+  <hr class="resizer" /><h2>Dichiara*</h2>
   <?php
 /*
   ██████  ██  ██████ ██   ██ ██  █████  ██████   █████  ███████ ██  ██████  ███    ██ ██
@@ -676,11 +676,20 @@ if (isset($anagrafiche) AND !empty($anagrafiche)) {
   );
   echo '</div>';
 
+
+  echo '<h2>Note aggiuntive:</h2>';
+    f_textarea(
+      'note',
+      '',
+      array('input' => array('class' => 'maxlen1000', 'style' => 'width: 100%', 'rows' => 3))
+    );
+
   ?>
   <h4>Informativa privacy</h4>
-  <div class="field fixed">
+  <div class="field fixed privacy">
     <?php $this->load->view('pages/privacy'); ?>
   </div>
+  <hr class="resizer" />
   <?php
   f_text_custom_value(
     'istanza_data',

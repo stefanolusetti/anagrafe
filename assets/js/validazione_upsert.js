@@ -1,8 +1,5 @@
 $(document).ready(function() {
   window._pivaTimeout = false;
-  $('input[name=tipo_contratto_altri]').attr('disabled', 'disabled');
-  $('input[name=tipo_impresa_altri]').attr('disabled', 'disabled');
-  $('.soas').attr('disabled', 'disabled');
 
   $.validator.addMethod("data", function(value, element) {
       return value.match(/^\d\d?\/\d\d?\/\d\d\d\d$/);
@@ -10,12 +7,34 @@ $(document).ready(function() {
     "Inserire una data nel formato gg/mm/aaaa"
   );
 
+  $.validator.addMethod('_titolare_rappresentanza', function( v, e){
+      if ('Altro' == jQuery("#titolare_rappresentanza").val()){
+        if ('' == jQuery("#titolare_rappresentanza_altro").val()) {
+          return false;
+        }
+      }
+      return true;
+    },
+    "Indicare il tipo di rappresentanza."
+  );
+
+  $.validator.addMethod('_forma_giuridica', function( v, e){
+      if (0 == jQuery("#forma_giuridica_id").val()){
+        if ('' == jQuery("#impresa_forma_giuridica_altro").val()) {
+          return false;
+        }
+      }
+      return true;
+    },
+    "Indicare la forma giuridica."
+  );
+
   $.validator.addMethod('_interessi', function(v,e){
       if (
-        !jQuery("#interesse_lavori_flag").is(':checked')
-        && !jQuery("#interesse_servizi_flag").is(':checked')
-        && !jQuery("#interesse_forniture_flag").is(':checked')
-        && !jQuery("#interesse_interventi_flag").is(':checked')
+        !jQuery("#interesse_lavori").is(':checked')
+        && !jQuery("#interesse_servizi").is(':checked')
+        && !jQuery("#interesse_forniture").is(':checked')
+        && !jQuery("#interesse_interventi").is(':checked')
       ) {
         return false;
       }
@@ -33,6 +52,14 @@ $(document).ready(function() {
     "Selezionare almeno un valore."
   );
 
+  $.validator.addMethod('_white_list', function(v,e){
+    if ( jQuery('#stmt_wl_si').is(':checked') ) {
+      if ( '' == jQuery('#white_list_prefettura').val() ||  '' == jQuery('#white_list_data').val() ) {
+        return false;
+      }
+    }
+    return true;
+  }, 'Inserire prefettura e data di iscrizione.');
 
   $.validator.addMethod("anno", function(value, element) {
       return value.match(/^\d\d\d\d$/);
@@ -43,7 +70,7 @@ $(document).ready(function() {
   $.validator.addMethod(
     "stmt__eligible",
     function(val, el){
-      if (jQuery("#interesse_interventi_flag").is(':checked') && false == jQuery("#interesse_interventi_checkbox").is(':checked')){
+      if (jQuery("#interesse_interventi").is(':checked') && false == jQuery("#interesse_interventi_checkbox").is(':checked')){
         return false;
       }
       return true;

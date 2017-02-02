@@ -172,7 +172,7 @@ function create_pdf($id) {
       'stmt_wl_no' => $doc['stmt_wl'] == 0 ? 'Yes' : 'No',
       'white_list_prefettura' => $doc['white_list_prefettura'],
       'white_list_data' => empty($doc['white_list_data']) ? '' : format_date($doc['white_list_data']),
-      'interesse_interventi_checkbox' => $doc['interesse_interventi_checkbox'],
+      'interesse_interventi_checkbox' => $doc['interesse_interventi_checkbox'] == 1 ? 'Yes' : 'No',
 
       'stmt_interest' => 'Yes',
       'interesse_lavori' => $doc['interesse_lavori'] == 1 ? 'Yes' : 'No',

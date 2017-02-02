@@ -7,7 +7,7 @@ jQuery(document).ready(function() {
   _enableAutocomplete('titolare_res_comune', 'titolare_res_provincia');
   _enableAutocomplete('sl_comune', 'sl_prov');
   window.ia = jQuery(".anagrafica.anagrafica-box").length;
-  window.is = jQuery(".office.container").length;
+  window.is = jQuery(".imprese_partecipate.container").length;
   window.familiars = {};
   mainEventHandlers();
   subEventHandlers();
@@ -31,11 +31,11 @@ function buildFamiliarsObject() {
 */
 function mainEventHandlers(){
   buildFamiliarsObject();
-  jQuery('.container > a.addAnagrafica').on('click', function(e){
+  jQuery('a.add.addAnagrafica').on('click', function(e){
     e.preventDefault();
     addAnagrafica(e);
   });
-  jQuery('.container > a.resetAnagrafiche').on('click', function(e){
+  jQuery('a.reset.resetAnagrafiche').on('click', function(e){
     e.preventDefault();
     resetAnagrafiche(e);
   });
@@ -86,10 +86,10 @@ function mainEventHandlers(){
 
   jQuery("#forma_giuridica_id").change(function(e){
     if ('0' == jQuery(e.target).val()) {
-      jQuery('.controlla_tipo_impresa').show();
+      jQuery('#forma_giuridica_more').show();
     }
     else {
-      jQuery('.controlla_tipo_impresa').hide();
+      jQuery('#forma_giuridica_more').hide();
     }
   });
 
@@ -125,7 +125,7 @@ function autocompleta_cache_id(comune, provincia) {
     },
     select: function(event, ui) {
       // sulla base del comune selezionato, imposto la provincia
-      $("#" + provincia).val(ui.item.provincia);
+      $("#" + provincia).val(ui.item.provincia).trigger('keyup');
     },
     minLength: 2
   });
@@ -182,63 +182,65 @@ function addAnagrafica(e){
     for (p in window._key_roles) {
       roles_options += '<option value="'+[p]+'">' + window._key_roles[p] + '</option>';
     }
-    var template = '<div id="anel-###" class="anagrafica anagrafica-box el-###" data-elid="###"> \
-      <h2>Anagrafica del componente</h2> \
+    var evenOdd = index % 2 ? 'odd' : 'even';
+    var template = '<div id="anel-###" class="anagrafica preview-anagrafica anagrafica-box el-###" data-elid="###"> \
+    <a href="#anagrafiche" class="removeFamiliar rm" data-victim="anel-###" data-elid="###">Rimuovi Anagrafica Componente</a> \
       <div class="field"> \
         <label for="antimafia_role">Ruolo</label> \
-        <select name="anagrafica[###][antimafia_role]" id="anagrafica[###][antimafia_role]"> \
+        <select name="anagrafiche_antimafia[###][antimafia_role]" id="anagrafiche_antimafia[###][antimafia_role]"> \
         ' + roles_options + '\
         </select>\
       </div> \
       <div class="field"> \
         <label for="antimafia_nome">Nome*</label> \
-        <input type="text" name="anagrafica[###][antimafia_nome]" value="" id="anagrafica_###_antimafia_nome" class="required maxlen" /> \
+        <input type="text" name="anagrafiche_antimafia[###][antimafia_nome]" value="" id="anagrafiche_antimafia_###_antimafia_nome" class="required maxlen" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_cognome">Cognome*</label> \
-        <input type="text" name="anagrafica[###][antimafia_cognome]" value="" id="anagrafica_###_antimafia_cognome" class="required maxlen" /> \
+        <input type="text" name="anagrafiche_antimafia[###][antimafia_cognome]" value="" id="anagrafiche_antimafia_###_antimafia_cognome" class="required maxlen" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_data_nascita">Data di nascita (nel formato gg/mm/aaaa)*</label> \
-        <input type="text" name="anagrafica[###][antimafia_data_nascita]" value="" id="anagrafica[###][antimafia_data_nascita]" class="required data" /> \
+        <input type="text" name="anagrafiche_antimafia[###][antimafia_data_nascita]" value="" id="anagrafiche_antimafia[###][antimafia_data_nascita]" class="required data" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_comune_nascita">Comune di nascita*</label> \
-        <input type="text" name="anagrafica[###][antimafia_comune_nascita]" value="" id="anagrafica_###_antimafia_comune_nascita" class="required maxlen" /> \
+        <input type="text" name="anagrafiche_antimafia[###][antimafia_comune_nascita]" value="" id="anagrafiche_antimafia_###_antimafia_comune_nascita" class="required maxlen" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_provincia_residenza">Provincia di nascita</label> \
-        <select name="anagrafica[###][antimafia_provincia_nascita]" id="anagrafica_###_antimafia_provincia_nascita"> \
+        <select name="anagrafiche_antimafia[###][antimafia_provincia_nascita]" id="anagrafiche_antimafia_###_antimafia_provincia_nascita"> \
         ' + provincie_options + '\
         </select>\
       </div> \
       <div class="field"> \
         <label for="antimafia_cf">Codice Fiscale*</label> \
-        <input type="text" name="anagrafica[###][antimafia_cf]" value="" id="anagrafica[###][antimafia_cf]" class="required cfp" /> \
+        <input type="text" name="anagrafiche_antimafia[###][antimafia_cf]" value="" id="anagrafiche_antimafia[###][antimafia_cf]" class="required cfp" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_comune_residenza">Comune di Residenza*</label> \
-        <input type="text" name="anagrafica[###][antimafia_comune_residenza]" value="" id="anagrafica_###_antimafia_comune_residenza" class="required" /> \
+        <input type="text" name="anagrafiche_antimafia[###][antimafia_comune_residenza]" value="" id="anagrafiche_antimafia_###_antimafia_comune_residenza" class="required" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_provincia_residenza">Provincia di residenza*</label> \
-        <select name="anagrafica[###][antimafia_provincia_residenza]" id="anagrafica_###_antimafia_provincia_residenza"  class="required"> \
+        <select name="anagrafiche_antimafia[###][antimafia_provincia_residenza]" id="anagrafiche_antimafia_###_antimafia_provincia_residenza"  class="required"> \
         ' + provincie_options + '\
         </select>\
       </div> \
       <div class="field"> \
         <label for="antimafia_via_residenza">Via residenza*</label> \
-        <input type="text" name="anagrafica[###][antimafia_via_residenza]" value="" id="anagrafica[###][antimafia_via_residenza]"  class="required" /> \
+        <input type="text" name="anagrafiche_antimafia[###][antimafia_via_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_via_residenza]"  class="required" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_civico_residenza">Civico residenza*</label> \
-        <input type="text" name="anagrafica[###][antimafia_civico_residenza]" value="" id="anagrafica[###][antimafia_civico_residenza]"  class="required" /> \
+        <input type="text" name="anagrafiche_antimafia[###][antimafia_civico_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_civico_residenza]"  class="required" /> \
       </div> \
-      <a href="#anagrafiche" class="addFamiliar add" data-elid="###">Aggiungi Familiare Convivente Maggiorenne</a> | <a href="#anagrafiche" class="removeFamiliar rm" data-victim="anel-###" data-elid="###">Rimuovi Anagrafica</a> \
+      <a href="#anagrafiche" class="addFamiliar add" data-elid="###">Aggiungi Familiare Convivente Maggiorenne</a> \
+      <div class="resizer"></div> \
       <div class="familiars" data-elid="###"></div> \
     </div>';
     var element = template.split('###').join(index);
-    jQuery('.inputs').prepend(jQuery(element));
+    jQuery('#elenco_anagrafiche').prepend(jQuery(element));
     subEventHandlers();
     _enableAutocomplete(
       'anagrafica_'+index+'_antimafia_comune_nascita',
@@ -261,7 +263,7 @@ function addAnagrafica(e){
 */
 function addOffice(e){
   (function(index){
-    var template = '<div class="office container" id="ofel-###"><div class="field "><label for="office###name">Ragione Sociale impresa partecipata*<a href="#" data-elid="###" class="rm removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="office[###][name]" value="" id="office###name" class="required maxlen"></div><div class="field "><label for="office###vat">Partita IVA impresa partecipata*</label><input type="text" name="office[###][vat]" value="" id="office###vat" class="required maxlen piva"></div><div class="field "><label for="office###cf">Codice Fiscale impresa partecipata*</label><input type="text" name="office[###][cf]" value="" id="office###cf" class="required maxlen cf"></div><div class="resizer"></div></div>';
+    var template = '<div class="imprese_partecipate container odder" id="ofel-###"><div class="field "><label for="imprese_partecipate###name">Ragione Sociale impresa partecipata*<a href="#" data-elid="###" class="rm removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="imprese_partecipate[###][nome]" value="" id="imprese_partecipate###nome" class="required maxlen"></div><div class="field "><label for="imprese_partecipate###piva">Partita IVA impresa partecipata*</label><input type="text" name="imprese_partecipate[###][piva]" value="" id="imprese_partecipate###piva" class="required maxlen"></div><div class="field "><label for="imprese_partecipate###cf">Codice Fiscale impresa partecipata*</label><input type="text" name="imprese_partecipate[###][cf]" value="" id="imprese_partecipate###cf" class="required maxlen cf"></div><div class="resizer"></div></div>';
     var element = template.split('###').join(index);
     jQuery('.offices').prepend(jQuery(element));
     subOfficeEventHandlers();
@@ -295,39 +297,39 @@ function addFamiliar(e){
     // ### = numero anagrafica
     // @@@ = numero Familiare
     // *** = numero familiare da visualizzare
-    var template = '<div class="box-familiare" id="fam-###-@@@"><hr />\
+    var template = '<div class="box-familiare" id="fam-###-@@@"> \
       <a href="#anagrafiche" class="rm removeThisFamiliar" data-victim="fam-###-@@@" data-elid="###" data-elfid="@@@">Rimuovi Familiare Convivente Maggiorenne</a> \
       <div class="field hidden"> \
         <label>Ruolo</label> \
-        <select name="anagrafica[###][f][@@@][role]" id="anagrafica[###][f][@@@][role]"> \
+        <select name="anagrafiche_antimafia[###][familiari][@@@][role]" id="anagrafiche_antimafia[###][familiari][@@@][role]"> \
         ' + roles_options + '\
         </select>\
       </div> \
       <div class="field"> \
-        <label for="anagrafica[###][f][@@@][name]">Nome*</label> \
-        <input type="text" name="anagrafica[###][f][@@@][name]" value="" id="anagrafica_###_f_@@@_name" class="required maxlen" /> \
+        <label for="anagrafiche_antimafia[###][familiari][@@@][name]">Nome*</label> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][name]" value="" id="anagrafiche_antimafia_###_familiari_@@@_name" class="required maxlen" /> \
       </div> \
       <div class="field"> \
-        <label for="anagrafica[###][f][@@@][titolare_cognome]">Cognome*</label> \
-        <input type="text" name="anagrafica[###][f][@@@][titolare_cognome]" value="" id="anagrafica_###_f_@@@_titolare_cognome" class="required maxlen" /> \
+        <label for="anagrafiche_antimafia[###][familiari][@@@][titolare_cognome]">Cognome*</label> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][titolare_cognome]" value="" id="anagrafiche_antimafia_###_familiari_@@@_titolare_cognome" class="required maxlen" /> \
       </div> \
       <div class="field"> \
-        <label for="anagrafica[###][f][@@@][data_nascita]">Data di nascita (nel formato gg/mm/aaaa)*</label> \
-        <input type="text" name="anagrafica[###][f][@@@][data_nascita]" value="" id="anagrafica[###][f][@@@][data_nascita]" class="required data" /> \
+        <label for="anagrafiche_antimafia[###][familiari][@@@][data_nascita]">Data di nascita (nel formato gg/mm/aaaa)*</label> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][data_nascita]" value="" id="anagrafiche_antimafia[###][familiari][@@@][data_nascita]" class="required data" /> \
       </div> \
       <div class="field"> \
-        <label for="anagrafica[###][f][@@@][comune]">Comune di nascita*</label> \
-        <input type="text" name="anagrafica[###][f][@@@][comune]" value="" id="anagrafica_###_f_@@@_comune" class="required maxlen" /> \
+        <label for="anagrafiche_antimafia[###][familiari][@@@][comune]">Comune di nascita*</label> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][comune]" value="" id="anagrafiche_antimafia_###_familiari_@@@_comune" class="required maxlen" /> \
       </div> \
       <div class="field"> \
-        <label for="anagrafica[###][f][@@@][provincia]">Provincia di nascita*</label> \
-        <select name="anagrafica[###][f][@@@][provincia]" id="anagrafica_###_f_@@@_provincia"> \
+        <label for="anagrafiche_antimafia[###][familiari][@@@][provincia]">Provincia di nascita*</label> \
+        <select name="anagrafiche_antimafia[###][familiari][@@@][provincia]" id="anagrafiche_antimafia_###_familiari_@@@_provincia"> \
         ' + provincie_options + '\
         </select>\
       </div> \
       <div class="field"> \
-        <label for="anagrafica[###][f][@@@][cf]">Codice Fiscale*</label> \
-        <input type="text" name="anagrafica[###][f][@@@][cf]" value="" id="anagrafica[###][f][@@@][cf]" class="required cfp" /> \
+        <label for="anagrafiche_antimafia[###][familiari][@@@][cf]">Codice Fiscale*</label> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][cf]" value="" id="anagrafiche_antimafia[###][familiari][@@@][cf]" class="required cfp" /> \
       </div> \
       <div class="resizer"></div> \
     </div>';
@@ -353,9 +355,9 @@ function addFamiliar(e){
 */
 function removeFamiliar(e){
   var idx = jQuery(e.target).attr('data-elid');
-  var whoIsIt = jQuery('#anagrafica_' + idx + '_antimafia_nome').val() + ' ' + jQuery('#anagrafica_' + idx + '_antimafia_cognome').val();
+  var whoIsIt = jQuery('#anagrafiche_antimafia_' + idx + '_antimafia_nome').val() + ' ' + jQuery('#anagrafiche_antimafia_' + idx + '_antimafia_cognome').val();
 
-  var letsGo = window.confirm('Sei sicuro di voler eliminare ' + whoIsIt + ' ?');
+  var letsGo = window.confirm('Sei sicuro di voler eliminare ' + whoIsIt + '?');
   if(true === letsGo) {
     _removeFamiliar(e);
   }
@@ -376,8 +378,7 @@ function _removeFamiliar(e){
 function removeThisFamiliar(e){
   var idx = jQuery(e.target).attr('data-elid');
   var idfx = jQuery(e.target).attr('data-elfid');
-  var whoIsIt = jQuery('#anagrafica_'+idx+'_f_'+idfx+'_name').val() + ' ' + jQuery('#anagrafica_'+idx+'_f_'+idfx+'_titolare_cognome').val();
-
+  var whoIsIt = jQuery('#anagrafiche_antimafia_'+idx+'_familiari_'+idfx+'_nome').val() + ' ' + jQuery('#anagrafiche_antimafia_'+idx+'_familiari_'+idfx+'_cognome').val();
   var letsGo = window.confirm('Sei sicuro di voler eliminare ' + whoIsIt + ' ?');
   if(true === letsGo) {
     _removeThisFamiliar(e);
@@ -391,7 +392,7 @@ function _removeThisFamiliar(e){
 
 function removeOffice(e){
   var idx = jQuery(e.target).attr('data-elid');
-  var whoIsIt = jQuery('#office'+idx+'name').val();
+  var whoIsIt = jQuery('#imprese_partecipate'+idx+'nome').val();
 
   var letsGo = window.confirm('Sei sicuro di voler eliminare ' + whoIsIt + ' ?');
   if(true === letsGo) {
@@ -421,5 +422,5 @@ function resetAnagrafiche(e) {
 function _resetAnagrafiche(e) {
   window.is = 0;
   window.familiars = {};
-  jQuery('.inputs').empty();
+  jQuery('#elenco_anagrafiche').empty();
 }

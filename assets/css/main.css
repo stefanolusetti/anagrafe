@@ -189,12 +189,12 @@ ul {
 }
 
 form .field input[type=text], form .field input[type=password] {
-	font-size: 1em;
-  	border: 1px solid #ccc;
-	display: block;
-  	width: 98%;
-	padding: 0 1%;
-	margin: 0 0 0 0;
+  font-size: 1.2em;
+  border: 1px solid #ccc;
+  display: block;
+  width: 98%;
+  padding: 0 1%;
+  margin: 0 0 0 0;
 }
 
 form .field select {
@@ -884,15 +884,26 @@ form .field.w50{
 }
 
 .box-familiare{
-
-  margin-left: 50px;
+  border-style: dashed;
+  border-color: #DDDDDD;
+  border-width: 0px 0px 2px 0px;
+  margin: 10px 0px;
+  padding: 10px 10px 10px 50px;
 }
 
+.box-familiare:last-child{
+  border-width: 0px 0px 0px 0px;
+}
+
+.anagrafica-box:last-child{
+  border-bottom-width: 0px;
+}
 .anagrafica-box{
-  border-style: solid;
-  border-color: #150c5f;
-  border-width: 1px;
+  border-style: dashed;
+  border-color: #DDDDDD;
+  border-width: 0px 0px 4px 0px;
   margin-bottom: 17px;
+  padding-bottom: 25px;
 }
 
 
@@ -930,10 +941,18 @@ ul.highlight{
   display: block !important;
 }
 
-div.inpreview label{
+form.preview label{
   font-size: 0.70em;
   text-transform: uppercase;
 }
+
+
+form.preview .field.checkbox label{
+  font-size: 1.1em;
+  text-transform: none;
+  margin-left: 40px;
+}
+
 
 .preview-field{
   font-size: 1.2em;
@@ -941,12 +960,85 @@ div.inpreview label{
   width: 98%;
   padding: 2px 1%;
   margin: 0 0 0 0;
-  background-color: #E4E4E4;
+
   border: 1px solid #ccc;
   min-height: 27px;
 }
 
-.preview-textarea{
+form .field input[type="checkbox"].preview-field {
+  width: 30px;
+  height: 30px;
+}
+
+form .field input[type="radio"].preview-field {
+  width: 30px;
+  height: 30px;
+}
+
+div.preview-field{
+  background-color: #E4E4E4;
+}
+form.preview .field {
+  font-size: 1.2em;
+  display: block;
+  width: 98%;
+  padding: 2px 1%;
+  margin: 2px 0;
+  background-color: #EFEFEF;
+  min-height: 32px;
+}
+
+form.preview a.add{
+  float: left;
+  font-weight: bold;
+  border: 1px solid #65DDE0;
+  padding: 3px 5px;
+  border-radius: 1px;
+  background-color: #65DDE0;
+  color: #004A4D;
+  font-style: normal;
+  text-decoration: none;
+  display: inline-block;
+}
+form.preview a.rm{
+  float: right;
+  font-weight: bold;
+  border: 1px solid #004A4D;
+  padding: 3px 5px;
+  border-radius: 1px;
+  background-color: #004A4D;
+  color: #65DDE0;
+  font-style: normal;
+  text-decoration: none;
+  display: inline-block;
+}
+form.preview a.reset{
+  font-weight: bold;
+  border: 1px solid #5A6772;
+  padding: 3px 5px;
+  border-radius: 1px;
+  background-color: #fff;
+  color: #5A6772;
+  font-style: normal;
+  text-decoration: none;
+  display: inline-block;
+}
+
+form input[type="submit"] {
+  font-size: 2em;
+}
+
+
+form.preview .field.privacy {
+  font-size: 0.8em;
+  border-style: dashed;
+  border-color: #ddd;
+  border-width: 1px 0px 1px 0px;
+  background-color: #f5f5f5;
+  height: 200px;
+}
+
+.preview-textarea, form.preview textarea{
   white-space: pre-wrap;
   font-size: 1em;
 }
@@ -1027,12 +1119,25 @@ form .inpreview-chk .fake-checkbox.size-2{
   width: 436px;
 }
 
-.preview-anagrafica.even{
+.half-button{
+  width: 436px;
+  float:left;
+  text-align: center;
+}
+
+.preview-anagrafica:nth-child(odd){
   background-color: #EFEFEF;
 }
-form .preview-anagrafica.odd .field{
-  background-color: #ffffff;
+.preview-anagrafica:nth-child(odd) .field{
+  background-color: #EFEFEF;
 }
+.preview-anagrafica:nth-child(even){
+  background-color: #fff;
+}
+.preview-anagrafica:nth-child(even) .field{
+  background-color: #fff;
+}
+
 .preview-familiari{
   border: 1px solid #dbdbdb;
   margin-left: 0px;
@@ -1050,4 +1155,54 @@ form .preview-anagrafica.odd .field{
 }
 .preview-familiari .preview-familiare:last-child{
   border-width: 0 !important;
+}
+
+
+a.modifica{
+  cursor: pointer;
+  font-weight: bold;
+  border: 1px solid #65DDE0;
+  padding: 10px 20px;
+  border-radius: 3px;
+  background-color: #65DDE0;
+  color: #004A4D;
+  font-style: normal;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.8em;
+}
+a.conferma, input.conferma{
+  cursor: pointer;
+  font-weight: bold;
+  border: 1px solid #004A4D;
+  padding: 10px 20px;
+  border-radius: 3px;
+  background-color: #004A4D;
+  color: #65DDE0;
+  font-style: normal;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.8em;
+}
+
+form.preview label.errormsg{
+  font-size: 0.9em;
+}
+
+.odder:nth-child(odd){
+  border-width: 0 0 1px 0;
+  border-style: dashed;
+  border-color: #ddd;
+}
+.odder:nth-child(odd) .field, .odder:nth-child(odd){
+
+  background-color: #EFEFEF;
+}
+.odder:nth-child(even) .field, .odder:nth-child(even){
+  background-color: #fff;
+}
+
+.smallpls{
+  font-size: 0.7em;
+  font-weight: 100;
 }
