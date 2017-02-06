@@ -322,7 +322,7 @@ $config = array(
     array(
       'field' => 'partita_iva',
       'label' => 'Partita IVA Società',
-      'rules' => 'required',
+      'rules' => 'required|max_length[16]|min_length[11]',
     ),
     array(
       'field' => 'codice_fiscale',
@@ -404,6 +404,11 @@ $config = array(
       'field' => 'check_anagrafiche_upsert',
       'label' => 'Anagrafiche dei componenti',
       'rules' => 'callback_check_anagrafiche_upsert'
+    ),
+    array(
+      'field' => 'check_imprese_upsert',
+      'label' => 'Imprese Partecipate',
+      'rules' => 'callback_check_imprese_upsert'
     ),
     array(
       'field' => 'check_settori',

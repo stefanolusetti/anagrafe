@@ -269,7 +269,7 @@ function addAnagrafica(e){
 */
 function addOffice(e){
   (function(index){
-    var template = '<div class="imprese_partecipate container odder" id="ofel-###"><div class="field "><label for="imprese_partecipate###name">Ragione Sociale impresa partecipata*<a href="#" data-elid="###" class="rm removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="imprese_partecipate[###][nome]" value="" id="imprese_partecipate###nome" class="required maxlen"></div><div class="field "><label for="imprese_partecipate###piva">Partita IVA impresa partecipata*</label><input type="text" name="imprese_partecipate[###][piva]" value="" id="imprese_partecipate###piva" class="required maxlen"></div><div class="field "><label for="imprese_partecipate###cf">Codice Fiscale impresa partecipata*</label><input type="text" name="imprese_partecipate[###][cf]" value="" id="imprese_partecipate###cf" class="required maxlen cf"></div><div class="resizer"></div></div>';
+    var template = '<div class="imprese_partecipate container odder" id="ofel-###"><div class="field "><label for="imprese_partecipate###name">Ragione Sociale impresa partecipata*<a href="#" data-elid="###" class="rm removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="imprese_partecipate[###][nome]" value="" id="imprese_partecipate_###_nome" class="required maxlen"></div><div class="field "><label for="imprese_partecipate###piva">Partita IVA impresa partecipata*</label><input type="text" name="imprese_partecipate[###][piva]" value="" id="imprese_partecipate_###_piva" class="required maxlen"></div><div class="field "><label for="imprese_partecipate###cf">Codice Fiscale impresa partecipata*</label><input type="text" name="imprese_partecipate[###][cf]" value="" id="imprese_partecipate_###_cf" class="required maxlen cf"></div><div class="resizer"></div></div>';
     var element = template.split('###').join(index);
     jQuery('.offices').prepend(jQuery(element));
     subOfficeEventHandlers();
@@ -398,7 +398,7 @@ function _removeThisFamiliar(e){
 
 function removeOffice(e){
   var idx = jQuery(e.target).attr('data-elid');
-  var whoIsIt = jQuery('#imprese_partecipate'+idx+'nome').val();
+  var whoIsIt = jQuery('#imprese_partecipate_'+idx+'_nome').val();
 
   var letsGo = window.confirm('Sei sicuro di voler eliminare ' + whoIsIt + ' ?');
   if(true === letsGo) {

@@ -1087,29 +1087,19 @@ form .inpreview-chk .fake-checkbox.size-2{
   padding: 5px 0px;
 }
 .warning{
-  text-align: center;
-    font-size: 1.2em;
-    background-color: #FCF8E3;
-    border-radius: 2px;
-    color: #8a6d3b;
-    border: 1px solid #faebcc;
-    padding: 5px 5px;
-    margin: 5px 15px;
+  background-color: #fff3b1;
+  color: #846017;
+  border: 2px solid #846017;
 }
 .warning em{
-  font-size: 1.3em;
+  font-size: 1.6em;
   font-weight: bold;
 }
 
 .error{
-  text-align: center;
-    font-size: 1.2em;
-    background-color: #FCE7E3;
-    border-radius: 2px;
-    color: #8A4C3B;
-    border: 1px solid #FAD8CC;
-    padding: 5px 5px;
-    margin: 5px 15px;
+  background-color: #FCE7E3;
+  color: #8A4C3B;
+  border: 2px solid #8A4C3B;
 }
 .error em{
   font-size: 1.3em;
@@ -1137,6 +1127,10 @@ form .inpreview-chk .fake-checkbox.size-2{
 }
 .preview-anagrafica.even .field{
   background-color: #fff;
+}
+
+.preview-anagrafica .fake-checkbox {
+  display: none;
 }
 
 .preview-familiari{
@@ -1218,4 +1212,12 @@ form.preview label.errormsg{
 
 .familiar_roles{
   display: none !important;
+}
+
+.hint {
+  text-align: center;
+  border-radius: 2px;
+  font-size: 1.5em;
+  padding: 5px 5px;
+  margin: 5px 15px;
 }

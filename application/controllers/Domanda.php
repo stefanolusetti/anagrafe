@@ -490,6 +490,36 @@ class Domanda extends CI_Controller
     return true;
   }
 
+
+  public function check_imprese_upsert ( $val ) {
+    $imprese = $this->input->post('imprese_partecipate');
+    if ( !empty($imprese) ) {
+      foreach ( $imprese AS $n => $impresa ) {
+        if ( empty($impresa['nome']) ) {
+          $this->form_validation->set_message('check_imprese_upsert', 'La Ragione Sociale delle imprese partecipate è obbligatoria.');
+          return false;
+        }
+        if ( empty($impresa['piva']) ) {
+          $this->form_validation->set_message('check_imprese_upsert', 'La partita iva delle imprese partecipate è obbligatoria.');
+          return false;
+        }
+        else if ( 11 > strlen($impresa['piva']) || 17 < strlen($impresa['piva']) ) {
+          $this->form_validation->set_message('check_imprese_upsert', 'La partita iva deve essere tra 11 e 16 caratteri.');
+          return false;
+        }
+
+        if ( empty($impresa['cf']) ) {
+          $this->form_validation->set_message('check_imprese_upsert', 'Codice Fiscale delle imprese partecipate è obbligatorio.');
+          return false;
+        }
+        else if ( 11 > strlen($impresa['cf']) || 17 < strlen($impresa['cf']) ) {
+          $this->form_validation->set_message('check_imprese_upsert', 'Codice Fiscale deve essere tra 11 e 16 caratteri.');
+          return false;
+        }
+      }
+    }
+    return true;
+  }
   /**
    * Anagrafiche, usiamo un singolo campo (check_anagrafiche) per mostrare l'errore di validazione.
    **/
@@ -529,7 +559,11 @@ class Domanda extends CI_Controller
           return false;
         }
         if ( empty($anagrafica['antimafia_cf']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale componente è obbligatorio');
+          $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale componente è obbligatorio.');
+          return false;
+        }
+        else if ( 11 > strlen($anagrafica['antimafia_cf']) || 17 < strlen($anagrafica['antimafia_cf']) ) {
+          $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale deve essere tra 11 e 16 caratteri.');
           return false;
         }
         if ( empty($anagrafica['antimafia_comune_residenza']) ) {
@@ -584,6 +618,10 @@ class Domanda extends CI_Controller
             }
             if ( empty($familiare['cf']) ) {
               $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale del familiare convivente è obbligatorio');
+              return false;
+            }
+            else if ( 11 > strlen($familiare['cf']) || 17 < strlen($familiare['cf']) ) {
+              $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale deve essere tra 11 e 16 caratteri.');
               return false;
             }
           }

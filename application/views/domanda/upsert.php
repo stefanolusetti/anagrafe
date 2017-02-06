@@ -77,8 +77,8 @@ titolare_res_cap
   echo '</div>';
 
   f_text_edit($formdata, 'ragione_sociale', 'Ragione sociale*', 'required maxlen');
-  f_text_edit($formdata, 'partita_iva', 'Partita IVA*', 'required maxlen');
-  f_text_edit($formdata, 'codice_fiscale', 'Codice Fiscale*', 'required maxlen');
+  f_text_edit($formdata, 'partita_iva', 'Partita IVA*', 'required maxlen _pivacf');
+  f_text_edit($formdata, 'codice_fiscale', 'Codice Fiscale*', 'required maxlen _pivacf');
 
   f_select_edit(
     $formdata,
@@ -202,7 +202,12 @@ titolare_res_cap
     'Nessuna delle precedenti',
     '_thefields'
   );
-?><hr class="resizer" /><h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2><a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a><div class="offices"></div><?php
+?><hr class="resizer" /><h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2>
+<?php
+mostra_errore('check_imprese_upsert');
+?>
+<a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a><div class="offices"><?php
+
 /*
 ██████   █████  ██████  ████████ ███████  ██████ ██ ██████   █████  ███████ ██  ██████  ███    ██ ██
 ██   ██ ██   ██ ██   ██    ██    ██      ██      ██ ██   ██ ██   ██    ███  ██ ██    ██ ████   ██ ██
@@ -223,18 +228,18 @@ titolare_res_cap
         $formdata,
         'imprese_partecipate[' . $key . '][piva]',
         'Partita IVA impresa partecipata*',
-        'required maxlen'
+        'required maxlen _pivacf'
       );
       f_text_edit(
         $formdata,
         'imprese_partecipate[' . $key . '][cf]',
         'Codice Fiscale impresa partecipata*',
-        'required maxlen'
+        'required maxlen _pivacf'
       );
       echo '<div class="resizer"></div></div>';
     }
   }
-?><hr class="resizer" /><h2>Consiglio di amministrazione</h2><?php
+?></div><hr class="resizer" /><h2>Consiglio di amministrazione</h2><?php
 f_text_edit($formdata, 'impresa_num_amministratori', "Numero componenti in carica");
 ?><h4>Procuratori e Procuratori Speciali</h4><?php
 f_text_edit($formdata, 'impresa_num_procuratori', "Numero componenti in carica");
@@ -401,7 +406,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       $formdata,
       $prefix . 'antimafia_cf]',
       'Codice Fiscale*',
-      'required cfp'
+      'required _pivacf'
     );
     $acr_ID = f_text_edit(
       $formdata,
@@ -499,7 +504,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
           $formdata,
           $fam_prefix . 'cf]',
           'Codice Fiscale*',
-          'required cfp'
+          'required _pivacf'
         );
 
         echo str_replace(

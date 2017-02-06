@@ -124,7 +124,7 @@ f_checkbox_print($impresa_settore_nessuno, 'Nessuna delle precedenti');
 
 ?><hr class="resizer" /><h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2><?php
 if( isset($imprese_partecipate) &&  !empty($imprese_partecipate) ) {
-  ?><div class="warning">Sono state inserite <em><?php echo count($imprese_partecipate); ?></em> imprese partecipate:</div><?php
+  ?><div class="hint warning">Sono state inserite <em><?php echo count($imprese_partecipate); ?></em> imprese partecipate:</div><?php
   foreach ( $imprese_partecipate AS $n => $impresa ) {
 ?><div class="impresa"><?php
     f_checkbox_print($n + 1, $impresa['nome'], true);
@@ -134,7 +134,7 @@ if( isset($imprese_partecipate) &&  !empty($imprese_partecipate) ) {
   }
 }
 else {
-  ?><div class="warning">Non sono state inserite imprese partecipate.</div><?php
+  ?><div class="hint warning">Non sono state inserite imprese partecipate.</div><?php
 }
 ?><hr class="resizer" />
 <?php
@@ -212,7 +212,7 @@ if ( 0 != $num_anagrafiche ) {
   }
 }
 ?>
-<div class="<?php echo $anagrafiche_class; ?>">Sono state inserite <em><?php echo $num_anagrafiche; ?></em> anagrafiche di componenti e <em><?php echo $num_familiari; ?></em> anagrafiche di familiari maggiorenni conviventi</div>
+<div class="hint <?php echo $anagrafiche_class; ?>">Sono state inserite <em><?php echo $num_anagrafiche; ?></em> anagrafiche di componenti e <em><?php echo $num_familiari; ?></em> anagrafiche di familiari maggiorenni conviventi</div>
 
 <?php
 if ( 0 != $num_anagrafiche ) {
@@ -243,14 +243,14 @@ if ( 0 != $num_anagrafiche ) {
     echo '</div><div class="resizer"></div>';
 
     if ( isset($anagrafica['familiari']) && !empty($anagrafica['familiari']) ) {
-      echo '<div class="preview-familiari"><h3>Familiari maggiorenni conviventi</h3>';
+      echo '<div class="preview-familiari"><h2>Familiari maggiorenni conviventi</h2>';
       $nff = 'A';
       foreach ( $anagrafica['familiari'] AS $nf => $familiare ) {
         echo '<div class="preview-familiare">';
         if ( isset($fam_roles_options[$familiare['role_id']]) ) {
           f_checkbox_print(
             ($na + 1) . ' ' . $nff,
-            '<em>' . $fam_roles_options[$familiare['role_id']] . ' di ' . $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome'] . '</em>',
+            '<em>' . $fam_roles_options[$familiare['role_id']] . ' di </em><strong>' . $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome'] . '</strong>',
             true,
             2);
         }
@@ -261,8 +261,6 @@ if ( 0 != $num_anagrafiche ) {
         echo '<div class="half">';
         f_text_print($familiare['nome'], 'Nome');
         f_text_print($familiare['cognome'], 'Cognome');
-        f_text_print($familiare['cf'], 'Codice Fiscale');
-
         f_text_print($familiare['comune'], 'Comune di nascita');
         f_text_print(date('d/m/Y', strtotime($familiare['data_nascita'])), 'Data di nascita');
         f_text_print($familiare['cf'], 'Codice Fiscale');
