@@ -289,14 +289,12 @@ function antimafia_description ($id) {
 
 
 
-function create_codice_istanza($id) {
-  $CI =& get_instance();
-  $documento = $CI->dichiarazione_model->get_document($id);
+function create_codice_istanza($doc) {
   return sprintf(
     "%s_%s_%s",
     'AE',
-    str_pad($id, 6, '0', STR_PAD_LEFT),
-    substr($documento['istanza_data'], 0, 4)
+    str_pad($doc['ID'], 6, '0', STR_PAD_LEFT),
+    substr($doc['istanza_data'], 0, 4)
   );
 }
 

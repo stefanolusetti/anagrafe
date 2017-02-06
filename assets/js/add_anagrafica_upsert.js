@@ -245,7 +245,7 @@ function addAnagrafica(e){
       <div class="familiars" data-elid="###"></div> \
     </div>';
     var element = template.split('###').join(index);
-    element = template.split('+++').join(evenOdd);
+    element = element.split('+++').join(evenOdd);
     jQuery('#elenco_anagrafiche').prepend(jQuery(element));
     subEventHandlers();
     _enableAutocomplete(

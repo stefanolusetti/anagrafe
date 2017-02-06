@@ -156,15 +156,20 @@ class Domanda extends CI_Controller
 */
   public function confirm ( $hash, $id ) {
     try {
-      $doc = $this->dichiarazione_model->get_tmp_document_by_hash($hash);
-      if ( $doc ) {
-        $confirm = $this->dichiarazione_model->confirm_doc($doc);
+      $tmp_doc = $this->dichiarazione_model->get_tmp_document_by_hash($hash);
+      if ( $tmp_doc ) {
+        $confirm = $this->dichiarazione_model->confirm_doc($tmp_doc);
         if ( false !== $confirm ) {
+          $doc = $this->dichiarazione_model->get_document($confirm);
+          send_welcome_email($doc['ID']);
           $this->load->view('templates/header', array());
           $this->load->view('templates/headbar');
           $this->parser->parse(
             'domanda/sent',
-            array( 'mittente' => $doc['titolare_nome'] . ' ' . $doc['titolare_cognome'] )
+            array(
+              'mittente' => $doc['titolare_nome'] . ' ' . $doc['titolare_cognome'],
+              'email' => $doc['impresa_pec']
+            )
           );
           $this->load->view('templates/footer');
         }

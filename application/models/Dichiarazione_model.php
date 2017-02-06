@@ -32,7 +32,7 @@ class Dichiarazione_model extends CI_Model
       foreach ($doc['anagrafiche_antimafia'] AS $i => $antimafia) {
         $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id']);
       }
-      $doc['offices'] = $this->get_item_offices($id);
+      $doc['imprese_partecipate'] = $this->get_item_imprese_partecipate($id);
       return $doc;
     } catch(Exception $e){
       return false;
@@ -139,7 +139,7 @@ class Dichiarazione_model extends CI_Model
   }
 
   // id docs
-  public function get_item_offices($id) {
+  public function get_item_imprese_partecipate($id) {
     $params = array(
       'esecutore_id' => $id,
     );
@@ -230,6 +230,11 @@ class Dichiarazione_model extends CI_Model
     $data['pref_scadenza_75'] = NULL;
     $data['bdna_protocollo'] = NULL;
     $data['protocollo_struttura'] = NULL;
+
+    $data['ip'] = $_SERVER['REMOTE_ADDR'];
+    if ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) ) {
+      $data['ip'] = ':' . $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
 
 
     $this->db->trans_start();
@@ -341,6 +346,99 @@ class Dichiarazione_model extends CI_Model
     set_error_handler($curr_error_handler);
     return array('id' => $doc_id, 'hash' => $confirm_hash);
   }
+
+/*
+ ██████  ██████  ███    ██ ███████ ██ ██████  ███    ███         ██████   ██████   ██████
+██      ██    ██ ████   ██ ██      ██ ██   ██ ████  ████         ██   ██ ██    ██ ██
+██      ██    ██ ██ ██  ██ █████   ██ ██████  ██ ████ ██         ██   ██ ██    ██ ██
+██      ██    ██ ██  ██ ██ ██      ██ ██   ██ ██  ██  ██         ██   ██ ██    ██ ██
+ ██████  ██████  ██   ████ ██      ██ ██   ██ ██      ██ ███████ ██████   ██████   ██████
+*/
+  public function confirm_doc ($doc) {
+    // Copy the tmp_* data into real tables.
+    unset($doc['ID']);
+    unset($doc['created_at']);
+    unset($doc['updated_at']);
+    unset($doc['hash']);
+    $doc['created_at'] = date('Y-m-d H:i:s');
+    $_anagrafiche = $doc['anagrafiche_antimafia'];
+    $_imprese_partecipate = $doc['imprese_partecipate'];
+    unset($doc['anagrafiche_antimafia']);
+    unset($doc['imprese_partecipate']);
+
+    $doc['ip'] = $_SERVER['REMOTE_ADDR'];
+    if ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) ) {
+      $doc['ip'] = ':' . $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+
+    $this->db->trans_start();
+    $curr_error_handler = set_error_handler('db_transaction_error_handler');
+    try {
+      //$this->db->update('tmp_esecutori')
+      $this->db->insert('esecutori', $doc);
+      $doc_id = $this->db->insert_id();
+      $code = create_codice_istanza(array('ID' => $doc_id, 'istanza_data' => $doc['istanza_data']));
+      $upload_hash = hash('md5', $doc_id . '-anagrafe');
+      $this->db->update(
+        'esecutori',
+        array('codice_istanza' => $code, 'hash' => $upload_hash),
+        "ID = " . $doc_id
+      );
+      // anagrafiche
+      if ( !empty($_anagrafiche) ) {
+        foreach ( $_anagrafiche AS $anagrafica ) {
+          $anagrafica['esecutore_id'] = $doc_id;
+          unset($anagrafica['anagrafica_id']);
+          $_familiari = isset( $anagrafica['familiari'] ) ? $anagrafica['familiari'] : array();
+          unset($anagrafica['familiari']);
+          if ( $this->db->insert('anagrafiche_antimafia', $anagrafica) ) {
+            $anagrafica_id = $this->db->insert_id();
+            if ( !empty($_familiari) ) {
+              foreach ( $_familiari AS $familiare ) {
+                unset($familiare['familiare_id']);
+                $familiare['anagrafica_id'] = $anagrafica_id;
+                $familiare['esecutore_id'] = $doc_id;
+                $this->db->insert('anagrafiche_familiari', $familiare);
+              }
+            }
+          }
+        }
+      }
+      // imprese partecipate
+      if ( !empty($_imprese_partecipate) ) {
+        foreach ( $_imprese_partecipate AS $impresa_partecipata ) {
+          unset($impresa_partecipata['eip_id']);
+          $impresa_partecipata['esecutore_id'] = $doc_id;
+          $this->db->insert('esecutori_imprese_partecipate', $impresa_partecipata);
+        }
+      }
+      $this->db->trans_commit();
+      set_error_handler($curr_error_handler);
+      return $doc_id;
+    }
+    catch(Exception $e) {
+      $this->db->trans_rollback();
+      // @Todo Messaggio?
+      echo '<h1>SI È VERIFICATO UN ERRORE</h1>';
+      //echo $e->getMessage() . '<br />';
+      //echo $e->getLine() . '<br />';
+      //echo $e->getFile() . '<br />';
+      /*
+      ██████  ███████ ██████  ██    ██  ██████
+      ██   ██ ██      ██   ██ ██    ██ ██
+      ██   ██ █████   ██████  ██    ██ ██   ███
+      ██   ██ ██      ██   ██ ██    ██ ██    ██
+      ██████  ███████ ██████   ██████   ██████
+      */
+      echo "<h7>Errore debug@" .__FILE__.":".__LINE__."</h7>";
+      echo $e->getMessage() . '<br />';
+      echo $e->getLine() . '<br />';
+      echo $e->getFile() . '<br />';
+      set_error_handler($curr_error_handler);
+      return false;
+    }
+  }
+
 
   public function get_roles($type = null) {
     if (is_null($type)) {

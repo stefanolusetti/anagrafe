@@ -122,6 +122,7 @@ $(document).ready(function() {
   );
 
   $.validator.addMethod("cf", function(value, element) {
+    return true; //disabled
       if (value.length == 16 || value.length == 11) {
         return true
       }

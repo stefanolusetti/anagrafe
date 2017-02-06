@@ -177,19 +177,19 @@ function create_pdf($id) {
       'stmt_interest' => 'Yes',
       'interesse_lavori' => $doc['interesse_lavori'] == 1 ? 'Yes' : 'No',
       'interesse_lavori_tipo' => $doc['interesse_lavori_tipo'],
-      'interesse_lavori_importo' => $doc['interesse_lavori_importo'] == 0 ? '' : $doc['interesse_lavori_importo'],
+      'interesse_lavori_importo' => $doc['interesse_lavori_importo'],
 
       'interesse_servizi' => $doc['interesse_servizi'] == 1 ? 'Yes' : 'No',
       'interesse_servizi_tipo' => $doc['interesse_servizi_tipo'],
-      'interesse_servizi_importo' => $doc['interesse_servizi_importo'] == 0 ? '' : $doc['interesse_servizi_importo'],
+      'interesse_servizi_importo' => $doc['interesse_servizi_importo'],
 
       'interesse_forniture' => $doc['interesse_forniture'] == 1 ? 'Yes' : 'No',
       'interesse_forniture_tipo' => $doc['interesse_forniture_tipo'],
-      'interesse_forniture_importo' => $doc['interesse_forniture_importo'] == 0 ? '' : $doc['interesse_forniture_importo'],
+      'interesse_forniture_importo' => $doc['interesse_forniture_importo'],
 
       'interesse_interventi' => $doc['interesse_interventi'] == 1 ? 'Yes' : 'No',
       'interesse_interventi_tipo' => $doc['interesse_interventi_tipo'],
-      'interesse_interventi_importo' => $doc['interesse_interventi_importo'] == 0 ? '' : $doc['interesse_interventi_importo'],
+      'interesse_interventi_importo' => $doc['interesse_interventi_importo'],
 
       'impresa_settore_nessuno' => $doc['impresa_settore_nessuno'] == 1 ? 'Yes' : 'No',
 
@@ -201,6 +201,7 @@ function create_pdf($id) {
       'impresa_settore_ferro' => $doc['impresa_settore_ferro'] == 1 ? 'Yes' : 'No',
       'impresa_settore_autotrasporto' => $doc['impresa_settore_autotrasporto'] == 1 ? 'Yes' : 'No',
       'impresa_settore_guardiana' => $doc['impresa_settore_guardiana'] == 1 ? 'Yes' : 'No',
+      'note' => $doc['note']
     );
 
     $fdf = new CerthideaFDF($doc['codice_istanza']);
@@ -214,7 +215,7 @@ function create_pdf($id) {
 ██    ██ ██      ██      ██ ██      ██           ██
  ██████  ██      ██      ██  ██████ ███████ ███████
 */
-    $doc_offices = $CI->dichiarazione_model->get_item_offices($id);
+    $doc_offices = $CI->dichiarazione_model->get_item_imprese_partecipate($id);
     if(!empty($doc_offices)) {
       // 12 per pagina
       $_num_pages = ceil(count($doc_offices) / 12);
@@ -412,14 +413,10 @@ function email_message($item, $hash){
 function send_welcome_email($id) {
   $CI =& get_instance();
   $doc = $CI->dichiarazione_model->get_document($id);
-
-  $hash = hash('md5', $doc['ragione_sociale']);
-  $CI->db->where('ID', $doc['ID'])->update('esecutori', array('hash' => $hash));
-
   $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
   $CI->email->to($doc['impresa_pec']);
   $CI->email->subject('Domanda di iscrizione Anagrafe Antimafia degli Esecutori');
-  $CI->email->message(email_message_new($doc, $hash));
+  $CI->email->message(email_message_new($doc));
   /*
   $CI->email->attach(
     $fileinfo['path'],
@@ -431,8 +428,8 @@ function send_welcome_email($id) {
   return $esito;
 }
 
-function email_message_new($doc, $hash){
-    $url = site_url("domanda/upload/{$hash}");
+function email_message_new($doc){
+    $url = site_url('domanda/upload/' . $doc['hash']);
     $msg = "<p>
     <b>ATTENZIONE:</b> Non rispondere a questa PEC. Seguire le istruzioni per concludere l’iscrizione.
     </p>
@@ -530,17 +527,16 @@ function send_thanks_mail($doc) {
     ));
   }
 
-
   $CI->email->message("in allegato CSV e PDF");
   $CI->email->attach(
     $fileinfo['path'],
     'attachment',
-    'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $codice . '.pdf'
+    $codice . '.pdf'
   );
   $CI->email->attach(
     $csv['path'],
     'attachment',
-    'elenco-componenti-antimafia-' . $codice . '.csv'
+    $codice . '.csv'
   );
   $esito = $CI->email->send();
   unlink($fileinfo['path']);
