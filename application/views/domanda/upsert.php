@@ -1,5 +1,5 @@
-<div class="padded">
-  <a href="/domanda/help" target="_blank">Istruzioni per la compilazione della domanda di iscrizione all'Anagrafe Antimafia degli Esecutori</a>
+<div class="padded" style="text-align: center;">
+  <a href="/domanda/help" class="helplink" target="_blank">Istruzioni per la compilazione della domanda di iscrizione all'Anagrafe Antimafia degli Esecutori</a>
 </div>
 <?php
 if ( isset($formdata['hash']) ) {
@@ -11,6 +11,8 @@ else {
   echo form_hidden('hash', '');
 }
 
+
+echo '<input type="hidden" name="istanza_id" value="' . $formdata['istanza_id'] . '" id="istanza_id" />';
 
 /*
 ████████ ██ ████████  ██████  ██       █████  ██████  ███████
@@ -247,6 +249,10 @@ f_text_edit($formdata, 'impresa_num_sindaci_supplenti', "Numero sindaci supplent
 ██   ██    ██       ██    ██  ██  ██  ██    ██    ██   ██
 ██   ██    ██       ██    ██   ████   ██    ██    ██   ██
 */
+
+mostra_errore('check_attivita_upsert');
+
+
 f_checkbox_edit(
   $formdata,
   'interesse_lavori',
@@ -314,6 +320,10 @@ echo '</div>';
   <br />
   <a href="#anagrafiche" class="add addAnagrafica">Aggiungi anagrafica</a> | <a href="#" class="reset resetAnagrafiche">Cancella tutto</a>
 </p>
+<?php
+
+mostra_errore('check_anagrafiche_upsert');
+?>
 <div id="elenco_anagrafiche">
 <?php
 /*
@@ -323,8 +333,9 @@ echo '</div>';
 ██   ██ ██  ██ ██ ██   ██ ██    ██ ██   ██ ██   ██ ██      ██ ██      ██   ██ ██
 ██   ██ ██   ████ ██   ██  ██████  ██   ██ ██   ██ ██      ██  ██████ ██   ██ ███████
 */
+$autocomplete_to_enable = array();
 if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_antimafia'])) {
-  $a_head = '<div id="anel-!!!" class="anagrafica preview-anagrafica anagrafica-box el-!!!" data-elid="!!!"><a href="#anagrafiche" class="rm removeFamiliar" data-victim="anel-!!!" data-elid="!!!">Rimuovi Anagrafica Componente</a>';
+  $a_head = '<div id="anel-!!!" class="anagrafica preview-anagrafica +++ anagrafica-box el-!!!" data-elid="!!!"><a href="#anagrafiche" class="rm removeFamiliar" data-victim="anel-!!!" data-elid="!!!">Rimuovi Anagrafica Componente</a>';
   $a_foot = '<a href="#anagrafiche" class="add addFamiliar" data-elid="!!!">Aggiungi Familiare Convivente Maggiorenne</a><div class="resizer"></div><div class="familiars" data-elid="!!!">';
   $f_head = '<div class="box-familiare" id="fam-###-@@@">
     <a href="#anagrafiche" class="rm removeThisFamiliar" data-victim="fam-###-@@@" data-elid="###" data-elfid="@@@">Rimuovi Componente Familiare Maggiorenne</a>';
@@ -340,6 +351,10 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       $a_head
     );
     $prefix = 'anagrafiche_antimafia[' . $i . '][';
+
+    if ( isset($anagrafica['anagrafica_id']) ) {
+      echo '<input type="hidden" name="anagrafica['.$i.'][anagrafica_id]" value="' . $anagrafica['anagrafica_id'] . '" id="anagrafica_' . $i . '_id" />';
+    }
 
     f_select_edit(
       $formdata,
@@ -367,40 +382,42 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       'Data di nascita (nel formato gg/mm/aaaa)*',
       'required data'
     );
-    f_text_edit(
+    $acn_ID = f_text_edit(
       $formdata,
       $prefix . 'antimafia_comune_nascita]',
       'Comune di nascita*',
       'required'
     );
 
-    f_select_edit(
+    $apn_ID = f_select_edit(
       $formdata,
       $prefix . 'antimafia_provincia_nascita]',
       'Provincia di nascita*',
       opzioni_provincie(),
       'required'
     );
+    $autocomplete_to_enable[ $acn_ID ] = $apn_ID;
     f_text_edit(
       $formdata,
       $prefix . 'antimafia_cf]',
       'Codice Fiscale*',
       'required cfp'
     );
-    f_text_edit(
+    $acr_ID = f_text_edit(
       $formdata,
       $prefix . 'antimafia_comune_residenza]',
       'Comune Residenza*',
       'required'
     );
 
-    f_select_edit(
+    $apr_ID = f_select_edit(
       $formdata,
       $prefix . 'antimafia_provincia_residenza]',
       'Provincia di Residenza*',
       opzioni_provincie(),
       'required'
     );
+    $autocomplete_to_enable[ $acr_ID ] = $apr_ID;
     f_text_edit(
       $formdata,
       $prefix . 'antimafia_via_residenza]',
@@ -435,6 +452,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
           array($i, $fi),
           $f_head
         );
+        echo '<div class="familiar_roles">';
         f_select_edit(
           $formdata,
           $fam_prefix . 'role_id]',
@@ -442,6 +460,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
           $options_fam_users,
           'required'
         );
+        echo '</div>';
         f_text_edit(
           $formdata,
           $fam_prefix . 'nome]',
@@ -460,20 +479,22 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
           'Data di nascita (nel formato gg/mm/aaaa)*',
           'required data'
         );
-        f_text_edit(
+
+        $facn_ID = f_text_edit(
           $formdata,
           $fam_prefix . 'comune]',
           'Comune di nascita*',
           'required'
         );
 
-        f_select_edit(
+        $fapn_ID = f_select_edit(
           $formdata,
           $fam_prefix . 'provincia_nascita]',
           'Provincia di nascita*',
           opzioni_provincie(),
           'required'
         );
+        $autocomplete_to_enable[ $facn_ID ] = $fapn_ID;
         f_text_edit(
           $formdata,
           $fam_prefix . 'cf]',
@@ -585,4 +606,5 @@ echo '<script type="text/javascript">';
 printf("window.%s = %s;\n", '_provincie', json_encode($provincie_options));
 printf("window.%s = %s;\n", '_key_roles', json_encode($key_roles_options));
 printf("window.%s = %s;\n", '_fam_roles', json_encode($fam_roles_options));
+printf("window.%s = %s;\n", '_autocomplete_to_enable', json_encode($autocomplete_to_enable));
 echo '</script>';

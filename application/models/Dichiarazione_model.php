@@ -40,29 +40,29 @@ class Dichiarazione_model extends CI_Model
   }
 
   // Load and return the full document.
-  public function get_temp_document($id) {
+  public function get_tmp_document($id) {
     try{
-      $doc = $this->get_temp_item($id);
-      $doc['anagrafiche_antimafia'] = $this->get_doc_antimafia($id, true);
+      $doc = $this->get_tmp_item($id);
+      $doc['anagrafiche_antimafia'] = $this->get_tmp_doc_antimafia($id);
       foreach ($doc['anagrafiche_antimafia'] AS $i => $antimafia) {
-        $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id'], true);
+        $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_tmp_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id']);
       }
-      $doc['imprese_partecipate'] = $this->get_item_offices($id, true);
+      $doc['imprese_partecipate'] = $this->get_tmp_imprese_partecipate($id);
       return $doc;
     } catch(Exception $e){
       return false;
     }
   }
   // Load and return the full document.
-  public function get_temp_document_by_hash($hash) {
+  public function get_tmp_document_by_hash($hash) {
     try{
-      $doc = $this->get_temp_item_by_hash($hash);
+      $doc = $this->get_tmp_item_by_hash($hash);
       if ( $doc ) {
-        $doc['anagrafiche_antimafia'] = $this->get_doc_antimafia($doc['ID'], true);
+        $doc['anagrafiche_antimafia'] = $this->get_tmp_doc_antimafia($doc['ID']);
         foreach ($doc['anagrafiche_antimafia'] AS $i => $antimafia) {
-          $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id'], true);
+          $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_tmp_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id']);
         }
-        $doc['imprese_partecipate'] = $this->get_item_offices($doc['ID'], true);
+        $doc['imprese_partecipate'] = $this->get_tmp_imprese_partecipate($doc['ID']);
         return $doc;
       }
       else {
@@ -89,13 +89,13 @@ class Dichiarazione_model extends CI_Model
     */
   }
 
-  public function get_temp_item($id) {
-    $qhr = $this->db->get_where('esecutori_temp', array('ID' => $id));
+  public function get_tmp_item($id) {
+    $qhr = $this->db->get_where('tmp_esecutori', array('ID' => $id));
     return $qhr->row_array();
   }
 
-  public function get_temp_item_by_hash($hash) {
-    $qhr = $this->db->get_where('esecutori_temp', array('hash' => $hash));
+  public function get_tmp_item_by_hash($hash) {
+    $qhr = $this->db->get_where('tmp_esecutori', array('hash' => $hash));
     return $qhr->row_array();
   }
 
@@ -109,43 +109,65 @@ class Dichiarazione_model extends CI_Model
   }
 
   // id docs
-  public function get_doc_antimafia($id, $temp = false) {
-    $params = array(
-      'esecutore_id' => $id,
-      'is_temp' => true == $temp ? 1 : 0
-    );
+  public function get_doc_antimafia($id) {
+    $params = array('esecutore_id' => $id);
     $query_antimafia = $this->db->get_where('anagrafiche_antimafia', $params);
+    $item_antimafia = $query_antimafia->result_array();
+    return $item_antimafia;
+  }
+  // id docs
+  public function get_tmp_doc_antimafia($id) {
+    $params = array('esecutore_id' => $id);
+    $query_antimafia = $this->db->get_where('tmp_anagrafiche_antimafia', $params);
     $item_antimafia = $query_antimafia->result_array();
     return $item_antimafia;
   }
 
   // id anagrafiche_antimafia
-  public function get_item_familiars($id, $temp = false) {
-    $params = array(
-      'anagrafica_id' => $id,
-      'is_temp' => true == $temp ? 1 : 0
-    );
+  public function get_item_familiars($id) {
+    $params = array('anagrafica_id' => $id);
     $query_antimafia = $this->db->get_where('anagrafiche_familiari', $params);
+    $item_antimafia = $query_antimafia->result_array();
+    return $item_antimafia;
+  }
+  // id anagrafiche_antimafia
+  public function get_tmp_item_familiars($id) {
+    $params = array('anagrafica_id' => $id);
+    $query_antimafia = $this->db->get_where('tmp_anagrafiche_familiari', $params);
     $item_antimafia = $query_antimafia->result_array();
     return $item_antimafia;
   }
 
   // id docs
-  public function get_item_offices($id, $temp = false) {
+  public function get_item_offices($id) {
     $params = array(
       'esecutore_id' => $id,
-      'is_temp' => true == $temp ? 1 : 0
     );
     $query_offices = $this->db->get_where('esecutori_imprese_partecipate', $params);
     $item_offices = $query_offices->result_array();
     return $item_offices;
   }
+  // id docs
+  public function get_tmp_imprese_partecipate($id) {
+    $params = array( 'esecutore_id' => $id );
+    $query_offices = $this->db->get_where('tmp_esecutori_imprese_partecipate', $params);
+    $item_offices = $query_offices->result_array();
+    return $item_offices;
+  }
 
-  public function save_preview() {
+/*
+██████  ██████  ███████ ██    ██ ██ ███████ ██     ██
+██   ██ ██   ██ ██      ██    ██ ██ ██      ██     ██
+██████  ██████  █████   ██    ██ ██ █████   ██  █  ██
+██      ██   ██ ██       ██  ██  ██ ██      ██ ███ ██
+██      ██   ██ ███████   ████   ██ ███████  ███ ███
+*/
+  public function save_preview($istanza_id = 0) {
+    $istanza_id = (int)$istanza_id;
     $this->load->helper('url');
     $this->load->helper('fastform');
 
-    $data = list_fields();
+    $data = list_tmp_fields();
     $data['partita_iva'] = strtoupper($data['partita_iva']);
     $data['codice_fiscale'] = strtoupper($data['codice_fiscale']);
     $data['impresa_email'] = '';
@@ -156,14 +178,19 @@ class Dichiarazione_model extends CI_Model
     $data['white_list_data'] = parse_date($data['white_list_data']);
     $data['istanza_data'] = parse_date($data['istanza_data']);
     $data['impresa_data_costituzione'] = parse_date($data['impresa_data_costituzione']);
-    $data['titolare_rappresentanza_altro'] = $this->input->post('ruolo_richiedente');
+    if ( 'Altro' == $data['titolare_rappresentanza'] ) {
+      $data['titolare_rappresentanza_altro'] = $this->input->post('titolare_rappresentanza_altro');
+    }
+    else {
+      $data['titolare_rappresentanza_altro'] = '';
+    }
 
-    $data['stmt_wl'] = $data['stmt_wl'] == 'Yes' ? 1 : 0;
-    $data['interesse_lavori'] = $this->input->post('interesse_lavori_flag') == 'Yes' ? 1 : 0;
-    $data['interesse_servizi'] = $this->input->post('interesse_servizi_flag') == 'Yes' ? 1 : 0;
-    $data['interesse_forniture'] = $this->input->post('interesse_forniture_flag') == 'Yes' ? 1 : 0;
-    $data['interesse_interventi'] = $this->input->post('interesse_interventi_flag') == 'Yes' ? 1 : 0;
-    $data['interesse_interventi_checkbox'] = $this->input->post('interesse_interventi_checkbox') == 'Yes' ? 1 : 0;
+    $data['stmt_wl'] = $data['stmt_wl'] == '1' ? 1 : 0;
+    $data['interesse_lavori'] = $this->input->post('interesse_lavori') == '1' ? 1 : 0;
+    $data['interesse_servizi'] = $this->input->post('interesse_servizi') == '1' ? 1 : 0;
+    $data['interesse_forniture'] = $this->input->post('interesse_forniture') == '1' ? 1 : 0;
+    $data['interesse_interventi'] = $this->input->post('interesse_interventi') == '1' ? 1 : 0;
+    $data['interesse_interventi_checkbox'] = $this->input->post('interesse_interventi_checkbox') == '1' ? 1 : 0;
 
     $data['interesse_lavori_importo'] = $data['interesse_lavori_importo'];
     $data['interesse_servizi_importo'] = $data['interesse_servizi_importo'];
@@ -175,15 +202,15 @@ class Dichiarazione_model extends CI_Model
     $data['impresa_num_sindaci'] = (int)$data['impresa_num_sindaci'];
     $data['impresa_num_sindaci_supplenti'] = (int)$data['impresa_num_sindaci_supplenti'];
 
-    $data['impresa_settore_nessuno'] = $this->input->post('impresa_settore_nessuno') == 'Yes' ? 1 : 0;
-    $data['impresa_settore_trasporto'] = $this->input->post('impresa_settore_trasporto') == 'Yes' ? 1 : 0;
-    $data['impresa_settore_rifiuti'] = $this->input->post('impresa_settore_rifiuti') == 'Yes' ? 1 : 0;
-    $data['impresa_settore_terra'] = $this->input->post('impresa_settore_terra') == 'Yes' ? 1 : 0;
-    $data['impresa_settore_bitume'] = $this->input->post('impresa_settore_bitume') == 'Yes' ? 1 : 0;
-    $data['impresa_settore_nolo'] = $this->input->post('impresa_settore_nolo') == 'Yes' ? 1 : 0;
-    $data['impresa_settore_ferro'] = $this->input->post('impresa_settore_ferro') == 'Yes' ? 1 : 0;
-    $data['impresa_settore_autotrasporto'] = $this->input->post('impresa_settore_autotrasporto') == 'Yes' ? 1 : 0;
-    $data['impresa_settore_guardiana'] = $this->input->post('impresa_settore_guardiana') == 'Yes' ? 1 : 0;
+    $data['impresa_settore_nessuno'] = $this->input->post('impresa_settore_nessuno') == '1' ? 1 : 0;
+    $data['impresa_settore_trasporto'] = $this->input->post('impresa_settore_trasporto') == '1' ? 1 : 0;
+    $data['impresa_settore_rifiuti'] = $this->input->post('impresa_settore_rifiuti') == '1' ? 1 : 0;
+    $data['impresa_settore_terra'] = $this->input->post('impresa_settore_terra') == '1' ? 1 : 0;
+    $data['impresa_settore_bitume'] = $this->input->post('impresa_settore_bitume') == '1' ? 1 : 0;
+    $data['impresa_settore_nolo'] = $this->input->post('impresa_settore_nolo') == '1' ? 1 : 0;
+    $data['impresa_settore_ferro'] = $this->input->post('impresa_settore_ferro') == '1' ? 1 : 0;
+    $data['impresa_settore_autotrasporto'] = $this->input->post('impresa_settore_autotrasporto') == '1' ? 1 : 0;
+    $data['impresa_settore_guardiana'] = $this->input->post('impresa_settore_guardiana') == '1' ? 1 : 0;
 
     $data['stato'] = 0;
     $data['is_digital'] = 1;
@@ -208,37 +235,62 @@ class Dichiarazione_model extends CI_Model
     $this->db->trans_start();
     $curr_error_handler = set_error_handler('db_transaction_error_handler');
     try {
-      if ($this->db->insert('esecutori_temp', $data)) {
+      if ( '0' == $istanza_id ) {
+        $upsert_exec = $this->db->insert('tmp_esecutori', $data);
         $doc_id = $this->db->insert_id();
-        $confirm_hash = hash('sha256', 'anagrafe-antimafia-' . $doc_id);
+      }
+      else {
+        $data['updated_at'] = date('Y-m-d H:i:s');
+        $upsert_exec = $this->db->update(
+          'tmp_esecutori',
+          $data,
+          "ID = " . $istanza_id
+        );
+        $doc_id = $istanza_id;
+      }
+
+      if ( $upsert_exec ) {
+        //$doc_id = $this->db->insert_id();
+        $confirm_hash = hash('sha256', uniqid());
 
         $this->db->where('ID', $doc_id)->update(
-          'esecutori_temp',
+          'tmp_esecutori',
           array('hash' => $confirm_hash)
         );
+        //
+        $this->db->delete(
+          'tmp_anagrafiche_antimafia',
+          array('esecutore_id' => $doc_id)
+        );
+        $this->db->delete(
+          'tmp_anagrafiche_familiari',
+          array('esecutore_id' => $doc_id)
+        );
+        $this->db->delete(
+          'tmp_esecutori_imprese_partecipate',
+          array('esecutore_id' => $doc_id)
+        );
 
-        $anagrafica = $this->input->post('anagrafica');
-        $offices = $this->input->post('office');
+        $anagrafiche_antimafia = $this->input->post('anagrafiche_antimafia');
+        $offices = $this->input->post('imprese_partecipate');
 
         if(!empty($offices) && is_array($offices)){
           foreach ($offices as $office) {
             $this->db->insert(
-              'esecutori_imprese_partecipate',
+              'tmp_esecutori_imprese_partecipate',
               array(
                 'esecutore_id' => $doc_id,
-                'is_temp' => 1,
-                'nome' => $office['name'],
+                'nome' => $office['nome'],
                 'cf' => strtoupper($office['cf']),
-                'piva' => strtoupper($office['vat']),
+                'piva' => strtoupper($office['piva']),
               )
             );
           }
         }
 
-        if ($anagrafica) {
-          foreach ($_POST['anagrafica'] as $aidx => $anagrafica) {
+        if ($anagrafiche_antimafia) {
+          foreach ($anagrafiche_antimafia as $aidx => $anagrafica) {
             $data_anagrafiche = array(
-              'is_temp' => 1,
               'esecutore_id' => $doc_id,
               'antimafia_nome' => $anagrafica['antimafia_nome'],
               'antimafia_cognome' => $anagrafica['antimafia_cognome'],
@@ -250,26 +302,27 @@ class Dichiarazione_model extends CI_Model
               'antimafia_via_residenza' => $anagrafica['antimafia_via_residenza'],
               'antimafia_civico_residenza' => $anagrafica['antimafia_civico_residenza'],
               'antimafia_cf' => strtoupper($anagrafica['antimafia_cf']),
-              'role_id' => $anagrafica['antimafia_role']
+              'role_id' => $anagrafica['role_id']
             );
-            $this->db->insert('anagrafiche_antimafia', $data_anagrafiche);
+
+            $this->db->insert('tmp_anagrafiche_antimafia', $data_anagrafiche);
             $id_anagrafica = $this->db->insert_id();
 
-            if (isset ($anagrafica['f']) AND !empty($anagrafica['f'])){
-              foreach ($anagrafica['f'] AS $familiar) {
+            if (isset ($anagrafica['familiari']) AND !empty($anagrafica['familiari'])){
+              foreach ($anagrafica['familiari'] AS $familiar) {
                 $dati_familiare = array(
-                  'is_temp' => 1,
                   'esecutore_id' => $doc_id,
                   'anagrafica_id' => $id_anagrafica,
-                  'nome' => $familiar['name'],
-                  'cognome' => $familiar['titolare_cognome'],
+                  'nome' => $familiar['nome'],
+                  'cognome' => $familiar['cognome'],
                   'comune' => $familiar['comune'],
-                  'provincia_nascita' => isset($familiar['provincia']) ? $familiar['provincia'] : '',
+                  'provincia_nascita' => isset($familiar['provincia_nascita']) ? $familiar['provincia_nascita'] : '',
                   'data_nascita' => parse_date($familiar['data_nascita']),
                   'cf' => strtoupper($familiar['cf']),
-                  'role_id' => $familiar['role']
+                  'role_id' => $familiar['role_id']
                 );
-                $this->db->insert('anagrafiche_familiari', $dati_familiare);
+
+                $this->db->insert('tmp_anagrafiche_familiari', $dati_familiare);
               }
             }
           }

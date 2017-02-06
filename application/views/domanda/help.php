@@ -50,7 +50,7 @@
     </ul>
   </li>
   <li>
-    Per avere supporto in fase di compilazione della domanda di iscrizione o per qualsiasi domanda è disponibile il numero di telefono 06/46529517 con i seguenti orari: dalle 9 alle 12 e dalle 15 alle 17.
+    Per avere supporto in fase di compilazione della domanda di iscrizione o per qualsiasi domanda è disponibile il numero di telefono 06/46529517 con i seguenti orari: dalle 9 alle 12 e dalle 15 alle 17 dal Lunedì al Venerdì.
   </li>
 </ul>
 </div>

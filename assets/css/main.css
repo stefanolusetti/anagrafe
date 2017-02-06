@@ -1074,11 +1074,12 @@ form .inpreview-chk .fake-checkbox{
   font-weight: bold;
   line-height: 24px;
   float: left;
+  padding: 4px 5px;
 }
 form .inpreview-chk .fake-checkbox.size-2{
-  width: 50px;
+  width: 70px;
   text-align: right;
-  padding-right: 5px;
+  padding: 4px 5px;
 }
 .impresa{
   margin-bottom: 15px;
@@ -1125,22 +1126,22 @@ form .inpreview-chk .fake-checkbox.size-2{
   text-align: center;
 }
 
-.preview-anagrafica:nth-child(odd){
+.preview-anagrafica.odd{
   background-color: #EFEFEF;
 }
-.preview-anagrafica:nth-child(odd) .field{
+.preview-anagrafica.odd .field{
   background-color: #EFEFEF;
 }
-.preview-anagrafica:nth-child(even){
+.preview-anagrafica.even{
   background-color: #fff;
 }
-.preview-anagrafica:nth-child(even) .field{
+.preview-anagrafica.even .field{
   background-color: #fff;
 }
 
 .preview-familiari{
   border: 1px solid #dbdbdb;
-  margin-left: 0px;
+  margin-left: 25px;
   border-width: 1px 0px 1px 0px;
 }
 .preview-familiari hr.resizer{
@@ -1205,4 +1206,16 @@ form.preview label.errormsg{
 .smallpls{
   font-size: 0.7em;
   font-weight: 100;
+}
+
+.helplink {
+  font-weight: bold;
+  font-style: italic;
+  padding: 8px;
+  display: inline-block;
+  font-size: 1.2em;
+}
+
+.familiar_roles{
+  display: none !important;
 }

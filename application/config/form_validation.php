@@ -401,7 +401,7 @@ $config = array(
       'rules' => 'callback_interesse_interventi_flag',
     ),
     array(
-      'field' => 'check_anagrafiche',
+      'field' => 'check_anagrafiche_upsert',
       'label' => 'Anagrafiche dei componenti',
       'rules' => 'callback_check_anagrafiche_upsert'
     ),
@@ -411,9 +411,9 @@ $config = array(
       'rules' => 'callback_check_settori'
     ),
     array(
-      'field' => 'check_attivita',
+      'field' => 'check_attivita_upsert',
       'label' => 'Attività Impresa',
-      'rules' => 'callback_check_attivita'
+      'rules' => 'callback_check_attivita_upsert'
     ),
     array(
       'field' => 'white_list_data',

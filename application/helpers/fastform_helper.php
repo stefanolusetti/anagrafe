@@ -34,6 +34,15 @@ function f_text_formdata($campo, $etichetta, $args = null) {
   echo '</div>';
 }
 
+function is_checked($data, $key){
+  if ( isset($data[$key]) ) {
+    if ( '1' == $data[$key] OR 'Yes' == $data[$key] ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function polish_date(&$data) {
   if ( isset($data['titolare_nascita_data']) ) {
     $data['titolare_nascita_data'] = grind_date($data['titolare_nascita_data']);
@@ -232,6 +241,7 @@ function f_text_edit ( $object, $key, $label, $classes = '' ){
     $value,
     $errore
   );
+  return $idField;
 }
 function grind_key($key){
   $idField = str_replace(array('][', '['), '_', $key);
@@ -282,6 +292,7 @@ function f_select_edit ( $object, $key, $label, $options, $classes = '') {
     form_dropdown($key, $options, $value, array('class' => $classes, 'id' => $idField)),
     $errore
   );
+  return $idField;
 }
 
 
@@ -435,8 +446,7 @@ function soa_options()
     );
 }
 
-function list_fields()
-{
+function list_fields () {
     $CI = &get_instance();
     $fields = $CI->db->list_fields('esecutori');
     foreach ($fields as $key => $value) {
@@ -455,6 +465,24 @@ function list_fields()
     unset($data['upd']);
     unset($data['ID']);
     return $data;
+}
+
+function list_tmp_fields () {
+  $CI = &get_instance();
+  $fields = $CI->db->list_fields('tmp_esecutori');
+  foreach ($fields as $key => $value) {
+    if (preg_match('/^I/', $value)) {
+      unset($fields[$key]);
+    }
+  }
+  #return implode(", ", $fields);
+
+  $data = array();
+  foreach ($fields as $key => $value) {
+    $data[$value] = strip_tags($CI->input->post($value));
+  }
+  unset($data['ID']);
+  return $data;
 }
 
 function parse_checkbox($v){

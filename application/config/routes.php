@@ -52,6 +52,7 @@ $route['404_override'] = '';*/
 $route['default_controller'] = 'domanda';
 $route['comune/([^/]+)'] = 'domanda/comune/$1';
 $route['domanda/anteprima/([^/]+)/([^/]+)'] = 'domanda/anteprima/$1/$2';
+$route['domanda/confirm/([^/]+)/([^/]+)'] = 'domanda/confirm/$1/$2';
 $route['domanda/upsert/([^/]+)'] = 'domanda/upsert/$1';
 
 

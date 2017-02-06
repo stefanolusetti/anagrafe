@@ -133,6 +133,8 @@ $(document).ready(function() {
   );
 
   $.validator.addMethod("cfp", function(value, element) {
+      return true;
+      // disabled.
       if (value.length == 16) {
         return true
       }

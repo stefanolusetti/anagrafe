@@ -52,7 +52,7 @@ impresa_forma_giuridica_altro / forma_giuridica_id
 */
 
   if ( !empty($titolare_rappresentanza_altro) ) {
-    f_text_print($titolare_rappresentanza_altro, 'Tipo di rappresentanza');
+    f_text_print($titolare_rappresentanza_altro, 'Tipo di rappresentanza - altro:');
   }
   else {
     f_text_print($titolare_rappresentanza, 'Tipo di rappresentanza');
@@ -264,7 +264,7 @@ if ( 0 != $num_anagrafiche ) {
         f_text_print($familiare['cf'], 'Codice Fiscale');
 
         f_text_print($familiare['comune'], 'Comune di nascita');
-        f_text_print($familiare['data_nascita'], 'Data di nascita');
+        f_text_print(date('d/m/Y', strtotime($familiare['data_nascita'])), 'Data di nascita');
         f_text_print($familiare['cf'], 'Codice Fiscale');
         echo '</div>';
         echo '<div class="resizer"></div></div>';
@@ -296,7 +296,7 @@ f_text_print($istanza_luogo, 'Luogo istanza');
     <p>
       Se alcuni dati sono errati:
     </p>
-    <a href="/domanda/edit/<?php echo $hash . '/' . $ID; ?>" class="modifica">Modifica i dati</a>
+    <a href="/domanda/upsert/<?php echo $hash . '/' . $ID; ?>" class="modifica">Modifica i dati</a>
   </div>
   <div class="half-button">
     <p>
