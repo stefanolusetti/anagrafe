@@ -353,6 +353,15 @@ class Dichiarazione_model extends CI_Model
     return array('id' => $doc_id, 'hash' => $confirm_hash);
   }
 
+  public function markEmailSent($id) {
+    $doc_id = (int)$id;
+    $this->db->update(
+      'esecutori',
+      array('is_sent' => 1),
+      "ID = " . $doc_id
+    );
+  }
+
 /*
  ██████  ██████  ███    ██ ███████ ██ ██████  ███    ███         ██████   ██████   ██████
 ██      ██    ██ ████   ██ ██      ██ ██   ██ ████  ████         ██   ██ ██    ██ ██

@@ -268,7 +268,7 @@ function create_pdf($id) {
               $familiars[] = $familiar;
             }
           }
-          
+
           $anagrafica_data["ruolo_$j"] = $role_list[$anagrafica['role_id']];
 
           if ( 1 == $anagrafica['is_giuridica'] ) {
@@ -442,7 +442,8 @@ function send_welcome_email($id) {
   );
   */
   $esito = $CI->email->send();
-  return $esito;
+  return false;
+  //return $esito;
 }
 
 function email_message_new($doc){

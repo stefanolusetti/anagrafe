@@ -160,6 +160,7 @@ class Domanda extends CI_Controller
       if ( $tmp_doc ) {
         $confirm = $this->dichiarazione_model->confirm_doc($tmp_doc);
         if ( false !== $confirm ) {
+          $this->dichiarazione_model->markEmailSent($confirm);
           $doc = $this->dichiarazione_model->get_document($confirm);
           send_welcome_email($doc['ID']);
           $this->load->view('templates/header', array());
@@ -173,10 +174,19 @@ class Domanda extends CI_Controller
           );
           $this->load->view('templates/footer');
         }
+        else {
+          $this->load->view('templates/header', array());
+          $this->load->view('templates/headbar');
+          $this->parser->parse( 'domanda/confirm_sent_error', array() );
+          $this->load->view('templates/footer');
+        }
       }
     }
     catch (Exception $e) {
-
+      $this->load->view('templates/header', array());
+      $this->load->view('templates/headbar');
+      $this->parser->parse( 'domanda/confirm_exception', array() );
+      $this->load->view('templates/footer');
     }
   }
 
@@ -265,30 +275,6 @@ class Domanda extends CI_Controller
       $this->load->view('templates/footer');
     }
 
-  }
-
-  public function conferma_modulo ( $hash, $id ) {
-    $real_id = $this->dichiarazione_model->confirm_module( $id, $hash );
-    if ( false === $real_id ) {
-      $document_data = $this->dichiarazione_model->get_document($real_id);
-      $stato = send_welcome_email($real_id);
-      if (true === $stato) {
-        $data = array(
-          'mittente' => $document_data['titolare_nome'] . ' ' . $document_data['titolare_cognome'],
-          'sl_pec' => $document_data['impresa_pec']
-        );
-
-        $this->session->unset_userdata('start');
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/headbar');
-        $this->parser->parse('domanda/sent', $data);
-      }
-      else {
-        $data['errore'] = ENVIRONMENT == 'development' ? $this->email->print_debugger() : 'si &egrave; verificato un errore nella spedizione del messaggio';
-        $this->parser->parse('domanda/errore_invio', $data);
-      }
-      $this->load->view('templates/footer');
-    }
   }
 
 /*
