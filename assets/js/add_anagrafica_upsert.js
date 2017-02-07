@@ -145,6 +145,8 @@ function subEventHandlers(){
   jQuery('a.addFamiliar').off('click');
   jQuery('a.removeFamiliar').off('click');
   jQuery('a.removeThisFamiliar').off('click');
+  jQuery('select.trigger-giuridica').off('change');
+  jQuery(".is_giuridica_radio_no, .is_giuridica_radio_si").off('change');
 
   jQuery('a.addFamiliar').on('click', function(e){
     e.preventDefault();
@@ -157,6 +159,31 @@ function subEventHandlers(){
   jQuery('a.removeThisFamiliar').on('click', function(e){
     e.preventDefault();
     removeThisFamiliar(e);
+  });
+  jQuery('select.trigger-giuridica').on('change', function(e){
+    var elid = jQuery(e.target).attr('data-elid');
+    if ( 24 == jQuery(e.target).val() ) {
+      jQuery(".giuridica_wrapper_" + elid).removeClass('hidden');
+    }
+    else {
+      jQuery(".giuridica_wrapper_" + elid).addClass('hidden');
+      jQuery("#anagrafiche_antimafia_" + elid + "_is_giuridica_no").attr('checked', 'checked').trigger('change');
+    }
+  });
+
+  jQuery(".is_giuridica_radio_no, .is_giuridica_radio_si").change(function(e){
+    var val = jQuery(e.target).val();
+    var elid = jQuery(e.target).attr('data-elid');
+    if ( 1 == val ) {
+      jQuery(".info_giuridiche_" + elid).show();
+      jQuery(".info_giuridiche_" + elid).find('input, select').addClass('required');
+      jQuery(".fisica_wrapper_" + elid).addClass('hidden').find('input, select').removeClass('required');
+    }
+    else {
+      jQuery(".info_giuridiche_" + elid).hide();
+      jQuery(".info_giuridiche_" + elid).find('input').removeClass('required').val('');
+      jQuery(".fisica_wrapper_" + elid).removeClass('hidden').find('input').addClass('required');
+    }
   });
 };
 
@@ -192,53 +219,85 @@ function addAnagrafica(e){
     <a href="#anagrafiche" class="removeFamiliar rm" data-victim="anel-###" data-elid="###">Rimuovi Anagrafica Componente</a> \
       <div class="field"> \
         <label for="anagrafiche_antimafia_###_role_id">Ruolo</label> \
-        <select name="anagrafiche_antimafia[###][role_id]" id="anagrafiche_antimafia_###_role_id"> \
+        <select name="anagrafiche_antimafia[###][role_id]" class="required trigger-giuridica" id="anagrafiche_antimafia_###_role_id" data-elid="###"> \
         ' + roles_options + '\
         </select>\
       </div> \
-      <div class="field"> \
-        <label for="antimafia_nome">Nome*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][antimafia_nome]" value="" id="anagrafiche_antimafia_###_antimafia_nome" class="required maxlen" /> \
+      <div class="giuridica_wrapper hidden giuridica_wrapper_###">\
+        <div class="half">\
+          <div class="field inpreview checkbox">\
+            <input data-elid="###" type="radio" id="anagrafiche_antimafia_###_is_giuridica_no" name="anagrafiche_antimafia[###][is_giuridica]" value="0" class="is_giuridica_radio_no preview-field" checked="checked">\
+            <label for="anagrafiche_antimafia_###_is_giuridica_no">Persona Fisica</label>\
+            <div class="resizer"></div>\
+          </div>\
+          <div class="field inpreview checkbox">\
+            <input data-elid="###" type="radio" id="anagrafiche_antimafia_###_is_giuridica_si" name="anagrafiche_antimafia[###][is_giuridica]" value="1" class="is_giuridica_radio_si preview-field ">\
+            <label for="anagrafiche_antimafia_###_is_giuridica_si">Persona Giuridica</label>\
+            <div class="resizer"></div>\
+          </div>\
+        </div>\
+        <div class="resizer"></div>\
+        <div class="hidden info_giuridiche_###">\
+          <div class="field inpreview">\
+            <label>Ragione Sociale*</label>\
+            <input type="text" id="anagrafiche_antimafia_###_giuridica_ragione_sociale" name="anagrafiche_antimafia[###][giuridica_ragione_sociale]" class="preview-field maxlen" value="">\
+          </div>\
+          <div class="field inpreview">\
+            <label>Partita IVA*</label>\
+            <input type="text" id="anagrafiche_antimafia_###_giuridica_partita_iva" name="anagrafiche_antimafia[###][giuridica_partita_iva]" class="preview-field maxlen" value="">\
+          </div>\
+          <div class="field inpreview">\
+            <label>Codice Fiscale*</label>\
+            <input type="text" id="anagrafiche_antimafia_###_giuridica_codice_fiscale" name="anagrafiche_antimafia[###][giuridica_codice_fiscale]" class="preview-field maxlen" value="">\
+          </div>\
+          <div class="resizer"></div>\
+        </div>\
       </div> \
-      <div class="field"> \
-        <label for="antimafia_cognome">Cognome*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][antimafia_cognome]" value="" id="anagrafiche_antimafia_###_antimafia_cognome" class="required maxlen" /> \
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_data_nascita">Data di nascita (nel formato gg/mm/aaaa)*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][antimafia_data_nascita]" value="" id="anagrafiche_antimafia[###][antimafia_data_nascita]" class="required data" /> \
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_comune_nascita">Comune di nascita*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][antimafia_comune_nascita]" value="" id="anagrafiche_antimafia_###_antimafia_comune_nascita" class="required maxlen" /> \
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_provincia_residenza">Provincia di nascita</label> \
-        <select name="anagrafiche_antimafia[###][antimafia_provincia_nascita]" id="anagrafiche_antimafia_###_antimafia_provincia_nascita"> \
-        ' + provincie_options + '\
-        </select>\
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_cf">Codice Fiscale*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][antimafia_cf]" value="" id="anagrafiche_antimafia[###][antimafia_cf]" class="required cfp" /> \
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_comune_residenza">Comune di Residenza*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][antimafia_comune_residenza]" value="" id="anagrafiche_antimafia_###_antimafia_comune_residenza" class="required" /> \
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_provincia_residenza">Provincia di residenza*</label> \
-        <select name="anagrafiche_antimafia[###][antimafia_provincia_residenza]" id="anagrafiche_antimafia_###_antimafia_provincia_residenza"  class="required"> \
-        ' + provincie_options + '\
-        </select>\
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_via_residenza">Via residenza*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][antimafia_via_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_via_residenza]"  class="required" /> \
-      </div> \
-      <div class="field"> \
-        <label for="antimafia_civico_residenza">Civico residenza*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][antimafia_civico_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_civico_residenza]"  class="required" /> \
+      <div class="fisica_wrapper fisica_wrapper_###"> \
+        <div class="field"> \
+          <label for="antimafia_nome">Nome*</label> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_nome]" value="" id="anagrafiche_antimafia_###_antimafia_nome" class="required maxlen" /> \
+        </div> \
+        <div class="field"> \
+          <label for="antimafia_cognome">Cognome*</label> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_cognome]" value="" id="anagrafiche_antimafia_###_antimafia_cognome" class="required maxlen" /> \
+        </div> \
+        <div class="field"> \
+          <label for="antimafia_data_nascita">Data di nascita (nel formato gg/mm/aaaa)*</label> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_data_nascita]" value="" id="anagrafiche_antimafia[###][antimafia_data_nascita]" class="required data" /> \
+        </div> \
+        <div class="field"> \
+          <label for="antimafia_comune_nascita">Comune di nascita*</label> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_comune_nascita]" value="" id="anagrafiche_antimafia_###_antimafia_comune_nascita" class="required maxlen" /> \
+        </div> \
+        <div class="field"> \
+          <label for="antimafia_provincia_residenza">Provincia di nascita</label> \
+          <select name="anagrafiche_antimafia[###][antimafia_provincia_nascita]" id="anagrafiche_antimafia_###_antimafia_provincia_nascita"> \
+          ' + provincie_options + '\
+          </select>\
+        </div> \
+        <div class="field"> \
+          <label for="antimafia_cf">Codice Fiscale*</label> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_cf]" value="" id="anagrafiche_antimafia[###][antimafia_cf]" class="required cfp" /> \
+        </div> \
+        <div class="field"> \
+          <label for="antimafia_comune_residenza">Comune di Residenza*</label> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_comune_residenza]" value="" id="anagrafiche_antimafia_###_antimafia_comune_residenza" class="required" /> \
+        </div> \
+        <div class="field"> \
+          <label for="antimafia_provincia_residenza">Provincia di residenza*</label> \
+          <select name="anagrafiche_antimafia[###][antimafia_provincia_residenza]" id="anagrafiche_antimafia_###_antimafia_provincia_residenza"  class="required"> \
+          ' + provincie_options + '\
+          </select>\
+        </div> \
+        <div class="field"> \
+          <label for="antimafia_via_residenza">Via residenza*</label> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_via_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_via_residenza]"  class="required" /> \
+        </div> \
+        <div class="field"> \
+          <label for="antimafia_civico_residenza">Civico residenza*</label> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_civico_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_civico_residenza]"  class="required" /> \
+        </div> \
       </div> \
       <a href="#anagrafiche" class="addFamiliar add" data-elid="###">Aggiungi Familiare Convivente Maggiorenne</a> \
       <div class="resizer"></div> \

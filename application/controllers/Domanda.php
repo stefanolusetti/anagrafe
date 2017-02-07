@@ -247,6 +247,7 @@ class Domanda extends CI_Controller
         $classes['forma_giuridica_more'] = 'hidden';
       }
 
+
       // Elementi data
       polish_date($data);
 
@@ -299,33 +300,22 @@ class Domanda extends CI_Controller
 */
 
     public function test($id = false){
-      $fields = $this->db->list_fields('esecutori');
-      /*
-      ██████  ███████ ██████  ██    ██  ██████
-      ██   ██ ██      ██   ██ ██    ██ ██
-      ██   ██ █████   ██████  ██    ██ ██   ███
-      ██   ██ ██      ██   ██ ██    ██ ██    ██
-      ██████  ███████ ██████   ██████   ██████
-      */
-      echo "<h7>FIELDS! debug@" .__FILE__.":".__LINE__."</h7><pre>";
-      var_dump($fields);
-      echo "</pre>";
-      /*
+      /**/
       $csv = export_antimafia_components($id);
       echo "<h7>CSV debug@" .__FILE__.":".__LINE__."</h7><pre>";
       var_dump($csv);
       echo "</pre>";
-
+      /**/
       $pdf = create_pdf($id);
       echo "<h7>PDF debug@" .__FILE__.":".__LINE__."</h7><pre>";
       var_dump($pdf);
       echo "</pre>";
-
+      /*
       $codice = create_codice_istanza($id);
       echo "<h7>CODICE debug@" .__FILE__.":".__LINE__."</h7><pre>";
       var_dump($codice);
       echo "</pre>";
-      */
+      /**/
     }
 
 /*
@@ -531,57 +521,75 @@ class Domanda extends CI_Controller
           $this->form_validation->set_message('check_anagrafiche_upsert', 'Ruolo componente è obbligatorio');
           return false;
         }
-        if ( empty($anagrafica['antimafia_nome']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Nome componente è obbligatorio');
-          return false;
-        }
-        if ( empty($anagrafica['antimafia_cognome']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Cognome componente è obbligatorio');
-          return false;
-        }
-        if ( empty($anagrafica['antimafia_data_nascita']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Data di nascita componente è obbligatorio');
-          return false;
-        }
-        else {
-          $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
-          if (preg_match($format, $anagrafica['antimafia_data_nascita']) == false) {
-            $this->form_validation->set_message('check_anagrafiche_upsert', 'Data di nascita componente deve contenere una data nel formato gg/mm/yyyy');
+
+        if ( 1 == $anagrafica['is_giuridica'] ) {
+          if ( empty($anagrafica['giuridica_ragione_sociale']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Ragione sociale persona giuridica è obbligatorio.');
+            return false;
+          }
+          if ( empty($anagrafica['giuridica_partita_iva']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Partita IVA persona giuridica è obbligatorio.');
+            return false;
+          }
+          if ( empty($anagrafica['giuridica_codice_fiscale']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale persona giuridica è obbligatorio.');
             return false;
           }
         }
-        if ( empty($anagrafica['antimafia_comune_nascita']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Comune di nascita  componente è obbligatorio');
-          return false;
+        else {
+          if ( empty($anagrafica['antimafia_nome']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Nome componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_cognome']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Cognome componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_data_nascita']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Data di nascita componente è obbligatorio');
+            return false;
+          }
+          else {
+            $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
+            if (preg_match($format, $anagrafica['antimafia_data_nascita']) == false) {
+              $this->form_validation->set_message('check_anagrafiche_upsert', 'Data di nascita componente deve contenere una data nel formato gg/mm/yyyy');
+              return false;
+            }
+          }
+          if ( empty($anagrafica['antimafia_comune_nascita']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Comune di nascita  componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_provincia_nascita']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Provincia di nascita componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_cf']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale componente è obbligatorio.');
+            return false;
+          }
+          else if ( 11 > strlen($anagrafica['antimafia_cf']) || 17 < strlen($anagrafica['antimafia_cf']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale deve essere tra 11 e 16 caratteri.');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_comune_residenza']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Comune residenza componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_provincia_residenza']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Provincia residenza componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_via_residenza']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Via residenza  componente è obbligatorio');
+            return false;
+          }
+          if ( empty($anagrafica['antimafia_civico_residenza']) ) {
+            $this->form_validation->set_message('check_anagrafiche_upsert', 'Civico residenza componente è obbligatorio');
+            return false;
+          }
         }
-        if ( empty($anagrafica['antimafia_provincia_nascita']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Provincia di nascita componente è obbligatorio');
-          return false;
-        }
-        if ( empty($anagrafica['antimafia_cf']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale componente è obbligatorio.');
-          return false;
-        }
-        else if ( 11 > strlen($anagrafica['antimafia_cf']) || 17 < strlen($anagrafica['antimafia_cf']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Codice Fiscale deve essere tra 11 e 16 caratteri.');
-          return false;
-        }
-        if ( empty($anagrafica['antimafia_comune_residenza']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Comune residenza componente è obbligatorio');
-          return false;
-        }
-        if ( empty($anagrafica['antimafia_provincia_residenza']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Provincia residenza componente è obbligatorio');
-          return false;
-        }
-        if ( empty($anagrafica['antimafia_via_residenza']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Via residenza  componente è obbligatorio');
-          return false;
-        }
-        if ( empty($anagrafica['antimafia_civico_residenza']) ) {
-          $this->form_validation->set_message('check_anagrafiche_upsert', 'Civico residenza componente è obbligatorio');
-          return false;
-        }
+
         if ( !empty($anagrafica['familiari']) ) {
           foreach ( $anagrafica['familiari'] AS $familiare ) {
             if ( empty($familiare['role_id']) ) {

@@ -357,6 +357,31 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
     );
     $prefix = 'anagrafiche_antimafia[' . $i . '][';
 
+    $giuridica_radio_name = $prefix . 'is_giuridica]';
+    $giuridica_radio_id = grind_key($giuridica_radio_name);
+
+    $giuridica_ragione_sociale_name = $prefix . 'is_giuridica]';
+    $giuridica_ragione_sociale_id = grind_key($giuridica_ragione_sociale_name);
+
+    $giuridica_partita_iva_name = $prefix . 'is_giuridica]';
+    $giuridica_partita_iva_id = grind_key($giuridica_partita_iva_name);
+
+    $giuridica_codice_fiscale_name = $prefix . 'is_giuridica]';
+    $giuridica_codice_fiscale_id = grind_key($giuridica_codice_fiscale_name);
+
+    if ( 1 == $anagrafica['is_giuridica'] ) {
+      $is_giuridica_selected = ' checked="checked" ';
+      $is_not_giuridica_selected = '';
+      $info_giuridiche_class = ' info_giuridiche_' . $i;
+      $fisica_class = ' hidden ';
+    }
+    else {
+      $is_giuridica_selected = '';
+      $is_not_giuridica_selected = ' checked="checked" ';
+      $info_giuridiche_class = ' hidden info_giuridiche_' . $i;
+      $fisica_class = '';
+    }
+
     if ( isset($anagrafica['anagrafica_id']) ) {
       echo '<input type="hidden" name="anagrafica['.$i.'][anagrafica_id]" value="' . $anagrafica['anagrafica_id'] . '" id="anagrafica_' . $i . '_id" />';
     }
@@ -366,9 +391,58 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       $prefix . 'role_id]',
       'Ruolo*',
       $options_key_users,
-      'required'
+      'required trigger-giuridica',
+      array('data-elid' => $i)
     );
 
+    if ( 24 == $anagrafica['role_id'] ) {
+      echo '<div class="giuridica_wrapper giuridica_wrapper_' . $i . '">';
+    }
+    else {
+      echo '<div class="giuridica_wrapper_' . $i . ' giuridica_wrapper hidden">';
+    }
+
+    echo '<div class="half">';
+?>
+<div class="field inpreview checkbox">
+  <input type="radio" id="anagrafiche_antimafia_<?php echo $i; ?>_is_giuridica_no" data-elid="<?php echo $i; ?>" name="anagrafiche_antimafia[<?php echo $i; ?>][is_giuridica]" value="0" class="preview-field is_giuridica_radio_no " <?php echo $is_not_giuridica_selected; ?> />
+  <label for="anagrafiche_antimafia_<?php echo $i; ?>_is_giuridica_no">Persona Fisica</label>
+  <div class="resizer"></div>
+</div>
+<div class="field inpreview checkbox">
+  <input type="radio" id="anagrafiche_antimafia_<?php echo $i; ?>_is_giuridica_si" data-elid="<?php echo $i; ?>" name="anagrafiche_antimafia[<?php echo $i; ?>][is_giuridica]" value="1" class="preview-field is_giuridica_radio_si " <?php echo $is_giuridica_selected; ?> />
+  <label for="anagrafiche_antimafia_<?php echo $i; ?>_is_giuridica_si">Persona Giuridica</label>
+  <div class="resizer"></div>
+</div>
+<?php
+    echo '</div><div class="resizer"></div>';
+
+    echo '<div class="' . $info_giuridiche_class . '">';
+
+    f_text_edit(
+      $formdata,
+      $prefix . 'giuridica_ragione_sociale]',
+      'Ragione Sociale*',
+      'maxlen'
+    );
+    f_text_edit(
+      $formdata,
+      $prefix . 'giuridica_partita_iva]',
+      'Partita IVA*',
+      'maxlen'
+    );
+    f_text_edit(
+      $formdata,
+      $prefix . 'giuridica_codice_fiscale]',
+      'Codice Fiscale*',
+      'maxlen'
+    );
+
+    echo '<div class="resizer"></div></div>';
+
+    echo '</div>';
+
+    printf('<div class="fisica_wrapper fisica_wrapper_%s %s">', $i, $fisica_class);
     f_text_edit(
       $formdata,
       $prefix . 'antimafia_nome]',
@@ -435,6 +509,8 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       'Civico Residenza*',
       'required'
     );
+
+    echo '</div>';
 
     echo str_replace(
       array('!!!'),

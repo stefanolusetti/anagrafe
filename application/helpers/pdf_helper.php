@@ -268,17 +268,34 @@ function create_pdf($id) {
               $familiars[] = $familiar;
             }
           }
-          $anagrafica_data["nome_cognome_$j"] = $anagrafica['antimafia_nome'] . ' ' . $anagrafica['antimafia_cognome'];
-          $anagrafica_data["cf_$j"] = $anagrafica['antimafia_cf'];
+          
           $anagrafica_data["ruolo_$j"] = $role_list[$anagrafica['role_id']];
-          $anagrafica_data["birth_locality_$j"] = $anagrafica['antimafia_comune_nascita'];
-          $anagrafica_data["birth_province_$j"] = $anagrafica['antimafia_provincia_nascita'];
-          $anagrafica_data["birth_date_$j"] = format_date($anagrafica['antimafia_data_nascita']);
 
-          $anagrafica_data["residence_city_$j"] = $anagrafica['antimafia_comune_residenza'];
-          $anagrafica_data["residence_province_$j"] = $anagrafica['antimafia_provincia_residenza'];
-          $anagrafica_data["residence_street_$j"] = $anagrafica['antimafia_via_residenza'];
-          $anagrafica_data["residence_number_$j"] = $anagrafica['antimafia_civico_residenza'];
+          if ( 1 == $anagrafica['is_giuridica'] ) {
+            $anagrafica_data["is_giuridica_$j"] = 'Yes';
+            $anagrafica_data["nome_cognome_$j"] = $anagrafica['giuridica_ragione_sociale'];
+            $anagrafica_data["cf_$j"] = sprintf(
+              "%s / %s",
+              $anagrafica['giuridica_codice_fiscale'],
+              $anagrafica['giuridica_partita_iva']
+            );
+          }
+          else {
+            $anagrafica_data["nome_cognome_$j"] = sprintf(
+              "%s %s",
+              $anagrafica['antimafia_nome'],
+              $anagrafica['antimafia_cognome']
+            );
+            $anagrafica_data["cf_$j"] = $anagrafica['antimafia_cf'];
+            $anagrafica_data["birth_locality_$j"] = $anagrafica['antimafia_comune_nascita'];
+            $anagrafica_data["birth_province_$j"] = $anagrafica['antimafia_provincia_nascita'];
+            $anagrafica_data["birth_date_$j"] = format_date($anagrafica['antimafia_data_nascita']);
+
+            $anagrafica_data["residence_city_$j"] = $anagrafica['antimafia_comune_residenza'];
+            $anagrafica_data["residence_province_$j"] = $anagrafica['antimafia_provincia_residenza'];
+            $anagrafica_data["residence_street_$j"] = $anagrafica['antimafia_via_residenza'];
+            $anagrafica_data["residence_number_$j"] = $anagrafica['antimafia_civico_residenza'];
+          }
 
         }
         //$fdf->addPage('anagrafiche-componenti.pdf', $anagrafica_data);

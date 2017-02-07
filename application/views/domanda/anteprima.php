@@ -228,20 +228,27 @@ if ( 0 != $num_anagrafiche ) {
       f_checkbox_print($na + 1, '<div class="error">Nessun valore inserito</div>', true, 2);
     }
 
-    echo '<div class="half">';
-    f_text_print($anagrafica['antimafia_nome'], 'Nome');
-    f_text_print($anagrafica['antimafia_cognome'], 'Cognome');
-    f_text_print($anagrafica['antimafia_cf'], 'Codice Fiscale');
+    if ( 1 == $anagrafica['is_giuridica'] ) {
+      echo '<h3>Persona Giuridica</h3>';
+      f_text_print($anagrafica['giuridica_ragione_sociale'], 'Ragione Sociale');
+      f_text_print($anagrafica['giuridica_partita_iva'], 'Partita Iva');
+      f_text_print($anagrafica['giuridica_codice_fiscale'], 'Codice Fiscale');
+    }
+    else {
+      echo '<div class="half">';
+      f_text_print($anagrafica['antimafia_nome'], 'Nome');
+      f_text_print($anagrafica['antimafia_cognome'], 'Cognome');
+      f_text_print($anagrafica['antimafia_cf'], 'Codice Fiscale');
 
-    f_text_print(date('d/m/Y', strtotime($anagrafica['antimafia_data_nascita'])), 'Data di nascita');
-    f_text_print($anagrafica['antimafia_comune_nascita'] . ' (' . $anagrafica['antimafia_provincia_nascita'] . ')', 'Comune di nascita');
+      f_text_print(date('d/m/Y', strtotime($anagrafica['antimafia_data_nascita'])), 'Data di nascita');
+      f_text_print($anagrafica['antimafia_comune_nascita'] . ' (' . $anagrafica['antimafia_provincia_nascita'] . ')', 'Comune di nascita');
 
-
-    f_text_print($anagrafica['antimafia_comune_residenza'] . ' (' . $anagrafica['antimafia_provincia_residenza'] . ')', 'Comune di residenza');
-    f_text_print($anagrafica['antimafia_via_residenza'], 'Via residenza');
-    f_text_print($anagrafica['antimafia_civico_residenza'], 'Civico residenza');
-    echo '</div><div class="resizer"></div>';
-
+      f_text_print($anagrafica['antimafia_comune_residenza'] . ' (' . $anagrafica['antimafia_provincia_residenza'] . ')', 'Comune di residenza');
+      f_text_print($anagrafica['antimafia_via_residenza'], 'Via residenza');
+      f_text_print($anagrafica['antimafia_civico_residenza'], 'Civico residenza');
+      echo '</div>';
+    }
+    echo '<div class="resizer"></div>';
     if ( isset($anagrafica['familiari']) && !empty($anagrafica['familiari']) ) {
       echo '<div class="preview-familiari"><h2>Familiari maggiorenni conviventi</h2>';
       $nff = 'A';
@@ -292,15 +299,14 @@ f_text_print($istanza_luogo, 'Luogo istanza');
 <hr class="resizer" />
   <div class="half-button">
     <p>
-      Se alcuni dati sono errati:
+      Se alcuni dati sono errati o incompleti:
     </p>
     <a href="/domanda/upsert/<?php echo $hash . '/' . $ID; ?>" class="modifica">Modifica i dati</a>
   </div>
   <div class="half-button">
-    <p>
-      Se tutti i dati sono corretti:
-    </p>
+    <p>Se tutti i dati sono corretti:</p>
     <a href="/domanda/confirm/<?php echo $hash . '/' . $ID; ?>" class="conferma">Invia il modulo</a>
+    <p><strong>Attenzione: una volta inviato il modulo, non sarà più possibile apportare modifiche.</strong></p>
   </div>
 </form>
 <br />

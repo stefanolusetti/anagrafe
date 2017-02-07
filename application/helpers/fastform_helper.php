@@ -248,7 +248,7 @@ function grind_key($key){
   $idField = str_replace(array('__', ']'), array('_', ''), $idField);
   return $idField;
 }
-function f_select_edit ( $object, $key, $label, $options, $classes = '') {
+function f_select_edit ( $object, $key, $label, $options, $classes = '', $attrs = array()) {
   if ( preg_match('#anagrafiche_antimafia\[([0-9]+)\]\[familiari\]\[([0-9]+)\]\[(.*)\]#', $key) ) {
     preg_match_all('#anagrafiche_antimafia\[([0-9]+)\]\[familiari\]\[([0-9]+)\]\[(.*)\]#', $key, $matches);
     $n = isset($matches[1][0]) ? $matches[1][0] : '';
@@ -282,6 +282,7 @@ function f_select_edit ( $object, $key, $label, $options, $classes = '') {
     $errore = '<label for="' . $key . '" class="errormsg">' . $errores[$key] . '</label>';
   }
   $idField = grind_key($key);
+  $attributi = array_merge(array('class' => $classes, 'id' => $idField), $attrs);
   printf(
     '<div class="field inpreview select">
       <label>%s</label>
@@ -289,7 +290,7 @@ function f_select_edit ( $object, $key, $label, $options, $classes = '') {
       %s
       </div>',
     $label,
-    form_dropdown($key, $options, $value, array('class' => $classes, 'id' => $idField)),
+    form_dropdown($key, $options, $value, $attributi),
     $errore
   );
   return $idField;

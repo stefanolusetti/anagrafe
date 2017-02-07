@@ -1164,7 +1164,7 @@ a.modifica{
   font-style: normal;
   text-decoration: none;
   display: inline-block;
-  font-size: 1.8em;
+  font-size: 2em;
 }
 a.conferma, input.conferma{
   cursor: pointer;
@@ -1177,7 +1177,7 @@ a.conferma, input.conferma{
   font-style: normal;
   text-decoration: none;
   display: inline-block;
-  font-size: 1.8em;
+  font-size: 2em;
 }
 
 form.preview label.errormsg{
@@ -1220,4 +1220,11 @@ form.preview label.errormsg{
   font-size: 1.5em;
   padding: 5px 5px;
   margin: 5px 15px;
+}
+
+
+.dashed{
+  border-width: 2px 0;
+  border-style: dashed;
+  border-color: #ddd;
 }

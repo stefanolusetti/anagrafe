@@ -307,6 +307,12 @@ class Dichiarazione_model extends CI_Model
               'antimafia_via_residenza' => $anagrafica['antimafia_via_residenza'],
               'antimafia_civico_residenza' => $anagrafica['antimafia_civico_residenza'],
               'antimafia_cf' => strtoupper($anagrafica['antimafia_cf']),
+
+              'is_giuridica' => strtoupper($anagrafica['is_giuridica']),
+              'giuridica_ragione_sociale' => strtoupper($anagrafica['giuridica_ragione_sociale']),
+              'giuridica_partita_iva' => strtoupper($anagrafica['giuridica_partita_iva']),
+              'giuridica_codice_fiscale' => strtoupper($anagrafica['giuridica_codice_fiscale']),
+
               'role_id' => $anagrafica['role_id']
             );
 
