@@ -34,13 +34,13 @@ $(document).ready(function() {
         !jQuery("#interesse_lavori").is(':checked')
         && !jQuery("#interesse_servizi").is(':checked')
         && !jQuery("#interesse_forniture").is(':checked')
-        && !jQuery("#interesse_interventi").is(':checked')
+        //&& !jQuery("#interesse_interventi").is(':checked')
       ) {
         return false;
       }
       return true;
     },
-    "Selezionare almeno un valore."
+    "Selezionare almeno un valore tra Lavori, Servizi o Forniture."
   );
 
   $.validator.addMethod('_thefields', function(v,e){

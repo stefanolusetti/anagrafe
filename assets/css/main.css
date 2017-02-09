@@ -1228,3 +1228,11 @@ form.preview label.errormsg{
   border-style: dashed;
   border-color: #ddd;
 }
+
+
+.warning-cfsoft{
+  background-color: #fff3b1;
+  color: #846017;
+  border: 2px solid #846017;
+  padding: 10px;
+}

@@ -12,6 +12,7 @@
 ██████  ██ ██   ██    ██    ██   ██
 titolare_nome
 titolare_cognome
+titolare_cf
 titolare_nascita_comune
 titolare_nascita_provincia
 titolare_nascita_nazione
@@ -25,6 +26,10 @@ titolare_res_cap
   ?><h2>Anagrafica del richiedente</h2><?php
   f_text_print($titolare_nome, 'Nome');
   f_text_print($titolare_cognome, 'Cognome');
+  f_text_print($titolare_cf, 'Codice Fiscale');
+  if ( !preg_match('/^[a-zA-Z]{6}[0-9]{2}[a-zA-Z][0-9]{2}[a-zA-Z][0-9]{3}[a-zA-Z]$/', $titolare_cf) ) {
+    ?><div class="resizer hint warning">Il codice fiscale potrebbe essere errato. Verificare.</div><?php
+  }
   f_text_print($titolare_nascita_comune, 'Comune di nascita');
   f_text_print($titolare_nascita_provincia, 'Provincia di nascita');
   f_text_print($titolare_nascita_nazione, 'Nazione di nascita (se diversa da Italia)');
@@ -239,7 +244,9 @@ if ( 0 != $num_anagrafiche ) {
       f_text_print($anagrafica['antimafia_nome'], 'Nome');
       f_text_print($anagrafica['antimafia_cognome'], 'Cognome');
       f_text_print($anagrafica['antimafia_cf'], 'Codice Fiscale');
-
+      if ( !preg_match('/^[a-zA-Z]{6}[0-9]{2}[a-zA-Z][0-9]{2}[a-zA-Z][0-9]{3}[a-zA-Z]$/', $anagrafica['antimafia_cf']) ) {
+        ?><div class="resizer hint warning">Il codice fiscale potrebbe essere errato. Verificare.</div><?php
+      }
       f_text_print(date('d/m/Y', strtotime($anagrafica['antimafia_data_nascita'])), 'Data di nascita');
       f_text_print($anagrafica['antimafia_comune_nascita'] . ' (' . $anagrafica['antimafia_provincia_nascita'] . ')', 'Comune di nascita');
 
@@ -271,6 +278,9 @@ if ( 0 != $num_anagrafiche ) {
         f_text_print($familiare['comune'], 'Comune di nascita');
         f_text_print(date('d/m/Y', strtotime($familiare['data_nascita'])), 'Data di nascita');
         f_text_print($familiare['cf'], 'Codice Fiscale');
+        if ( !preg_match('/^[a-zA-Z]{6}[0-9]{2}[a-zA-Z][0-9]{2}[a-zA-Z][0-9]{3}[a-zA-Z]$/', $familiare['cf']) ) {
+          ?><div class="resizer hint warning">Il codice fiscale potrebbe essere errato. Verificare.</div><?php
+        }
         echo '</div>';
         echo '<div class="resizer"></div></div>';
         $nff++;

@@ -14,6 +14,25 @@ jQuery(document).ready(function() {
   subOfficeEventHandlers();
 });
 
+function cf_soft_check_handler () {
+  jQuery("input._cf_soft_check").off('keyup');
+  jQuery("input._cf_soft_check").on('keyup', function ( e ) {
+    e.preventDefault(); // ???
+    if ( false == /^[a-zA-Z]{6}[0-9]{2}[a-zA-Z][0-9]{2}[a-zA-Z][0-9]{3}[a-zA-Z]$/.test(e.target.value) ) {
+      // wrong. Already have the erro child thing?
+      if ( 0 == jQuery(e.target).siblings('div.warning-cfsoft').length ) {
+        jQuery( '<div class="warning-cfsoft">Il formato del codice fiscale non è corretto. Verificare!</div>' )
+          .insertAfter(e.target);
+      }
+    }
+    else {
+      if ( 0 != jQuery(e.target).siblings('div.warning-cfsoft').length ) {
+        jQuery(e.target).siblings('div.warning-cfsoft').remove();
+      }
+    }
+  });
+}
+
 function buildFamiliarsObject() {
   jQuery(".anagrafica-box").each(function(i, el){
     var elid = jQuery(el).attr('data-elid');
@@ -30,6 +49,7 @@ function buildFamiliarsObject() {
 ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ ███████
 */
 function mainEventHandlers(){
+  cf_soft_check_handler();
   buildFamiliarsObject();
   jQuery('a.add.addAnagrafica').on('click', function(e){
     e.preventDefault();
@@ -141,6 +161,7 @@ function _enableAutocomplete(from, to){
 };
 
 function subEventHandlers(){
+  cf_soft_check_handler();
   // avoid duplicate handlers
   jQuery('a.addFamiliar').off('click');
   jQuery('a.removeFamiliar').off('click');
@@ -278,7 +299,7 @@ function addAnagrafica(e){
         </div> \
         <div class="field"> \
           <label for="antimafia_cf">Codice Fiscale*</label> \
-          <input type="text" name="anagrafiche_antimafia[###][antimafia_cf]" value="" id="anagrafiche_antimafia[###][antimafia_cf]" class="required cfp" /> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_cf]" value="" id="anagrafiche_antimafia[###][antimafia_cf]" class="required _pivacf _cf_soft_check" /> \
         </div> \
         <div class="field"> \
           <label for="antimafia_comune_residenza">Comune di Residenza*</label> \
@@ -328,7 +349,7 @@ function addAnagrafica(e){
 */
 function addOffice(e){
   (function(index){
-    var template = '<div class="imprese_partecipate container odder" id="ofel-###"><div class="field "><label for="imprese_partecipate###name">Ragione Sociale impresa partecipata*<a href="#" data-elid="###" class="rm removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="imprese_partecipate[###][nome]" value="" id="imprese_partecipate_###_nome" class="required maxlen"></div><div class="field "><label for="imprese_partecipate###piva">Partita IVA impresa partecipata*</label><input type="text" name="imprese_partecipate[###][piva]" value="" id="imprese_partecipate_###_piva" class="required maxlen"></div><div class="field "><label for="imprese_partecipate###cf">Codice Fiscale impresa partecipata*</label><input type="text" name="imprese_partecipate[###][cf]" value="" id="imprese_partecipate_###_cf" class="required maxlen cf"></div><div class="resizer"></div></div>';
+    var template = '<div class="imprese_partecipate container odder" id="ofel-###"><div class="field "><label for="imprese_partecipate###name">Ragione Sociale impresa partecipata*<a href="#" data-elid="###" class="rm removeOffice" data-victim="ofel-###">Rimuovi Impresa</a></label><input type="text" name="imprese_partecipate[###][nome]" value="" id="imprese_partecipate_###_nome" class="required maxlen"></div><div class="field "><label for="imprese_partecipate###piva">Partita IVA impresa partecipata*</label><input type="text" name="imprese_partecipate[###][piva]" value="" id="imprese_partecipate_###_piva" class="required _pivacf maxlen"></div><div class="field "><label for="imprese_partecipate###cf">Codice Fiscale impresa partecipata*</label><input type="text" name="imprese_partecipate[###][cf]" value="" id="imprese_partecipate_###_cf" class="_pivacf required maxlen "></div><div class="resizer"></div></div>';
     var element = template.split('###').join(index);
     jQuery('.offices').prepend(jQuery(element));
     subOfficeEventHandlers();
@@ -394,7 +415,7 @@ function addFamiliar(e){
       </div> \
       <div class="field"> \
         <label for="anagrafiche_antimafia[###][familiari][@@@][cf]">Codice Fiscale*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][cf]" value="" id="anagrafiche_antimafia[###][familiari][@@@][cf]" class="required cfp" /> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][cf]" value="" id="anagrafiche_antimafia[###][familiari][@@@][cf]" class="required _pivacf _cf_soft_check" /> \
       </div> \
       <div class="resizer"></div> \
     </div>';

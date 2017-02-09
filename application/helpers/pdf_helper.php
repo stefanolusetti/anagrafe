@@ -122,6 +122,7 @@ function create_pdf($id) {
       'codice_istanza' => $doc['codice_istanza'],
 
       'nome_cognome' => $doc['titolare_nome'] . ' ' . $doc['titolare_cognome'],
+      'titolare_cf' => $doc['titolare_cf'],
       'titolare_nascita_comune' => $titolare_nascita_comune,
       'titolare_nascita_provincia' => $doc['titolare_nascita_provincia'],
       'titolare_nascita_data' => format_date($doc['titolare_nascita_data']),
@@ -442,8 +443,7 @@ function send_welcome_email($id) {
   );
   */
   $esito = $CI->email->send();
-  return false;
-  //return $esito;
+  return $esito;
 }
 
 function email_message_new($doc){

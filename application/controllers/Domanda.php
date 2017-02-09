@@ -395,6 +395,14 @@ class Domanda extends CI_Controller
     return true;
   }
 
+  public function check_wl($val) {
+    if ( null == $this->input->post('stmt_wl') ) {
+      $this->form_validation->set_message('check_wl', '<label class="errormsg">Indicare un valore</label>');
+      return false;
+    }
+    return true;
+  }
+
   public function interesse_interventi_flag($val) {
     if ( 'Yes' == $this->input->post('interesse_interventi_flag') && 'Yes' != $this->input->post('interesse_interventi_checkbox')) {
       $this->form_validation->set_message('interesse_interventi_flag', 'La dichiarazione è obbligatoria.');
@@ -406,8 +414,8 @@ class Domanda extends CI_Controller
     $attivita = array(
       'interesse_lavori',
       'interesse_servizi',
-      'interesse_forniture',
-      'interesse_interventi'
+      'interesse_forniture'
+      //'interesse_interventi'
     );
     $any_selected = false;
     foreach ( $attivita AS $att ) {
@@ -416,7 +424,7 @@ class Domanda extends CI_Controller
       }
     }
     if ( false == $any_selected ) {
-      $this->form_validation->set_message('check_attivita_upsert', 'Indicare almeno un valore.');
+      $this->form_validation->set_message('check_attivita_upsert', 'Indicare almeno un valore tra Lavori, Servizi o Forniture.');
       return false;
     }
     return true;

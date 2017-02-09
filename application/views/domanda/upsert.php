@@ -22,6 +22,7 @@ echo '<input type="hidden" name="istanza_id" value="' . $formdata['istanza_id'] 
    ██    ██    ██     ██████  ███████ ██   ██ ██   ██ ███████
 titolare_nome
 titolare_cognome
+titolare_cf
 titolare_nascita_comune
 titolare_nascita_provincia
 titolare_nascita_nazione
@@ -36,6 +37,7 @@ titolare_res_cap
 
   f_text_edit($formdata, 'titolare_nome', 'Nome*', 'required maxlen');
   f_text_edit($formdata, 'titolare_cognome', 'Cognome*', 'required maxlen');
+  f_text_edit($formdata, 'titolare_cf', 'Codice Fiscale*', 'required _pivacf _cf_soft_check');
   f_text_edit($formdata, 'titolare_nascita_comune', 'Comune di nascita*', 'required maxlen');
   f_select_edit(
     $formdata,
@@ -239,7 +241,7 @@ mostra_errore('check_imprese_upsert');
       echo '<div class="resizer"></div></div>';
     }
   }
-?></div><hr class="resizer" /><h2>Consiglio di amministrazione</h2><?php
+?></div><hr class="resizer" /><h4>Consiglio di amministrazione</h4><?php
 f_text_edit($formdata, 'impresa_num_amministratori', "Numero componenti in carica");
 ?><h4>Procuratori e Procuratori Speciali</h4><?php
 f_text_edit($formdata, 'impresa_num_procuratori', "Numero componenti in carica");
@@ -254,10 +256,7 @@ f_text_edit($formdata, 'impresa_num_sindaci_supplenti', "Numero sindaci supplent
 ██   ██    ██       ██    ██  ██  ██  ██    ██    ██   ██
 ██   ██    ██       ██    ██   ████   ██    ██    ██   ██
 */
-
 mostra_errore('check_attivita_upsert');
-
-
 f_checkbox_edit(
   $formdata,
   'interesse_lavori',
@@ -276,7 +275,7 @@ f_checkbox_edit(
   $formdata,
   'interesse_servizi',
   'Servizi',
-  'elToggler _interessi',
+  'elToggler ',
   'data-el="interesse_servizi_wrapper"'
 );
 echo '<div id="interesse_servizi_wrapper" class="' . $classes['interesse_servizi'] . '">';
@@ -290,7 +289,7 @@ f_checkbox_edit(
   $formdata,
   'interesse_forniture',
   'Forniture',
-  'elToggler _interessi',
+  'elToggler ',
   'data-el="interesse_forniture_wrapper"'
 );
 echo '<div id="interesse_forniture_wrapper" class="' . $classes['interesse_forniture'] . '">';
@@ -304,7 +303,7 @@ f_checkbox_edit(
   $formdata,
   'interesse_interventi',
   'Interventi di immediata riparazione ex art.8, commi 1 e 5 del decreto legge n.189/2016',
-  'elToggler _interessi',
+  'elToggler ',
   'data-el="interesse_interventi_wrapper"'
 );
 echo '<div id="interesse_interventi_wrapper" class="' . $classes['interesse_interventi'] . '">';
@@ -480,7 +479,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       $formdata,
       $prefix . 'antimafia_cf]',
       'Codice Fiscale*',
-      'required _pivacf'
+      'required _pivacf _cf_soft_check'
     );
     $acr_ID = f_text_edit(
       $formdata,
@@ -580,7 +579,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
           $formdata,
           $fam_prefix . 'cf]',
           'Codice Fiscale*',
-          'required _pivacf'
+          'required _pivacf _cf_soft_check'
         );
 
         echo str_replace(
@@ -615,6 +614,7 @@ else {
 
 ?></div><hr /><h2>Iscrizione White List</h2>
 <p class="padded">
+  <?php mostra_errore('check_wl'); ?>
   <div class="field inpreview checkbox">
     <input type="radio" id="stmt_wl_si" name="stmt_wl" value="1" class="_white_list preview-field" <?php echo $stmt_wl_si; ?> />
     <label for="stmt_wl_si">Dichiaro di essere iscritto alla white list della prefettura</label>

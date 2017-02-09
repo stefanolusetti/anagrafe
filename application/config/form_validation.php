@@ -250,6 +250,11 @@ $config = array(
       'rules' => 'callback__controlla_data',
     ),
     array(
+      'field' => 'check_wl',
+      'label' => 'Iscrizione alla white list',
+      'rules' => 'callback_check_wl'
+    ),
+    array(
       'field' => 'titolare_res_comune',
       'label' => 'Comune di residenza del dichiarante',
       'rules' => 'required|max_length[200]',
