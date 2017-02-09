@@ -615,6 +615,10 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
 ██      ██   ██ ██      ██ ██ ███████ ██ ██   ██ ██   ██ ██
 */
     if(isset($anagrafica['familiari']) && !empty($anagrafica['familiari'])){
+      // familiari
+      if ( count($anagrafica['familiari']) != $anagrafica['antimafia_numero_familiari'] ) {
+        echo '<label class="errormsg"><p>Sono stati inseriti '.count($anagrafica['familiari']).' familiari ma ne sono stati dichiarati ' . $anagrafica['antimafia_numero_familiari'] . '</p></label>';
+      }
       foreach($anagrafica['familiari'] AS $fi => $fam){
         $fam_prefix = 'anagrafiche_antimafia['.$i.'][familiari]['.$fi.'][';
         echo str_replace(
@@ -712,7 +716,6 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
         );
       }
     }
-    // familiari
     echo '</div></div>';
   }
 }

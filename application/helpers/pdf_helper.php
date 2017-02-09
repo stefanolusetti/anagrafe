@@ -217,8 +217,10 @@ function create_pdf($id) {
  ██████  ██      ██      ██  ██████ ███████ ███████
 */
     $doc_offices = $CI->dichiarazione_model->get_item_imprese_partecipate($id);
+    $num_offices_inseriti = 0;
     if(!empty($doc_offices)) {
       // 12 per pagina
+      $num_offices_inseriti = count($doc_offices);
       $_num_pages = ceil(count($doc_offices) / 12);
       for ( $i = 0; $i < $_num_pages; $i++ ) {
         $office_data = array(
@@ -247,10 +249,12 @@ function create_pdf($id) {
 ██   ██ ██   ████ ██   ██  ██████  ██   ██ ██   ██ ██      ██  ██████ ██   ██ ███████
 */
     $num_tot_familiars = 0;
+    $numero_componenti_inseriti = 0;
     $familiars = array();
     if ( !empty($doc['anagrafiche_antimafia']) ) {
       $role_list = $CI->dichiarazione_model->get_roles();
       // 4 per pagina
+      $numero_componenti_inseriti = count($doc['anagrafiche_antimafia']);
       $_num_pages = ceil(count($doc['anagrafiche_antimafia']) / 4);
       for ( $i = 0; $i < $_num_pages; $i++ ) {
         $anagrafica_data = array(
@@ -311,9 +315,11 @@ function create_pdf($id) {
 ██      ██   ██ ██  ██  ██ ██ ██      ██ ██   ██ ██   ██ ██
 ██      ██   ██ ██      ██ ██ ███████ ██ ██   ██ ██   ██ ██
 */
+    $numero_familiari_inseriti = 0;
     if ( 0 != count($familiars)) {
       // 5 per pagina.
       $_num_pages = ceil(count($familiars) / 5);
+      $numero_familiari_inseriti = count($familiars);
       for ( $i = 0; $i < $_num_pages; $i++ ) {
         $familiari_data = array(
           'id_istanza' => $id,
@@ -334,7 +340,7 @@ function create_pdf($id) {
           $familiari_data["birth_locality_$j"] = $familiare['comune'];
           $familiari_data["birth_date_$j"] = format_date($familiare['data_nascita']);
           $familiari_data["residenza_$j"] = sprintf(
-            "%s (%s) % n.%s %",
+            "%s (%s) %s n.%s %s",
             $familiare['comune_residenza'],
             $familiare['provincia_residenza'],
             $familiare['via_residenza'],
@@ -347,14 +353,27 @@ function create_pdf($id) {
       }
     }
 
-    $_pages[] = array('file' => 'riepilogo.pdf', 'data' => array(
-      'id_istanza' => $id,
-      'id_anno' => $id_anno,
-      'codice_istanza' => $doc['codice_istanza'],
-      'numero_imprese' => $doc['numero_partecipazioni'],
-      'numero_componenti' => $doc['numero_anagrafiche'],
-      'numero_familiari' => $num_tot_familiars,
-    ));
+/*
+██████  ██ ███████ ██████  ██ ██       ██████   ██████   ██████
+██   ██ ██ ██      ██   ██ ██ ██      ██    ██ ██       ██    ██
+██████  ██ █████   ██████  ██ ██      ██    ██ ██   ███ ██    ██
+██   ██ ██ ██      ██      ██ ██      ██    ██ ██    ██ ██    ██
+██   ██ ██ ███████ ██      ██ ███████  ██████   ██████   ██████
+*/
+    $_pages[] = array(
+      'file' => 'riepilogo.pdf',
+      'data' => array(
+        'id_istanza' => $id,
+        'id_anno' => $id_anno,
+        'codice_istanza' => $doc['codice_istanza'],
+        'numero_imprese' => $doc['numero_partecipazioni'],
+        'numero_imprese_inserite' => $num_offices_inseriti,
+        'numero_componenti' => $doc['numero_anagrafiche'],
+        'numero_componenti_inseriti' => $numero_componenti_inseriti,
+        'numero_familiari' => $num_tot_familiars,
+        'numero_familiari_inseriti' => $numero_familiari_inseriti
+      )
+    );
 
     // Num pages.
     $tot_num_pages = count($_pages) + 2;

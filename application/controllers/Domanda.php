@@ -58,81 +58,6 @@ class Domanda extends CI_Controller
     }
 
 /*
-███    ██ ██    ██  ██████  ██    ██  █████
-████   ██ ██    ██ ██    ██ ██    ██ ██   ██
-██ ██  ██ ██    ██ ██    ██ ██    ██ ███████
-██  ██ ██ ██    ██ ██    ██  ██  ██  ██   ██
-██   ████  ██████   ██████    ████   ██   ██
-*/
-    public function nuova()
-    { #azione che mostra form vuota e salva i dati
-        if (ENVIRONMENT == 'development') {
-            $this->output->enable_profiler(true);
-        }
-
-        $data['title'] = 'Iscrizione Anagrafe Antimafia degli Esecutori';
-
-        #le regole di validazione sono contenute nel file config/form_validation.php
-
-        $sessione = $this->session->all_userdata();
-
-        if (($this->form_validation->run('domanda') == false)) {
-          $errors = $this->form_validation->error_array();
-          $this->session->set_userdata('start', '1');
-
-          // Hidden conditional things.
-          $data['show_other_shape'] = '0' == $this->input->post('forma_giuridica_id') ? true : false;
-          $data['choosen_shape'] = $this->input->post('forma_giuridica_id');
-          $data['interesse_servizi_tipo_class'] = 'Yes' == $this->input->post('interesse_servizi_flag') ? '' : 'hidden';
-          $data['interesse_lavori_tipo_class'] = 'Yes' == $this->input->post('interesse_lavori_flag') ? '' : 'hidden';
-          $data['interesse_forniture_tipo_class'] = 'Yes' == $this->input->post('interesse_forniture_flag') ? '' : 'hidden';
-          $data['interesse_interventi_tipo_class'] = 'Yes' == $this->input->post('interesse_interventi_flag') ? '' : 'hidden';
-
-          $data['stmt_wl_si_checked'] = 'Yes' == $this->input->post('stmt_wl') ? ' checked="checked" ' : '';
-          $data['stmt_wl_no_checked'] = 'No' == $this->input->post('stmt_wl') ? ' checked="checked" ' : '';
-
-          $data['antimafias'] = false;
-          $data['istanza_data_default'] = $this->input->post('istanza_data') ? $this->input->post('istanza_data') : date('d/m/Y');
-
-          $offices = $this->input->post('office');
-          $data['stmt_wl_class'] = 'Yes' == $this->input->post('stmt_wl') ? '' : 'hidden';
-
-          $data['titolare_rappresentanza_more_class'] = $this->input->post('titolare_rappresentanza') == 'Altro' ? '' : 'hidden';
-
-          $data['offices'] = $this->input->post('office');
-          /*
-          else {
-            $data['offices'] = array(
-              array(
-                'office_titolare_nome' => '',
-                'office_cf' => '',
-                'office_piva' => '',
-              )
-            );
-          }
-          */
-          $data['anagrafiche'] = $this->input->post('anagrafica');
-
-
-          $data['submitted'] = false;
-          $this->load->view('templates/header', $data);
-          $this->load->view('templates/headbar');
-          $this->parser->parse('domanda/new', $data);
-          $this->load->view('templates/footer');
-        }
-        elseif (array_key_exists('start', $sessione)) {
-          $temp = $this->dichiarazione_model->save_preview();
-          if ($temp) {
-            redirect('/domanda/anteprima/' . $temp['hash'] . '/' . $temp['id']);
-          }
-        }
-        else {
-          //redirect('/domanda/nuova', 'refresh');
-          redirect('/domanda/nuovamentequitato', 'refresh');
-        }
-    }
-
-/*
  █████  ███    ██ ████████ ███████ ██████  ██████  ██ ███    ███  █████
 ██   ██ ████   ██    ██    ██      ██   ██ ██   ██ ██ ████  ████ ██   ██
 ███████ ██ ██  ██    ██    █████   ██████  ██████  ██ ██ ████ ██ ███████
@@ -537,7 +462,7 @@ class Domanda extends CI_Controller
     $num_tot_familiari = 0;
     $num_tot_familiari_dichiarati = 0;
     if ( !empty($anagrafiche) ) {
-      foreach ( $anagrafiche AS $anagrafica ) {
+      foreach ( $anagrafiche AS $ai => $anagrafica ) {
         $num_tot_familiari_dichiarati += $anagrafica['antimafia_numero_familiari'];
         $num_anagrafiche++;
         if ( empty($anagrafica['role_id']) ) {
@@ -619,9 +544,12 @@ class Domanda extends CI_Controller
 ██      ██   ██ ██  ██  ██ ██ ██      ██ ██   ██ ██   ██ ██
 ██      ██   ██ ██      ██ ██ ███████ ██ ██   ██ ██   ██ ██
 */
+        $num_familiari = 0;
+        $num_familiari_dichiarati = $anagrafica['antimafia_numero_familiari'];
         if ( !empty($anagrafica['familiari']) ) {
           foreach ( $anagrafica['familiari'] AS $familiare ) {
             $num_tot_familiari++;
+            $num_familiari++;
             if ( empty($familiare['role_id']) ) {
               $this->form_validation->set_message('check_anagrafiche_upsert', 'Ruolo familiare è obbligatorio');
               return false;
@@ -700,11 +628,7 @@ class Domanda extends CI_Controller
     if ( $num_tot_familiari_dichiarati != $num_tot_familiari ) {
       $this->form_validation->set_message(
         'check_anagrafiche_upsert',
-        sprintf(
-          "Sono stati inseriti <strong>%s</strong> familiari conviventi maggiorenni ma ne sono stati dichiarati <strong>%s</strong>",
-          $num_tot_familiari,
-          $num_tot_familiari_dichiarati
-        )
+        " "
       );
       return false;
     }
