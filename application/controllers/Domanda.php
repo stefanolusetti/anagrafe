@@ -533,10 +533,12 @@ class Domanda extends CI_Controller
   public function check_anagrafiche_upsert ( $val ) {
     $anagrafiche = $this->input->post('anagrafiche_antimafia');
     $num_anagrafiche_dichiarato = $this->input->post('numero_anagrafiche');
-
     $num_anagrafiche = 0;
+    $num_tot_familiari = 0;
+    $num_tot_familiari_dichiarati = 0;
     if ( !empty($anagrafiche) ) {
       foreach ( $anagrafiche AS $anagrafica ) {
+        $num_tot_familiari_dichiarati += $anagrafica['antimafia_numero_familiari'];
         $num_anagrafiche++;
         if ( empty($anagrafica['role_id']) ) {
           $this->form_validation->set_message('check_anagrafiche_upsert', 'Ruolo componente è obbligatorio');
@@ -610,11 +612,16 @@ class Domanda extends CI_Controller
             return false;
           }
         }
-        $num_familiari_dichiarato = $anagrafica['antimafia_numero_familiari'];
+/*
+███████  █████  ███    ███ ██ ██      ██  █████  ██████  ██
+██      ██   ██ ████  ████ ██ ██      ██ ██   ██ ██   ██ ██
+█████   ███████ ██ ████ ██ ██ ██      ██ ███████ ██████  ██
+██      ██   ██ ██  ██  ██ ██ ██      ██ ██   ██ ██   ██ ██
+██      ██   ██ ██      ██ ██ ███████ ██ ██   ██ ██   ██ ██
+*/
         if ( !empty($anagrafica['familiari']) ) {
-          $num_familiari = 0;
           foreach ( $anagrafica['familiari'] AS $familiare ) {
-            $num_familiari++;
+            $num_tot_familiari++;
             if ( empty($familiare['role_id']) ) {
               $this->form_validation->set_message('check_anagrafiche_upsert', 'Ruolo familiare è obbligatorio');
               return false;
@@ -671,17 +678,6 @@ class Domanda extends CI_Controller
               return false;
             }
           }
-          if ( $num_familiari_dichiarato != $num_familiari ) {
-            $this->form_validation->set_message(
-              'check_anagrafiche_upsert',
-              sprintf(
-                "Sono stati inseriti <strong>%s</strong> familiari conviventi maggiorenni ma ne sono stati dichiarati <strong>%s</strong>",
-                $num_familiari,
-                $num_familiari_dichiarato
-              )
-            );
-            return false;
-          }
         }
       }
     }
@@ -697,6 +693,17 @@ class Domanda extends CI_Controller
           "Sono stati inseriti <strong>%s</strong> componenti ma ne sono stati dichiarati <strong>%s</strong>",
           $num_anagrafiche,
           $num_anagrafiche_dichiarato
+        )
+      );
+      return false;
+    }
+    if ( $num_tot_familiari_dichiarati != $num_tot_familiari ) {
+      $this->form_validation->set_message(
+        'check_anagrafiche_upsert',
+        sprintf(
+          "Sono stati inseriti <strong>%s</strong> familiari conviventi maggiorenni ma ne sono stati dichiarati <strong>%s</strong>",
+          $num_tot_familiari,
+          $num_tot_familiari_dichiarati
         )
       );
       return false;

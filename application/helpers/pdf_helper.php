@@ -246,6 +246,7 @@ function create_pdf($id) {
 ██   ██ ██  ██ ██ ██   ██ ██    ██ ██   ██ ██   ██ ██      ██ ██      ██   ██ ██
 ██   ██ ██   ████ ██   ██  ██████  ██   ██ ██   ██ ██      ██  ██████ ██   ██ ███████
 */
+    $num_tot_familiars = 0;
     $familiars = array();
     if ( !empty($doc['anagrafiche_antimafia']) ) {
       $role_list = $CI->dichiarazione_model->get_roles();
@@ -271,7 +272,7 @@ function create_pdf($id) {
           }
 
           $anagrafica_data["ruolo_$j"] = $role_list[$anagrafica['role_id']];
-
+          $num_tot_familiars += $anagrafica['antimafia_numero_familiari'];
           if ( 1 == $anagrafica['is_giuridica'] ) {
             $anagrafica_data["is_giuridica_$j"] = 'Yes';
             $anagrafica_data["nome_cognome_$j"] = $anagrafica['giuridica_ragione_sociale'];
@@ -303,17 +304,23 @@ function create_pdf($id) {
         $_pages[] = array('file' => 'anagrafiche-componenti.pdf', 'data' => $anagrafica_data);
       }
     }
-
+/*
+███████  █████  ███    ███ ██ ██      ██  █████  ██████  ██
+██      ██   ██ ████  ████ ██ ██      ██ ██   ██ ██   ██ ██
+█████   ███████ ██ ████ ██ ██ ██      ██ ███████ ██████  ██
+██      ██   ██ ██  ██  ██ ██ ██      ██ ██   ██ ██   ██ ██
+██      ██   ██ ██      ██ ██ ███████ ██ ██   ██ ██   ██ ██
+*/
     if ( 0 != count($familiars)) {
-      // 6 per pagina.
-      $_num_pages = ceil(count($familiars) / 6);
+      // 5 per pagina.
+      $_num_pages = ceil(count($familiars) / 5);
       for ( $i = 0; $i < $_num_pages; $i++ ) {
         $familiari_data = array(
           'id_istanza' => $id,
           'id_anno' => $id_anno,
           'codice_istanza' => $doc['codice_istanza'],
         );
-        for ( $j = 0; $j < 6; $j++ ) {
+        for ( $j = 0; $j < 5; $j++ ) {
           if ( empty($familiars) ) {
             break;
           }
@@ -326,11 +333,28 @@ function create_pdf($id) {
           $familiari_data["cf_$j"] = $familiare['cf'];
           $familiari_data["birth_locality_$j"] = $familiare['comune'];
           $familiari_data["birth_date_$j"] = format_date($familiare['data_nascita']);
+          $familiari_data["residenza_$j"] = sprintf(
+            "%s (%s) % n.%s %",
+            $familiare['comune_residenza'],
+            $familiare['provincia_residenza'],
+            $familiare['via_residenza'],
+            $familiare['civico_residenza'],
+            $familiare['cap_residenza']
+          );
         }
         //$fdf->addPage('anagrafiche-familiari.pdf', $familiari_data);
         $_pages[] = array('file' => 'anagrafiche-familiari.pdf', 'data' => $familiari_data);
       }
     }
+
+    $_pages[] = array('file' => 'riepilogo.pdf', 'data' => array(
+      'id_istanza' => $id,
+      'id_anno' => $id_anno,
+      'codice_istanza' => $doc['codice_istanza'],
+      'numero_imprese' => $doc['numero_partecipazioni'],
+      'numero_componenti' => $doc['numero_anagrafiche'],
+      'numero_familiari' => $num_tot_familiars,
+    ));
 
     // Num pages.
     $tot_num_pages = count($_pages) + 2;
