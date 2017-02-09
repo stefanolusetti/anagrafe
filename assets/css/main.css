@@ -350,6 +350,7 @@ label.errormsg p {
 	line-height: 0.8em;
 	color: red;
 	margin: 5px 3px 3px;
+  font-size: 1.3em;
 }
 
 input.errormsg {
@@ -1024,7 +1025,7 @@ form.preview a.reset{
   display: inline-block;
 }
 
-form input[type="submit"] {
+form.preview input[type="submit"] {
   font-size: 2em;
 }
 
@@ -1235,4 +1236,19 @@ form.preview label.errormsg{
   color: #846017;
   border: 2px solid #846017;
   padding: 10px;
+}
+
+.field.textbox input{
+  width: 55px !important;
+  float: left;
+}
+.field.textbox label{
+  float: left;
+  text-transform: none !important;
+  font-size: 1.1em;
+  text-indent: 15px;
+}
+
+.offices-wrapper{
+  padding-left: 50px;
 }

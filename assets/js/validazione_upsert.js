@@ -168,7 +168,7 @@ $(document).ready(function() {
     );
 
     $.validator.addMethod("maxlen500", function(value, element) {
-        if (value.length <= 500) {
+        if (value.length <= 499) {
             return true
         }
         else {
@@ -177,9 +177,19 @@ $(document).ready(function() {
       },
       "il campo deve contenere al massimo 500 caratteri"
     );
+    $.validator.addMethod("maxlen250", function(value, element) {
+        if (value.length <= 249) {
+          return true
+        }
+        else {
+          return false
+        }
+      },
+      "il campo deve contenere al massimo 250 caratteri"
+    );
 
     $.validator.addMethod("maxlen1000", function(value, element) {
-        if (value.length <= 1000) {
+        if (value.length <= 999) {
             return true
         }
         else {

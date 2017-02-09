@@ -208,8 +208,39 @@ titolare_res_cap
 <?php
 mostra_errore('check_imprese_upsert');
 ?>
-<a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a><div class="offices"><?php
+<?php
+if( isset($formdata['has_partecipazioni']) && 1 == $formdata['has_partecipazioni']) {
+  $partecipazioni_si = ' checked="checked" ';
+  $partecipazioni_no = '';
+  $partecipazioni_class = '';
+}
+else {
+  $partecipazioni_si = '';
+  $partecipazioni_no = ' checked="checked" ';
+  $partecipazioni_class = ' hidden ';
+}
+?>
+<div class="field inpreview checkbox">
+  <input type="radio" id="partecipazioni_no" name="has_partecipazioni" value="0" class="preview-field " <?php echo $partecipazioni_no; ?> />
+  <label for="partecipazioni_no">Dichiaro di non avere partecipazioni</label>
+  <div class="resizer"></div>
+</div>
 
+<div class="field inpreview checkbox">
+  <input type="radio" id="partecipazioni_si" name="has_partecipazioni" value="1" class="preview-field " <?php echo $partecipazioni_si; ?> />
+  <label for="partecipazioni_si">Dichiaro di avere partecipazioni</label>
+  <div class="resizer"></div>
+</div>
+
+
+<div class="resizer"></div>
+<div class="offices-wrapper <?php echo $partecipazioni_class; ?>">
+  <div class="resizer"></div>
+<?php f_textbox_edit($formdata, 'numero_partecipazioni', "Numero di imprese partecipate"); ?>
+<a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a>
+<div class="resizer"></div>
+<div class="offices">
+<?php
 /*
 ██████   █████  ██████  ████████ ███████  ██████ ██ ██████   █████  ███████ ██  ██████  ███    ██ ██
 ██   ██ ██   ██ ██   ██    ██    ██      ██      ██ ██   ██ ██   ██    ███  ██ ██    ██ ████   ██ ██
@@ -241,7 +272,10 @@ mostra_errore('check_imprese_upsert');
       echo '<div class="resizer"></div></div>';
     }
   }
-?></div><hr class="resizer" /><h4>Consiglio di amministrazione</h4><?php
+?></div>
+</div>
+
+<hr class="resizer" /><h4>Consiglio di amministrazione</h4><?php
 f_text_edit($formdata, 'impresa_num_amministratori', "Numero componenti in carica");
 ?><h4>Procuratori e Procuratori Speciali</h4><?php
 f_text_edit($formdata, 'impresa_num_procuratori', "Numero componenti in carica");
@@ -265,9 +299,22 @@ f_checkbox_edit(
   'data-el="interesse_lavori_wrapper"'
 );
 echo '<div id="interesse_lavori_wrapper" class="' . $classes['interesse_lavori'] . '">';
+echo '<div class="padded">Inserire la tipologia e gli importi. È possibile inserire più valori separati da una virgola.</div>';
 echo '<div class="half">';
-f_text_edit($formdata, 'interesse_lavori_tipo', "Tipologia");
-f_text_edit($formdata, 'interesse_lavori_importo', "Importo");
+f_textarea_edit(
+  $formdata,
+  'interesse_lavori_tipo',
+  'Tipologia',
+  'maxlen250'
+);
+f_textarea_edit(
+  $formdata,
+  'interesse_lavori_importo',
+  'Importo',
+  'maxlen250'
+);
+//f_text_edit($formdata, 'interesse_lavori_tipo', "Tipologia");
+//f_text_edit($formdata, 'interesse_lavori_importo', "Importo");
 echo '</div>';
 echo '</div>';
 
@@ -279,9 +326,22 @@ f_checkbox_edit(
   'data-el="interesse_servizi_wrapper"'
 );
 echo '<div id="interesse_servizi_wrapper" class="' . $classes['interesse_servizi'] . '">';
+echo '<div class="padded">Inserire la tipologia e gli importi. È possibile inserire più valori separati da una virgola.</div>';
 echo '<div class="half">';
-f_text_edit($formdata, 'interesse_servizi_tipo', "Tipologia");
-f_text_edit($formdata, 'interesse_servizi_importo', "Importo");
+f_textarea_edit(
+  $formdata,
+  'interesse_servizi_tipo',
+  'Tipologia',
+  'maxlen250'
+);
+f_textarea_edit(
+  $formdata,
+  'interesse_servizi_importo',
+  'Importo',
+  'maxlen250'
+);
+//f_text_edit($formdata, 'interesse_servizi_tipo', "Tipologia");
+//f_text_edit($formdata, 'interesse_servizi_importo', "Importo");
 echo '</div>';
 echo '</div>';
 
@@ -293,9 +353,22 @@ f_checkbox_edit(
   'data-el="interesse_forniture_wrapper"'
 );
 echo '<div id="interesse_forniture_wrapper" class="' . $classes['interesse_forniture'] . '">';
+echo '<div class="padded">Inserire la tipologia e gli importi. È possibile inserire più valori separati da una virgola.</div>';
 echo '<div class="half">';
-f_text_edit($formdata, 'interesse_forniture_tipo', "Tipologia");
-f_text_edit($formdata, 'interesse_forniture_importo', "Importo");
+f_textarea_edit(
+  $formdata,
+  'interesse_forniture_tipo',
+  'Tipologia',
+  'maxlen250'
+);
+f_textarea_edit(
+  $formdata,
+  'interesse_forniture_importo',
+  'Importo',
+  'maxlen250'
+);
+//f_text_edit($formdata, 'interesse_forniture_tipo', "Tipologia");
+//f_text_edit($formdata, 'interesse_forniture_importo', "Importo");
 echo '</div>';
 echo '</div>';
 
@@ -307,9 +380,22 @@ f_checkbox_edit(
   'data-el="interesse_interventi_wrapper"'
 );
 echo '<div id="interesse_interventi_wrapper" class="' . $classes['interesse_interventi'] . '">';
+echo '<div class="padded">Inserire la tipologia e gli importi. È possibile inserire più valori separati da una virgola.</div>';
 echo '<div class="half">';
-f_text_edit($formdata, 'interesse_interventi_tipo', "Tipologia");
-f_text_edit($formdata, 'interesse_interventi_importo', "Importo");
+f_textarea_edit(
+  $formdata,
+  'interesse_interventi_tipo',
+  'Tipologia',
+  'maxlen250'
+);
+f_textarea_edit(
+  $formdata,
+  'interesse_interventi_importo',
+  'Importo',
+  'maxlen250'
+);
+//f_text_edit($formdata, 'interesse_interventi_tipo', "Tipologia");
+//f_text_edit($formdata, 'interesse_interventi_importo', "Importo");
 echo '</div>';
 f_checkbox_edit(
   $formdata,
@@ -320,9 +406,13 @@ f_checkbox_edit(
 echo '</div>';
 ?><hr class="resizer" /><h2> Anagrafiche dei componenti</h2>
 <p class="padded">
-  Soggetti previsti dal DLgs. n. 159/2011 art.85 e ss.mm.ii.
+  <a href="http://www.gazzettaufficiale.it/atto/serie_generale/caricaDettaglioAtto/originario?atto.dataPubblicazioneGazzetta=2011-09-28&atto.codiceRedazionale=011G0201" target="_blank">Soggetti previsti dal DLgs. n. 159/2011 art.85 e ss.mm.ii.</a>
+<?php
+f_textbox_edit($formdata, 'numero_anagrafiche', "Numero di componenti", 'required');
+?>
+  <br class="resizer" />
   <br />
-  <a href="#anagrafiche" class="add addAnagrafica">Aggiungi anagrafica</a> | <a href="#" class="reset resetAnagrafiche">Cancella tutto</a>
+  <a href="#anagrafiche" class="add addAnagrafica">Inserisci Anagrafica Componente</a> | <a href="#" class="reset resetAnagrafiche">Cancella tutto</a>
 </p>
 <?php
 
@@ -508,7 +598,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       'Civico Residenza*',
       'required'
     );
-
+    f_textbox_edit($formdata, $prefix . 'antimafia_numero_familiari]', "Numero di familiari maggiorenni conviventi", 'required');
     echo '</div>';
 
     echo str_replace(
@@ -582,6 +672,39 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
           'required _pivacf _cf_soft_check'
         );
 
+        $facr_ID = f_text_edit(
+          $formdata,
+          $fam_prefix . 'comune_residenza]',
+          'Comune Residenza*',
+          'required'
+        );
+
+        $fapr_ID = f_select_edit(
+          $formdata,
+          $fam_prefix . 'provincia_residenza]',
+          'Provincia di Residenza*',
+          opzioni_provincie(),
+          'required'
+        );
+        $autocomplete_to_enable[ $facr_ID ] = $fapr_ID;
+        f_text_edit(
+          $formdata,
+          $fam_prefix . 'via_residenza]',
+          'Via Residenza*',
+          'required'
+        );
+        f_text_edit(
+          $formdata,
+          $fam_prefix . 'civico_residenza]',
+          'Civico Residenza*',
+          'required'
+        );
+        f_text_edit(
+          $formdata,
+          $fam_prefix . 'cap_residenza]',
+          'CAP Residenza*',
+          'required'
+        );
         echo str_replace(
           array('###', '@@@'),
           array($i, $fi),

@@ -253,9 +253,17 @@ if ( 0 != $num_anagrafiche ) {
       f_text_print($anagrafica['antimafia_comune_residenza'] . ' (' . $anagrafica['antimafia_provincia_residenza'] . ')', 'Comune di residenza');
       f_text_print($anagrafica['antimafia_via_residenza'], 'Via residenza');
       f_text_print($anagrafica['antimafia_civico_residenza'], 'Civico residenza');
+      f_text_print($anagrafica['antimafia_numero_familiari'], 'Numero di familiari maggiorenni conviventi');
       echo '</div>';
     }
     echo '<div class="resizer"></div>';
+/*
+███████  █████  ███    ███ ██ ██      ██  █████  ██████  ██
+██      ██   ██ ████  ████ ██ ██      ██ ██   ██ ██   ██ ██
+█████   ███████ ██ ████ ██ ██ ██      ██ ███████ ██████  ██
+██      ██   ██ ██  ██  ██ ██ ██      ██ ██   ██ ██   ██ ██
+██      ██   ██ ██      ██ ██ ███████ ██ ██   ██ ██   ██ ██
+*/
     if ( isset($anagrafica['familiari']) && !empty($anagrafica['familiari']) ) {
       echo '<div class="preview-familiari"><h2>Familiari maggiorenni conviventi</h2>';
       $nff = 'A';
@@ -281,6 +289,10 @@ if ( 0 != $num_anagrafiche ) {
         if ( !preg_match('/^[a-zA-Z]{6}[0-9]{2}[a-zA-Z][0-9]{2}[a-zA-Z][0-9]{3}[a-zA-Z]$/', $familiare['cf']) ) {
           ?><div class="resizer hint warning">Il codice fiscale potrebbe essere errato. Verificare.</div><?php
         }
+        f_text_print($familiare['comune_residenza'], 'Comune Residenza');
+        f_text_print($familiare['provincia_residenza'], 'Provincia di Residenza');
+        f_text_print($familiare['via_residenza'], 'Via di Residenza');
+        f_text_print($familiare['civico_residenza'], 'Civico di Residenza');
         echo '</div>';
         echo '<div class="resizer"></div></div>';
         $nff++;

@@ -184,7 +184,8 @@ class Dichiarazione_model extends CI_Model
     else {
       $data['titolare_rappresentanza_altro'] = '';
     }
-
+    $data['numero_partecipazioni'] = $data['numero_partecipazioni'] == '' ? 0 : $data['numero_partecipazioni'];
+    $data['numero_anagrafiche'] = $this->input->post('numero_anagrafiche') != null ? $this->input->post('numero_anagrafiche') : 0;
     $data['stmt_wl'] = $data['stmt_wl'] == '1' ? 1 : 0;
     $data['interesse_lavori'] = $this->input->post('interesse_lavori') == '1' ? 1 : 0;
     $data['interesse_servizi'] = $this->input->post('interesse_servizi') == '1' ? 1 : 0;
@@ -279,7 +280,7 @@ class Dichiarazione_model extends CI_Model
         $anagrafiche_antimafia = $this->input->post('anagrafiche_antimafia');
         $offices = $this->input->post('imprese_partecipate');
 
-        if(!empty($offices) && is_array($offices)){
+        if(!empty($offices) && is_array($offices) && 1 == $data['has_partecipazioni']){
           foreach ($offices as $office) {
             $this->db->insert(
               'tmp_esecutori_imprese_partecipate',
@@ -307,6 +308,7 @@ class Dichiarazione_model extends CI_Model
               'antimafia_via_residenza' => $anagrafica['antimafia_via_residenza'],
               'antimafia_civico_residenza' => $anagrafica['antimafia_civico_residenza'],
               'antimafia_cf' => strtoupper($anagrafica['antimafia_cf']),
+              'antimafia_numero_familiari' => strtoupper($anagrafica['antimafia_numero_familiari']),
 
               'is_giuridica' => strtoupper($anagrafica['is_giuridica']),
               'giuridica_ragione_sociale' => strtoupper($anagrafica['giuridica_ragione_sociale']),
@@ -327,6 +329,11 @@ class Dichiarazione_model extends CI_Model
                   'nome' => $familiar['nome'],
                   'cognome' => $familiar['cognome'],
                   'comune' => $familiar['comune'],
+                  'comune_residenza' => $familiar['comune_residenza'],
+                  'provincia_residenza' => $familiar['provincia_residenza'],
+                  'via_residenza' => $familiar['via_residenza'],
+                  'civico_residenza' => $familiar['civico_residenza'],
+                  'cap_residenza' => $familiar['cap_residenza'],
                   'provincia_nascita' => isset($familiar['provincia_nascita']) ? $familiar['provincia_nascita'] : '',
                   'data_nascita' => parse_date($familiar['data_nascita']),
                   'cf' => strtoupper($familiar['cf']),

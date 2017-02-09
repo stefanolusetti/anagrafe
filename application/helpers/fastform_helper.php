@@ -243,6 +243,70 @@ function f_text_edit ( $object, $key, $label, $classes = '' ){
   );
   return $idField;
 }
+
+function f_textbox_edit ( $object, $key, $label, $classes = '' ){
+  if ( stristr($key, 'imprese_partecipate') ) {
+    preg_match_all('#imprese_partecipate\[([0-9]+)\]\[(.*)\]#', $key, $matches);
+    $n = isset($matches[1][0]) ? $matches[1][0] : '';
+    $_k = isset($matches[2][0]) ? $matches[2][0] : '';
+    if( isset($object['imprese_partecipate'][$n][$_k]) ) {
+      $value = $object['imprese_partecipate'][$n][$_k];
+    }
+    else {
+      $value = '';
+    }
+  }
+  else if ( preg_match('#anagrafiche_antimafia\[([0-9]+)\]\[familiari\]\[([0-9]+)\]\[(.*)\]#', $key) ) {
+    preg_match_all('#anagrafiche_antimafia\[([0-9]+)\]\[familiari\]\[([0-9]+)\]\[(.*)\]#', $key, $matches);
+    $n = isset($matches[1][0]) ? $matches[1][0] : '';
+    $f = isset($matches[2][0]) ? $matches[2][0] : '';
+    $_k = isset($matches[3][0]) ? $matches[3][0] : '';
+    if( isset($object['anagrafiche_antimafia'][$n]['familiari'][$f][$_k]) ) {
+      $value = $object['anagrafiche_antimafia'][$n]['familiari'][$f][$_k];
+    }
+    else {
+      $value = '';
+    }
+  }
+  else if ( preg_match('#anagrafiche_antimafia\[([0-9]+)\]\[(.*)\]#', $key) ) {
+    preg_match_all('#anagrafiche_antimafia\[([0-9]+)\]\[(.*)\]#', $key, $matches);
+    $n = isset($matches[1][0]) ? $matches[1][0] : '';
+    $_k = isset($matches[2][0]) ? $matches[2][0] : '';
+    if( isset($object['anagrafiche_antimafia'][$n][$_k]) ) {
+      $value = $object['anagrafiche_antimafia'][$n][$_k];
+    }
+    else {
+      $value = '';
+    }
+  }
+  else {
+    $value = isset($object[$key]) ? $object[$key] : '';
+  }
+
+  $CI =& get_instance();
+  $errores = $CI->form_validation->error_array();
+  $errore = '';
+  if ( isset($errores[$key]) ) {
+    $errore = '<label for="' . $key . '" class="errormsg">' . $errores[$key] . '</label>';
+  }
+  $idField = grind_key($key);
+  printf(
+    '<div class="field inpreview textbox">
+      <input type="text" id="%s" name="%s" class="preview-field %s" value="%s"/>
+      <label>%s</label>
+      %s
+      </div>',
+    $idField,
+    $key,
+    $classes,
+    $value,
+    $label,
+    $errore
+  );
+  return $idField;
+}
+
+
 function grind_key($key){
   $idField = str_replace(array('][', '['), '_', $key);
   $idField = str_replace(array('__', ']'), array('_', ''), $idField);

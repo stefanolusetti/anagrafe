@@ -140,6 +140,9 @@ class Domanda extends CI_Controller
 ██   ██ ██   ████    ██    ███████ ██      ██   ██ ██ ██      ██ ██   ██
 */
   public function anteprima ( $hash, $id ) {
+    if (ENVIRONMENT == 'development') {
+      $this->output->enable_profiler(true);
+    }
     $data = $this->dichiarazione_model->get_tmp_document($id);
     $this->load->view('templates/header', $data);
     $this->load->view('templates/headbar');
@@ -209,7 +212,8 @@ class Domanda extends CI_Controller
       'interesse_forniture' => 'no',
       'interesse_servizi' => 'no',
       'interesse_interventi' => 'no',
-      'istanza_id' => 0
+      'istanza_id' => 0,
+      'has_partecipazioni' => 0
     );
     if ( empty($this->input->post('submit')) ) {
       // no form submission to check/validate.
@@ -226,7 +230,8 @@ class Domanda extends CI_Controller
           'interesse_forniture' => 'no',
           'interesse_servizi' => 'no',
           'interesse_interventi' => 'no',
-          'istanza_id' => 0
+          'istanza_id' => 0,
+          'has_partecipazioni' => 0
         );
       }
       $render = true;
@@ -476,9 +481,16 @@ class Domanda extends CI_Controller
 
 
   public function check_imprese_upsert ( $val ) {
+    if ( 0 == $this->input->post('has_partecipazioni') ) {
+      return true;
+    }
+
     $imprese = $this->input->post('imprese_partecipate');
+    $num_imprese_dichiarate = $this->input->post('numero_partecipazioni');
+    $num_imprese = 0;
     if ( !empty($imprese) ) {
       foreach ( $imprese AS $n => $impresa ) {
+        $num_imprese++;
         if ( empty($impresa['nome']) ) {
           $this->form_validation->set_message('check_imprese_upsert', 'La Ragione Sociale delle imprese partecipate è obbligatoria.');
           return false;
@@ -502,6 +514,17 @@ class Domanda extends CI_Controller
         }
       }
     }
+    if ( $num_imprese_dichiarate != $num_imprese ) {
+      $this->form_validation->set_message(
+        'check_imprese_upsert',
+        sprintf(
+          "Sono state inserite <strong>%s</strong> partecipazioni ma ne sono state dichiarate <strong>%s</strong>",
+          $num_imprese,
+          $num_imprese_dichiarate
+        )
+      );
+      return false;
+    }
     return true;
   }
   /**
@@ -509,8 +532,12 @@ class Domanda extends CI_Controller
    **/
   public function check_anagrafiche_upsert ( $val ) {
     $anagrafiche = $this->input->post('anagrafiche_antimafia');
+    $num_anagrafiche_dichiarato = $this->input->post('numero_anagrafiche');
+
+    $num_anagrafiche = 0;
     if ( !empty($anagrafiche) ) {
       foreach ( $anagrafiche AS $anagrafica ) {
+        $num_anagrafiche++;
         if ( empty($anagrafica['role_id']) ) {
           $this->form_validation->set_message('check_anagrafiche_upsert', 'Ruolo componente è obbligatorio');
           return false;
@@ -583,9 +610,11 @@ class Domanda extends CI_Controller
             return false;
           }
         }
-
+        $num_familiari_dichiarato = $anagrafica['antimafia_numero_familiari'];
         if ( !empty($anagrafica['familiari']) ) {
+          $num_familiari = 0;
           foreach ( $anagrafica['familiari'] AS $familiare ) {
+            $num_familiari++;
             if ( empty($familiare['role_id']) ) {
               $this->form_validation->set_message('check_anagrafiche_upsert', 'Ruolo familiare è obbligatorio');
               return false;
@@ -609,13 +638,28 @@ class Domanda extends CI_Controller
                 return false;
               }
             }
-
             if ( empty($familiare['comune']) ) {
               $this->form_validation->set_message('check_anagrafiche_upsert', 'Comune di nascita del familiare convivente è obbligatorio');
               return false;
             }
             if ( empty($familiare['provincia_nascita']) ) {
               $this->form_validation->set_message('check_anagrafiche_upsert', 'Provincia di nascita del familiare convivente è obbligatorio');
+              return false;
+            }
+            if ( empty($familiare['comune_residenza']) ) {
+                $this->form_validation->set_message('check_anagrafiche_upsert', 'Comune di residenza del familiare convivente è obbligatorio');
+              return false;
+            }
+            if ( empty($familiare['provincia_residenza']) ) {
+              $this->form_validation->set_message('check_anagrafiche_upsert', 'Provincia di residenza del familiare convivente è obbligatorio');
+              return false;
+            }
+            if ( empty($familiare['via_residenza']) ) {
+              $this->form_validation->set_message('check_anagrafiche_upsert', 'Via di residenza del familiare convivente è obbligatorio');
+              return false;
+            }
+            if ( empty($familiare['civico_residenza']) ) {
+              $this->form_validation->set_message('check_anagrafiche_upsert', 'Civico di residenza del familiare convivente è obbligatorio');
               return false;
             }
             if ( empty($familiare['cf']) ) {
@@ -627,11 +671,34 @@ class Domanda extends CI_Controller
               return false;
             }
           }
+          if ( $num_familiari_dichiarato != $num_familiari ) {
+            $this->form_validation->set_message(
+              'check_anagrafiche_upsert',
+              sprintf(
+                "Sono stati inseriti <strong>%s</strong> familiari conviventi maggiorenni ma ne sono stati dichiarati <strong>%s</strong>",
+                $num_familiari,
+                $num_familiari_dichiarato
+              )
+            );
+            return false;
+          }
         }
       }
     }
     else {
       $this->form_validation->set_message('check_anagrafiche_upsert', 'Inserire almeno un\'anagrafica.');
+      return false;
+    }
+
+    if ( $num_anagrafiche_dichiarato != $num_anagrafiche ) {
+      $this->form_validation->set_message(
+        'check_anagrafiche_upsert',
+        sprintf(
+          "Sono stati inseriti <strong>%s</strong> componenti ma ne sono stati dichiarati <strong>%s</strong>",
+          $num_anagrafiche,
+          $num_anagrafiche_dichiarato
+        )
+      );
       return false;
     }
     return true;

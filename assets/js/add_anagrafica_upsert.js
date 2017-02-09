@@ -49,6 +49,16 @@ function buildFamiliarsObject() {
 ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ ███████
 */
 function mainEventHandlers(){
+  jQuery("[name=has_partecipazioni]").change(function(e){
+    if (jQuery('#partecipazioni_si').is(':checked')) {
+      jQuery('.offices-wrapper').show();
+    }
+    else {
+      jQuery('.offices-wrapper').hide();
+      jQuery('#numero_partecipazioni').val('');
+      jQuery('.offices').empty();
+    }
+  });
   cf_soft_check_handler();
   buildFamiliarsObject();
   jQuery('a.add.addAnagrafica').on('click', function(e){
@@ -415,7 +425,29 @@ function addFamiliar(e){
       </div> \
       <div class="field"> \
         <label for="anagrafiche_antimafia[###][familiari][@@@][cf]">Codice Fiscale*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][cf]" value="" id="anagrafiche_antimafia[###][familiari][@@@][cf]" class="required _pivacf _cf_soft_check" /> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][cf]" value="" id="anagrafiche_antimafia_###_familiari_@@@_cf" class="required _pivacf _cf_soft_check" /> \
+      </div> \
+      <div class="field"> \
+        <label for="antimafia_comune_residenza">Comune di Residenza*</label> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][comune_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_comune_residenza" class="required" /> \
+      </div> \
+      <div class="field"> \
+        <label for="antimafia_provincia_residenza">Provincia di residenza*</label> \
+        <select name="anagrafiche_antimafia[###][familiari][@@@][provincia_residenza]" id="anagrafiche_antimafia_###_familiari_@@@_provincia_residenza"  class="required"> \
+        ' + provincie_options + '\
+        </select>\
+      </div> \
+      <div class="field"> \
+        <label for="antimafia_via_residenza">Via residenza*</label> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][via_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_via_residenza"  class="required" /> \
+      </div> \
+      <div class="field"> \
+        <label for="antimafia_civico_residenza">Civico residenza*</label> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][civico_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_civico_residenza"  class="required" /> \
+      </div> \
+      <div class="field"> \
+        <label for="antimafia_cap_residenza">CAP residenza*</label> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][cap_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_cap_residenza"  class="required" /> \
       </div> \
       <div class="resizer"></div> \
     </div>';
@@ -427,6 +459,10 @@ function addFamiliar(e){
     _enableAutocomplete(
       'anagrafiche_antimafia_' + idx + '_familiari_' + cidx + '_comune',
       'anagrafiche_antimafia_' + idx + '_familiari_' + cidx + '_provincia'
+    );
+    _enableAutocomplete(
+      'anagrafiche_antimafia_' + idx + '_familiari_' + cidx + '_comune_residenza',
+      'anagrafiche_antimafia_' + idx + '_familiari_' + cidx + '_provincia_residenza'
     );
   })(idx);
   window.familiars[idx]++;
