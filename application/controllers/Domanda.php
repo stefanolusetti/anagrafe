@@ -166,6 +166,7 @@ class Domanda extends CI_Controller
       if ( false === $this->form_validation->run('domanda_upsert') ) {
         // Dati errati
         $data = $this->input->post();
+        $data['we_have_some_errors'] = true;
         $render = true;
       }
       else {

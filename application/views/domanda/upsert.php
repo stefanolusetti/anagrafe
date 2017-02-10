@@ -3,14 +3,17 @@
 </div>
 <?php
 if ( isset($formdata['hash']) ) {
-  echo form_open('domanda/upsert/' . $formdata['hash'], array('class' => 'preview')); //@debug
+  echo form_open('domanda/upsert/' . $formdata['hash'], array('class' => 'preview'));
   echo form_hidden('hash', $formdata['hash']);
 }
 else {
-  echo form_open('domanda/upsert/', array('class' => 'preview')); //@debug
+  echo form_open('domanda/upsert/', array('class' => 'preview'));
   echo form_hidden('hash', '');
 }
 
+if ( isset($formdata['we_have_some_errors']) ) {
+  ?><div class="resizer hint error">Vi sono errori nella compilazione del modulo. Controllare i dati inseriti.</div><?php
+}
 
 echo '<input type="hidden" name="istanza_id" value="' . $formdata['istanza_id'] . '" id="istanza_id" />';
 
@@ -236,7 +239,7 @@ else {
 <div class="resizer"></div>
 <div class="offices-wrapper <?php echo $partecipazioni_class; ?>">
   <div class="resizer"></div>
-<?php f_textbox_edit($formdata, 'numero_partecipazioni', "Numero di imprese partecipate"); ?>
+<?php f_textbox_edit($formdata, 'numero_partecipazioni', "Numero di imprese partecipate", 'required digits'); ?>
 <a href="#" class="add addOffice">Aggiungi Impresa Partecipata</a>
 <div class="resizer"></div>
 <div class="offices">
@@ -408,7 +411,7 @@ echo '</div>';
 <p class="padded">
   <a href="http://www.gazzettaufficiale.it/atto/serie_generale/caricaDettaglioAtto/originario?atto.dataPubblicazioneGazzetta=2011-09-28&atto.codiceRedazionale=011G0201" target="_blank">Soggetti previsti dal DLgs. n. 159/2011 art.85 e ss.mm.ii.</a>
 <?php
-f_textbox_edit($formdata, 'numero_anagrafiche', "Numero di componenti", 'required');
+f_textbox_edit($formdata, 'numero_anagrafiche', "Numero di componenti", 'required digits');
 ?>
   <br class="resizer" />
   <br />
@@ -598,7 +601,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       'Civico Residenza*',
       'required'
     );
-    f_textbox_edit($formdata, $prefix . 'antimafia_numero_familiari]', "Numero di familiari maggiorenni conviventi", 'required');
+    f_textbox_edit($formdata, $prefix . 'antimafia_numero_familiari]', "Numero di familiari maggiorenni conviventi", 'required digits');
     echo '</div>';
 
     echo str_replace(
@@ -614,11 +617,16 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
 ██      ██   ██ ██  ██  ██ ██ ██      ██ ██   ██ ██   ██ ██
 ██      ██   ██ ██      ██ ██ ███████ ██ ██   ██ ██   ██ ██
 */
+    if ( !isset($anagrafica['familiari']) ) {
+      if ( 0 != $anagrafica['antimafia_numero_familiari'] ) {
+        echo '<label class="errormsg"><p>Non sono stati inseriti familiari conviventi ma ne sono stati dichiarati ' . $anagrafica['antimafia_numero_familiari'] . '</p></label>';
+      }
+    }
+    else if ( count($anagrafica['familiari']) != $anagrafica['antimafia_numero_familiari'] ) {
+      echo '<label class="errormsg"><p>Sono stati inseriti '.count($anagrafica['familiari']).' familiari ma ne sono stati dichiarati ' . $anagrafica['antimafia_numero_familiari'] . '</p></label>';
+    }
     if(isset($anagrafica['familiari']) && !empty($anagrafica['familiari'])){
       // familiari
-      if ( count($anagrafica['familiari']) != $anagrafica['antimafia_numero_familiari'] ) {
-        echo '<label class="errormsg"><p>Sono stati inseriti '.count($anagrafica['familiari']).' familiari ma ne sono stati dichiarati ' . $anagrafica['antimafia_numero_familiari'] . '</p></label>';
-      }
       foreach($anagrafica['familiari'] AS $fi => $fam){
         $fam_prefix = 'anagrafiche_antimafia['.$i.'][familiari]['.$fi.'][';
         echo str_replace(

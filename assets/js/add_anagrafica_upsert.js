@@ -331,7 +331,7 @@ function addAnagrafica(e){
         </div> \
       </div> \
       <div class="field inpreview textbox"> \
-        <input type="text" id="anagrafiche_antimafia_###_antimafia_numero_familiari"  name="anagrafiche_antimafia[###][antimafia_numero_familiari]" class="preview-field required" value=""> \
+        <input type="text" id="anagrafiche_antimafia_###_antimafia_numero_familiari"  name="anagrafiche_antimafia[###][antimafia_numero_familiari]" class="preview-field digits required" value=""> \
         <label>Numero di familiari maggiorenni conviventi</label> \
       </div> \
       <a href="#anagrafiche" class="addFamiliar add" data-elid="###">Aggiungi Familiare Convivente Maggiorenne</a> \

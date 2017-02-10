@@ -536,7 +536,7 @@ function send_thanks_mail($doc) {
 
   // Email utente
   $msg ="<p>
-  <strong>ATTENZIONE:</strong> Non rispondere a questa PEC. Per avere supporto in fase di compilazione della domanda di iscrizione o per qualsiasi domanda è disponibile il numero di telefono 06/46529517 con i seguenti orari: dalle 9 alle 12 e dalle 15 alle 17.
+  <strong>ATTENZIONE:</strong> Non rispondere a questa PEC. Per avere supporto in fase di compilazione della domanda di iscrizione o per qualsiasi domanda è disponibile il numero di telefono 06/46529517 con i seguenti orari: dalle 9 alle 12 e dalle 15 alle 17 dal lunedì al venerdì.
   </p>
   <p>Gentile {$doc['titolare_nome']} {$doc['titolare_cognome']},</p>
   <p>
