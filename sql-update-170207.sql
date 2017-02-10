@@ -41,3 +41,6 @@ alter table anagrafiche_antimafia change giuridica_partita_iva giuridica_partita
 alter table anagrafiche_antimafia change giuridica_codice_fiscale giuridica_codice_fiscale varchar(250);
 
 alter table esecutori add column is_sent int(1) null default 0;
+alter table esecutori add column is_sent_last int(1) null default 0;
+alter table esecutori add column is_sent_last_date datetime null;
+alter table esecutori add column is_sent_date datetime null;

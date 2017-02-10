@@ -364,7 +364,7 @@ class Dichiarazione_model extends CI_Model
     $doc_id = (int)$id;
     $this->db->update(
       'esecutori',
-      array('is_sent' => 1),
+      array('is_sent' => 1, 'is_sent_date' => date('Y-m-d H:i:s')),
       "ID = " . $doc_id
     );
   }

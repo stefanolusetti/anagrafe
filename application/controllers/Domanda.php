@@ -265,9 +265,12 @@ class Domanda extends CI_Controller
         $config['file_name'] = 'CI_' . $item['codice_istanza'];
         $this->load->library('upload', $config);
         if ($this->upload->do_upload('userfile')) {
+          $this->db->where('ID', $item['ID'])->update( 'esecutori',
+            array('stato' => 0, 'uploaded' => 1, 'uploaded_at' => date('Y-m-d H:i:s'))
+          );
           if ( send_thanks_mail($item) ) {
             $this->db->where('ID', $item['ID'])->update( 'esecutori',
-              array('stato' => 0, 'uploaded' => 1, 'uploaded_at' => date('Y-m-d H:i:s'))
+              array('is_sent_last' => 1, 'is_sent_last_date' => date('Y-m-d H:i:s'))
             );
             $this->load->view('templates/header');
             $this->load->view('templates/headbar');
