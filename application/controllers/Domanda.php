@@ -126,6 +126,15 @@ class Domanda extends CI_Controller
  ██████  ██      ███████ ███████ ██   ██    ██
 */
   public function upsert ( $temp_hash = false ) {
+    // Weekdays.
+    if ( 0 == date('w') || 6 == date('w') ) {
+      $this->load->view('templates/header', array());
+      $this->load->view('templates/headbar');
+      $this->parser->parse( 'domanda/weekend', array() );
+      $this->load->view('templates/footer');
+      return;
+    }
+
     if (ENVIRONMENT == 'development') {
       $this->output->enable_profiler(true);
     }

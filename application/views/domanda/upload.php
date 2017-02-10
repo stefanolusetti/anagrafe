@@ -10,18 +10,18 @@ dovr&agrave; esserre indicato nelle eventuali successive comunicazioni.
 <p>
   <b>Attenzione:</b>
 </p>
-<ul>
+<ul style="font-size: 1em;">
   <li>
-    Si consiglia di inviare un file in format pdf. Sono comunque accettati i seguenti formati: tiff, jpg, jpeg.
+    Si consiglia di inviare un file in format <strong style="font-size: 1.2em;">pdf</strong>. Sono comunque accettati i seguenti formati: <strong style="font-size: 1.2em;">tiff, jpg, jpeg</strong>.
   </li>
   <li>
     Non saranno accettati altri documenti oltre alla carta d’identità.
   </li>
   <li>
-    Verranno accettati solamente documenti inferiori ai 2.5 MB di dimensione.
+    Verranno accettati solamente documenti inferiori ai <strong style="font-size: 1.2em;">2.5 MB</strong> di dimensione.
   </li>
   <li>
-  È possibile caricare <strong>un unico file</strong> che dovrà contenere la scannerizzazione <strong>fronte e retro</strong> della propria carta d’identità in corso di validità.
+  È possibile caricare <strong style="font-size: 1.2em;">un unico file</strong> che dovrà contenere la scannerizzazione <strong style="font-size: 1.2em;">fronte e retro</strong> della propria carta d’identità in corso di validità.
   </li>
 </ul>
 </div>
