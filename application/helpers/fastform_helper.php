@@ -84,6 +84,9 @@ function polish_date(&$data) {
 }
 
 function grind_date($val = false){
+  if ( $val == date('d/m/Y') ) {
+    return $val;
+  }
   if ( empty($val) ) {
     return '';
   }

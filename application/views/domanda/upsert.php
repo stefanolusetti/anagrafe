@@ -793,6 +793,17 @@ f_textarea_edit(
 
 
   <?php
+  /*
+  ██████  ███████ ██████  ██    ██  ██████
+  ██   ██ ██      ██   ██ ██    ██ ██
+  ██   ██ █████   ██████  ██    ██ ██   ███
+  ██   ██ ██      ██   ██ ██    ██ ██    ██
+  ██████  ███████ ██████   ██████   ██████
+  */
+  echo "<h7>aaaa debug@" .__FILE__.":".__LINE__."</h7><pre>";
+
+  echo strtotime(date('d/m/Y'));
+  echo "</pre>";
 f_text_edit($formdata, 'istanza_data', 'Data istanza*', 'required data');
 f_text_edit($formdata, 'istanza_luogo', 'Luogo*', 'required');
   ?>

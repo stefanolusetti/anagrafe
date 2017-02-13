@@ -495,7 +495,7 @@ function email_message_new($doc){
     <b>ATTENZIONE:</b> Non rispondere a questa PEC. Seguire le istruzioni per concludere l’iscrizione.
     </p>
     <p>
-      Gentile {$doc['titolare_nome']} {$doc['titolare_cognome']},<br />Per completare la domanda di iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di collegarsi al seguente indirizzo web:</p>
+      Gentile {$doc['titolare_nome']} {$doc['titolare_cognome']},<br />Per completare la domanda di iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di caricare la scansione di un suo documento di identità in corso di validità tramite la funzione disponibile al seguente indirizzo web: </p>
     <p><a href=\"{$url}\">{$url}</a></p>
     <p>
       <b>Attenzione:</b>
