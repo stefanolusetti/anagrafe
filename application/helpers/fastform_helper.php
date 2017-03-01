@@ -87,13 +87,29 @@ function grind_date($val = false){
   if ( $val == date('d/m/Y') ) {
     return $val;
   }
+  if ( preg_match('@^([\d]{4}\-[\d]{2}\-[\d]{2}\ [\d]{2}\:[\d]{2}\:[\d]{2})$@', $val) ) {
+    return date('d/m/Y', strtotime($val));
+  }
   if ( empty($val) ) {
     return '';
   }
   else {
-    return date('d/m/Y', strtotime($val));
+    $format = '@^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})$@';
+    preg_match($format, $val, $dateInfo);
+    if ( !empty($dateInfo) ) {
+      $check_date = mktime(0, 0, 0, $dateInfo['month'], $dateInfo['day'], $dateInfo['year']);
+      $check_date_back = date('d/m/Y', $check_date);
+      if ($val != $check_date_back) {
+        return 'CONTROLLARE IL VALORE: ' . $val;
+      }
+      return $check_date_back;
+    }
+    else {
+      return '';
+    }
   }
 }
+
 function f_radio_edit($object, $key, $label, $classes = '', $attrs = '', $_value = '1') {
   $value = isset($object[$key]) ? $object[$key] : '';
   $CI =& get_instance();

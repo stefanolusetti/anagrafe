@@ -313,21 +313,21 @@ function addAnagrafica(e){
         </div> \
         <div class="field"> \
           <label for="antimafia_comune_residenza">Comune di Residenza*</label> \
-          <input type="text" name="anagrafiche_antimafia[###][antimafia_comune_residenza]" value="" id="anagrafiche_antimafia_###_antimafia_comune_residenza" class="required" /> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_comune_residenza]" value="" id="anagrafiche_antimafia_###_antimafia_comune_residenza" class="required maxlen" /> \
         </div> \
         <div class="field"> \
           <label for="antimafia_provincia_residenza">Provincia di residenza*</label> \
-          <select name="anagrafiche_antimafia[###][antimafia_provincia_residenza]" id="anagrafiche_antimafia_###_antimafia_provincia_residenza"  class="required"> \
+          <select name="anagrafiche_antimafia[###][antimafia_provincia_residenza]" id="anagrafiche_antimafia_###_antimafia_provincia_residenza"  class="required maxlen"> \
           ' + provincie_options + '\
           </select>\
         </div> \
         <div class="field"> \
           <label for="antimafia_via_residenza">Via residenza*</label> \
-          <input type="text" name="anagrafiche_antimafia[###][antimafia_via_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_via_residenza]"  class="required" /> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_via_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_via_residenza]"  class="required maxlen" /> \
         </div> \
         <div class="field"> \
           <label for="antimafia_civico_residenza">Civico residenza*</label> \
-          <input type="text" name="anagrafiche_antimafia[###][antimafia_civico_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_civico_residenza]"  class="required" /> \
+          <input type="text" name="anagrafiche_antimafia[###][antimafia_civico_residenza]" value="" id="anagrafiche_antimafia[###][antimafia_civico_residenza]"  class="required maxlen" /> \
         </div> \
       </div> \
       <div class="field inpreview textbox"> \
@@ -433,7 +433,7 @@ function addFamiliar(e){
       </div> \
       <div class="field"> \
         <label for="antimafia_comune_residenza">Comune di Residenza*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][comune_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_comune_residenza" class="required" /> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][comune_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_comune_residenza" class="required maxlen" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_provincia_residenza">Provincia di residenza*</label> \
@@ -443,15 +443,15 @@ function addFamiliar(e){
       </div> \
       <div class="field"> \
         <label for="antimafia_via_residenza">Via residenza*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][via_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_via_residenza"  class="required" /> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][via_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_via_residenza"  class="required maxlen" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_civico_residenza">Civico residenza*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][civico_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_civico_residenza"  class="required" /> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][civico_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_civico_residenza"  class="required maxlen" /> \
       </div> \
       <div class="field"> \
         <label for="antimafia_cap_residenza">CAP residenza*</label> \
-        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][cap_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_cap_residenza"  class="required" /> \
+        <input type="text" name="anagrafiche_antimafia[###][familiari][@@@][cap_residenza]" value="" id="anagrafiche_antimafia_###_familiari_@@@_cap_residenza"  class="required maxlen" /> \
       </div> \
       <div class="resizer"></div> \
     </div>';

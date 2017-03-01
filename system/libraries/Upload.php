@@ -913,11 +913,43 @@ class CI_Upload {
 			return TRUE;
 		}
 
-		if (isset($this->_mimes[$ext]))
-		{
-			return is_array($this->_mimes[$ext])
-				? in_array($this->file_type, $this->_mimes[$ext], TRUE)
-				: ($this->_mimes[$ext] === $this->file_type);
+		if ( isset($this->_mimes[$ext]) ) {
+      if ( is_array($this->_mimes[$ext]) ) {
+        if ( in_array($this->file_type, $this->_mimes[$ext], TRUE) ) {
+          return true;
+        }
+        else {
+          /*
+          ██████  ███████ ██████  ██    ██  ██████
+          ██   ██ ██      ██   ██ ██    ██ ██
+          ██   ██ █████   ██████  ██    ██ ██   ███
+          ██   ██ ██      ██   ██ ██    ██ ██    ██
+          ██████  ███████ ██████   ██████   ██████
+          */
+          echo "<h7>PPORCa $ext debug@" .__FILE__.":".__LINE__."</h7><pre>";
+          var_dump($this->file_type);
+          var_dump($this->_mimes[$ext]);
+          echo "</pre>";
+        }
+      }
+      else {
+        if ( $this->_mimes[$ext] === $this->file_type ) {
+          return true;
+        }
+        else {
+          /*
+          ██████  ███████ ██████  ██    ██  ██████
+          ██   ██ ██      ██   ██ ██    ██ ██
+          ██   ██ █████   ██████  ██    ██ ██   ███
+          ██   ██ ██      ██   ██ ██    ██ ██    ██
+          ██████  ███████ ██████   ██████   ██████
+          */
+          echo "<h7>CRISTODIO $ext debug@" .__FILE__.":".__LINE__."</h7><pre>";
+          var_dump($this->_mimes[$ext]);
+          var_dump($this->file_type);
+          echo "</pre>";
+        }
+      }
 		}
 
 		return FALSE;

@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it">
 <head>
-    <title>Imprese richiedenti iscrizione all'Anagrafe Antimafia degli Esecutori</title>
+    <title>Imprese iscritte all'Anagrafe Antimafia degli Esecutori</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=940,maximum-scale=1.0"/>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/main.css"); ?>"/>
@@ -18,7 +18,7 @@
         <div id="header">
 		<div class="container_governo">
            <div id="governo">
-              <a href="http://www.governo.it/" title="Governo Italiano" target="blank" ><img src="<?php echo base_url('assets/images/logo-gov.svg'); ?>" alt="Governo Italiano"/>
+              <a href="http://www.interno.it/" title="Governo Italiano" target="blank" ><img src="<?php echo base_url('assets/images/logo-gov.svg'); ?>" alt="Governo Italiano"/>
 				<span>Ministero dell'Interno
 				</span>
 				<h3>
@@ -35,8 +35,8 @@
 		
 		
             <h1>
-                Imprese richiedenti iscrizione all'Anagrafe Antimafia degli Esecutori
-                <span>Anagrafe Antimafia degli Esecutori</span>
+                Anagrafe Antimafia degli Esecutori
+                <span>&nbsp;</span>
             </h1>
 			
        

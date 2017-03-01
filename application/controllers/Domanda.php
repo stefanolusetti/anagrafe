@@ -823,7 +823,14 @@ class Domanda extends CI_Controller
 
             return false;
         } else {
-            return true;
+          preg_match($format, $str, $dateInfo);
+          $check_date = mktime(0, 0, 0, $dateInfo['month'], $dateInfo['day'], $dateInfo['year']);
+          $check_date_back = date('d/m/Y', $check_date);
+          if ( $str != $check_date_back ) {
+            $this->form_validation->set_message('_controlla_data', 'Controllare il valore inserito.');
+            return false;
+          }
+          return true;
         }
     }
     public function _controlla_data_opzionale($str)

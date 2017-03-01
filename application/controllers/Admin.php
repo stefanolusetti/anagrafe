@@ -115,6 +115,7 @@ class Admin extends CI_Controller {
      * Funzione Caricamento imprese da parte di Struttura (Modificato SL)
      */
 	public function caricamento_esecutore() {
+		$this -> simpleuserauth -> require_admin();
 		$data = array();
 		 
         if(ENVIRONMENT == 'development')   

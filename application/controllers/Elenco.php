@@ -19,6 +19,7 @@ class Elenco extends CI_Controller {
         $this -> load -> helper('url');
         $this -> load -> helper('form');
         $this -> load -> helper('application');
+		$this -> load -> library('simpleuserauth');
 		
 		
         
@@ -122,7 +123,7 @@ class Elenco extends CI_Controller {
         if(ENVIRONMENT == 'development')   
             $this->output->enable_profiler(TRUE);
         
-        
+        $this -> simpleuserauth -> require_admin();
         //$limit = 25; //modifico in via temporanea il limite di paginazione
         $limit = 25;
         $config['per_page'] = $limit;

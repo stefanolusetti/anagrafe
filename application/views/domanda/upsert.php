@@ -557,7 +557,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       $formdata,
       $prefix . 'antimafia_comune_nascita]',
       'Comune di nascita*',
-      'required'
+      'required maxlen'
     );
 
     $apn_ID = f_select_edit(
@@ -578,7 +578,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       $formdata,
       $prefix . 'antimafia_comune_residenza]',
       'Comune Residenza*',
-      'required'
+      'required maxlen'
     );
 
     $apr_ID = f_select_edit(
@@ -593,13 +593,13 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
       $formdata,
       $prefix . 'antimafia_via_residenza]',
       'Via Residenza*',
-      'required'
+      'required maxlen'
     );
     f_text_edit(
       $formdata,
       $prefix . 'antimafia_civico_residenza]',
       'Civico Residenza*',
-      'required'
+      'required maxlen'
     );
     f_textbox_edit($formdata, $prefix . 'antimafia_numero_familiari]', "Numero di familiari maggiorenni conviventi", 'required digits');
     echo '</div>';
@@ -666,7 +666,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
           $formdata,
           $fam_prefix . 'comune]',
           'Comune di nascita*',
-          'required'
+          'required maxlen'
         );
 
         $fapn_ID = f_select_edit(
@@ -688,7 +688,7 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
           $formdata,
           $fam_prefix . 'comune_residenza]',
           'Comune Residenza*',
-          'required'
+          'required maxlen'
         );
 
         $fapr_ID = f_select_edit(
@@ -703,19 +703,19 @@ if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_
           $formdata,
           $fam_prefix . 'via_residenza]',
           'Via Residenza*',
-          'required'
+          'required maxlen'
         );
         f_text_edit(
           $formdata,
           $fam_prefix . 'civico_residenza]',
           'Civico Residenza*',
-          'required'
+          'required maxlen'
         );
         f_text_edit(
           $formdata,
           $fam_prefix . 'cap_residenza]',
           'CAP Residenza*',
-          'required'
+          'required maxlen'
         );
         echo str_replace(
           array('###', '@@@'),
@@ -788,22 +788,11 @@ f_textarea_edit(
   <div class="field fixed privacy">
     <?php $this->load->view('pages/privacy'); ?>
   </div>
-  <hr /><h2>Dati Istanza</h2>
+  <hr /><h2>Dati Istanza</h2><span class="padded" style="font-size: 0.9em;">(solo note esplicative, eventuali quesiti non saranno considerati)</span>
 <div class="half">
 
 
   <?php
-  /*
-  ██████  ███████ ██████  ██    ██  ██████
-  ██   ██ ██      ██   ██ ██    ██ ██
-  ██   ██ █████   ██████  ██    ██ ██   ███
-  ██   ██ ██      ██   ██ ██    ██ ██    ██
-  ██████  ███████ ██████   ██████   ██████
-  */
-  echo "<h7>aaaa debug@" .__FILE__.":".__LINE__."</h7><pre>";
-
-  echo strtotime(date('d/m/Y'));
-  echo "</pre>";
 f_text_edit($formdata, 'istanza_data', 'Data istanza*', 'required data');
 f_text_edit($formdata, 'istanza_luogo', 'Luogo*', 'required');
   ?>
