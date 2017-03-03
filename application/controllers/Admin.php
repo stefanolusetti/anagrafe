@@ -47,9 +47,7 @@ class Admin extends CI_Controller {
     
     public function index($id=null) 
     {
-		$data_hidden = array(
-		'hidden'=>'0'
-		);
+		
 		//$this->db->where('id',$id);
 		//$this->db->update('esecutori',$data_hidden);
         $this -> lists();
@@ -87,7 +85,7 @@ class Admin extends CI_Controller {
             $this->output->enable_profiler(TRUE);
         if($this -> input -> post()){
             if($this -> simpleuserauth -> authorize()){
-                redirect('/admin/caricamento_esecutore', 'refresh');
+                redirect('/admin', 'refresh');
                 exit();
             }
             
@@ -236,28 +234,40 @@ class Admin extends CI_Controller {
         $this -> simpleuserauth -> require_login();
         $this->load->library('pagination');
 		
+		$search_params = $this->input->get(NULL, TRUE);
+		
+		/*
 		if ($this -> input -> get('mostra') == ""){
 		if ($this -> input -> get('per_page') == "")
 		$limit = 25;
+		
+
 		else $limit = $this -> input -> get('per_page');
 		}
 		else
         $limit = $this -> input -> get('mostra');
-        //$limit = 25;
         
+		*/
+		if ($this -> input -> get('mostra') == "")
+		$limit=25;
+		else 
+		$limit = $this -> input -> get('mostra');
+		
         $criteria = set_search_querystring_esecutori();
 		
         $offset = $this -> input -> get('per_page');
 		
         $data = $this -> admin_model -> search_esecutori($criteria['params'],$criteria['order_by'], $offset, $limit);
-        
+       
         $config['per_page'] = $limit;
         $config['uri_segment'] = 3;
         $config['page_query_string'] = TRUE;
-        $config['base_url'] = site_url('/admin/lists/?' . htmlentities(http_build_query($criteria['qs'])));
-        $config['total_rows'] = $data['count'];
+        $config['base_url'] = site_url('/admin/lists/?' . htmlentities(http_build_query($criteria['qs']).'&mostra='.$limit));
+		$config['total_rows'] = $data['count'];
         $this->pagination->initialize($config); 
-
+		
+		unset($data['statements']['rowcount']);
+		
         $this -> load -> view('elenco/header');
         $this -> load -> view('templates/headbar');
         $this -> load -> view('admin/index', $data);
@@ -281,12 +291,15 @@ class Admin extends CI_Controller {
             show_404();
         }
 
-        $pdf = merge_pdf($item);
-        $filename = $item['ragione_sociale'];
+        $pdf = create_pdf($item['ID']);
+        $filename = $item['codice_istanza'];
         $this -> output -> set_content_type('application/pdf');
         $this -> output -> set_header('Content-Disposition: inline; filename="' . $filename . '"');
-        $this -> output -> set_output($pdf);
+        $this -> output -> set_output(file_get_contents($pdf['path']));
+		unlink($pdf['path']);
     }
+	
+
 
     /**
      * load
@@ -374,63 +387,7 @@ class Admin extends CI_Controller {
         $this->output->set_output(json_encode($result));
     }
 
-    /*
-	*Salvataggio note
-	*/
-	
-	public function update_note () {
-		
-		$campo = $this->input->post('note');
-		
-			if($campo)
-            {
-			
-			 foreach ($campo as $key => $value) {
-				 
-				 
-				 $value_db = $value;
-				 
-				 $this -> db
-                            ->where('id', $key)
-                            ->update('dichiaraziones', array('note' => $value_db));
-				 
-			 }
-			
-
-			}		
-					
-				
-			
-		
-		
-	}
-	
-		public function update_protocollo () {
-		
-		$campo = $this->input->post('protocollo_struttura');
-		
-			if($campo)
-            {
-			
-			 foreach ($campo as $key => $value) {
-				 
-				 
-				 $value_db = $value;
-				 
-				 $this -> db
-                            ->where('ID', $key)
-                            ->update('esecutori', array('protocollo_struttura' => $value_db));
-				 
-			 }
-			
-
-			}		
-					
-				
-			
-		
-		
-	}
+   
 	
 	/*
 	* Costruisce la finestra di dialogo
@@ -672,7 +629,7 @@ class Admin extends CI_Controller {
     public function update()
     {
         $this -> simpleuserauth -> require_login();
-        $actions = array('stato','parere_dia','parere_prefettura','avvio_proc_sent','dia_scadenza','pref_scadenza_30','pref_scadenza_75','uploaded','is_digital','protocollo_struttura','stmt_wl');
+        $actions = array('stato','uploaded','is_digital','protocollato','protocollo_struttura','stmt_wl','fascicolo_struttura','iscritti_at','iscritti_prov_at','iscritti_scadenza','iscritti_prov_scadenza');
         foreach ($actions as $action) {
             $campo = $this->input->post($action);
             if($campo)
@@ -681,7 +638,7 @@ class Admin extends CI_Controller {
 				
                 foreach ($campo as $key => $value) 
                 {
-				if (($action == 'dia_scadenza') || ($action == 'pref_scadenza_30') || ($action == 'pref_scadenza_75')){
+				if (($action == 'iscritti_at') || ($action == 'iscritti_prov_at') || ($action == 'iscritti_scadenza') || ($action == 'iscritti_prov_scadenza') ){
 				$value_db = parse_date($value);
 				}
 				else 
@@ -691,13 +648,23 @@ class Admin extends CI_Controller {
                             ->where('ID', $key)
                             ->update('esecutori', array($action => $value_db));
 							
-				/*			
-				if ($action == "stato") {
+							
+				if ($action == "stato" && $value == 1 ) {
 				$this -> db
                             ->where('ID', $key)
-                            ->update('esecutori', array('published_at' => date("Y-m-d H:i:s")));
+                            ->update('esecutori', array('iscritti_at' => date("Y-m-d H:i:s")));
 				
-				} */
+				} 
+				
+								
+				if ($action == "stato" && $value == 2 ) {
+				$this -> db
+                            ->where('ID', $key)
+                            ->update('esecutori', array('iscritti_prov_at' => date("Y-m-d H:i:s")));
+				
+				} 
+				
+				
 				
 				
                     
@@ -714,6 +681,68 @@ class Admin extends CI_Controller {
             }
         }
     }
+	
+	 /*
+	*Salvataggio note
+	*/
+	
+	public function update_note () {
+		
+		$campo = $this->input->post('note');
+		
+			if($campo)
+            {
+			
+			 foreach ($campo as $key => $value) {
+				 
+				 
+				 $value_db = $value;
+				 
+				 $this -> db
+                            ->where('id', $key)
+                            ->update('dichiaraziones', array('note' => $value_db));
+				 
+			 }
+			
+
+			}		
+					
+				
+			
+		
+		
+	}
+	
+	/*
+	*Salvataggio protocollo
+	*/
+	
+	public function update_protocollo () {
+			
+	$actions = array('protocollo_struttura','fascicolo_struttura');
+		foreach ($actions as $action) {
+			$campo = $this->input->post($action);
+				if($campo)
+					{
+				
+				
+                foreach ($campo as $key => $value) 
+                {
+					$value_db = $value;
+							$this -> db
+                            ->where('ID', $key)
+                            ->update('esecutori', array($action => $value_db,'protocollato'=> 1 ));
+		
+		
+		
+			
+
+			   }		
+					
+				  }
+		}
+	}
+	
 	
 	
 	public function sblocca() {

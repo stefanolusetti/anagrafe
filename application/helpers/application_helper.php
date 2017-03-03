@@ -16,11 +16,12 @@ function list_soas($dichiarazione_id)
 
 function set_search_querystring_esecutori () {
 	$CI =& get_instance();
-    $items = array('ID', 'ragione_sociale', 'partita_iva', 'codice_fiscale','uploaded_at');
-    $items_dropdown = array ('stato');
+	$item_null = 'codice_istanza';
+    $items = array('ragione_sociale', 'partita_iva', 'codice_fiscale');
+    $items_dropdown = array ('stato','uploaded','is_digital','stmt_wl','protocollato');
 	$params = array();
 	$params_dropdown = array();
-    $date_array= array('uploaded_at');
+    $date_array= array('uploaded_at','iscritti_at','iscritti_prov_at','iscritti_scadenza','iscritti_prov_scadenza','created_at');
     foreach ($items as $item) {
         $parameter = $CI -> input -> get($item);
         $params[$item] = empty($parameter) ? "" : $parameter;
@@ -30,7 +31,12 @@ function set_search_querystring_esecutori () {
         }
 
     }
-
+	
+	$parameter_null = $CI -> input -> get($item_null);
+	if ($parameter_null!="") {
+		$params[$item_null] = $parameter_null;
+	}
+	
 	foreach ($items_dropdown as $item_dropdown) {
 	$parameter_dropdown = $CI -> input -> get($item_dropdown);
 	if($parameter_dropdown == "")
@@ -40,14 +46,16 @@ function set_search_querystring_esecutori () {
 	}
 
     $order_by = $CI -> input -> get('order_by');
-    $order_by = empty($order_by) ? "id desc" : $order_by;
-	if (($order_by=="ragione_sociale asc") or ($order_by=="ragione_sociale desc") or ($order_by=="ID desc") or ($order_by=="ID asc") )  {
+    $order_by = empty($order_by) ? "is_digital desc,uploaded_at desc" : $order_by;
+	if (($order_by=="ragione_sociale asc") or ($order_by=="ragione_sociale desc") or ($order_by=="codice_istanza desc") or ($order_by=="codice_istanza asc") or ( $order_by=="uploaded_at desc") or ( $order_by=="uploaded_at asc") 
+		or ( $order_by=="iscritti_at desc") or ( $order_by=="iscritti_at asc") or ( $order_by=="iscritti_prov_at desc") or ( $order_by=="iscritti_prov_at asc") or ( $order_by=="iscritti_scadenza desc") or ( $order_by=="iscritti_scadenza asc")  
+	or ( $order_by=="iscritti_prov_scadenza desc") or ( $order_by=="iscritti_prov_scadenza asc") or ( $order_by=="created_at desc") or ( $order_by=="created_at asc") or ( $order_by=="is_digital desc") or ( $order_by=="is_digital asc") )  {
     $qs = array_merge($params,$params_dropdown,array('order_by' => $order_by));
     return array('params' => $params,'order_by' => $order_by, 'qs' => $qs);
    }
    else {
    $qs = array_merge($params, $params_dropdown, array('order_by' => $order_by));
-   return array('params' => $params,'order_by' => "id desc", 'qs' => $qs);
+   return array('params' => $params,'order_by' => "is_digital desc,uploaded_at desc", 'qs' => $qs);
 
    }
 }
@@ -121,7 +129,7 @@ function set_search_querystring(){
     $order_by = $CI -> input -> get('order_by');
     $order_by = empty($order_by) ? "id desc" : $order_by;
 	if (($order_by=="ragione_sociale asc") or ($order_by=="ragione_sociale desc") or ($order_by=="id desc") or ($order_by=="id asc") or ($order_by=="name desc") or ($order_by=="name asc") or
-	($order_by=="data_firma asc") or ($order_by=="data_firma desc") or ($order_by=="sl_piva asc") or ($order_by=="sl_piva desc") or ($order_by=="created_at asc") or ($order_by=="created_at desc") or ($order_by=="uploaded asc") or ($order_by=="uploaded desc") or ($order_by=="sl_cf asc") or ($order_by=="sl_cf desc")
+	($order_by=="data_firma asc") or ($order_by=="data_firma desc") or ($order_by=="sl_piva asc") or ($order_by=="sl_piva desc") or ($order_by=="created_at asc") or ($order_by=="created_at desc") or ($order_by=="sl_cf asc") or ($order_by=="sl_cf desc")
 	or ($order_by=="5bis asc") or ($order_by=="5bis desc") or ($order_by=="pubblicato asc") or ($order_by=="pubblicato desc") or ($order_by=="durc asc") or ($order_by=="durc desc") or ($order_by=="protesti asc") or ($order_by=="protesti desc")
 	or ($order_by=="antimafia asc") or ($order_by=="antimafia desc") or ($order_by=="uploaded_at asc") or ($order_by=="uploaded_at desc"))  {
     $qs = array_merge($params,$params_dropdown,array('order_by' => $order_by));
@@ -138,11 +146,11 @@ function set_search_querystring(){
 
 function query_link($href, $name){
     $base = current_url();
-    $criteria = set_search_querystring();
+    $criteria = set_search_querystring_esecutori();
 
     $class = preg_match("/^{$href}/", $criteria['order_by']) ? "selected" : "unselected";
 
-    $order_by = "{$href} asc" == $criteria['order_by'] ? "{$href} desc" : "{$href} asc";
+    $order_by = "{$href} desc" == $criteria['order_by'] ? "{$href} asc" : "{$href} desc";
     $qs = array_merge($criteria['params'], array('order_by' => $order_by));
 
     $url = htmlentities($base . "?" . http_build_query($qs));
@@ -193,7 +201,7 @@ function legenda(){
                     '5bis' => array('0' => 'non soggetto', '1' => 'soggetto', '2' => 'in attesa', '3' => 'pubblicato prefettura'),
                     'pubblicato' => array('1' => 'pubblicato', '0' => 'non pubblicato'),
                     'login' => array('1' => 'login', '2' => 'cred. errate', '3' => 'sospeso', '4' => 'logout'),
-					'stato' => array('1' => 'iscritto', '2' => 'iscritto provvisoriamente', '0' => 'in richiesta', '3' => 'cancellato'),
+					'stato' => array('1' => 'iscritto', '2' => 'iscritto provvisoriamente', '0' => 'in richiesta'),
 					'parere_dia' => array ('0'=>'no','1'=>'si'),
 					'parere_prefettura' => array ('0'=>'no','1'=>'si'),
 					'avvio_proc_sent' => array ('0'=>'no','1'=>'si'),

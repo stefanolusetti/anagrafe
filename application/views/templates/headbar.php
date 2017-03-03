@@ -67,10 +67,10 @@
 		<li>
         <?php 
          $attr = array();
-         $attr['title'] = "Domande cartacee";
+         $attr['title'] = "Gestione domande";
          if(current_controller('admin'))
             $attr['class'] = 'selected';
-         echo anchor('/admin/caricamento_esecutore', 'Domande cartacee', $attr); ?>
+         echo anchor('/admin', 'Gestione domande', $attr); ?>
         </li>
         <?php endif;?>
         <?php if(is_admin()): ?>

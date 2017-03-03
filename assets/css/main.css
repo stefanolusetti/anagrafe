@@ -433,16 +433,25 @@ table.elenco tr td.smallbox .field {
 
 table.elenco tr td.smallbox .field label {
 	text-align: left;
+	color: #000;
+	text-transform: uppercase;
+	text-decoration: none;
+	font-weight: 600;
+    font-size: 0.85em;
 }
 
+/*
 table.elenco tr td.smallbox .field label a {
 	color: #000;
 	text-transform: uppercase;
 	text-decoration: none;
 	font-weight: 600;
-	/*font-size: 0.93em;*/
     font-size: 0.85em;
 }
+
+*/
+
+
 
 table.elenco tr td a {
 	color: #000;
@@ -618,10 +627,10 @@ a.button,  table.elenco tr td a.button {
 	display: block;
 	padding: 2px 3px;
 	/*background: #006311;*/
-	background:#0066CC;
+	background:#00264D;
 	text-align: center;
 	font-size: 0.8em;
-	margin: 3px 10px 0 0;
+	margin: 3px 10px 10px 0;
 	-webkit-box-shadow: 2px 2px 0 #F8F8F8;
 	-moz-box-shadow: 2px 2px 0 #F8F8F8;
 	box-shadow: 2px 2px 0 #CCC;
@@ -640,6 +649,9 @@ a.button.blue,  table.elenco tr td a.button.blue {
 a.button.orange,  table.elenco tr td a.button.orange{
 	background-color: orange;
 }
+a.button.green,  table.elenco tr td a.button.green{
+	background-color: #009933;
+}
 
 a.button.hidden,  table.elenco tr td a.button.hidden{
 	visibility: hidden;
@@ -647,17 +659,11 @@ a.button.hidden,  table.elenco tr td a.button.hidden{
 
 
 a.button.unlock, table.elenco tr td a.button.unlock {
-	/*background-color: red;*/
-	background-color:#0066CC;
-	margin-top:30px;
-	margin-bottom:30px;
+	background-color: red;
 }
 
 a.button.lock,  table.elenco tr td a.button.lock{
-	/*background-color: #002166;*/
-	background-color:#00264D;
-	margin-top:30px;
-	margin-bottom:30px;
+	background-color: #0066CC;
 }
 
 a.button.spec,  table.elenco tr td a.button.spec{
@@ -1251,4 +1257,9 @@ form.preview label.errormsg{
 
 .offices-wrapper{
   padding-left: 50px;
+}
+
+
+.stato{
+margin-bottom:20px;
 }

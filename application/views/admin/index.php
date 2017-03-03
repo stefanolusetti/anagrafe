@@ -6,7 +6,7 @@
     </li>
 <?php endif; ?>
 
-  </ul>
+</ul>
 
 <div id="searchbar">
     <?php
@@ -15,13 +15,14 @@
     echo form_open('admin/index', $attr) ?>
 	
         <div class="fieldarea">
-            <?php f_text('ID', 'ID', array('input' => array('size' => '1'))); ?>
-            <?php f_text('ragione_sociale', 'Ragione sociale', array('input' => array('size' => '10'))); ?>
-            <?php f_text('partita_iva', 'P. IVA', array('input' => array('size' => '10'))); ?>
-            <?php f_text('codice_fiscale', 'Codice Fiscale', array('input' => array('size' => '10'))); ?> 
-		
-            <?php //f_text('created_at', 'Generato', array('input' => array('size' => '4'))); ?>
-            <?php //f_text('uploaded_at', 'Caricato', array('input' => array('size' => '4'))); ?>
+            <?php f_text('codice_istanza', 'ID', array('input' => array('size' => '15'))); ?>
+            <?php f_text('ragione_sociale', 'Ragione sociale', array('input' => array('size' => '35'))); ?>
+		</div>	
+		<div class="fieldarea">
+            <?php f_text('partita_iva', 'P. IVA', array('input' => array('size' => '15'))); ?>
+            <?php f_text('codice_fiscale', 'Codice Fiscale', array('input' => array('size' => '20'))); ?> 
+		</div>
+        <div class="fieldarea">
 			<div class="field">
 			<?php 
 			echo form_label('Stato', 'stato'); 
@@ -30,11 +31,45 @@
 			echo form_dropdown ('stato',$options,($get_stato===false) ? '' : $get_stato, 'id="stato"');
 			?>
 			</div>
-	
+			
+			<div class="field">
+			<?php 
+			echo form_label('Carta di identità', 'uploaded'); 
+			$options = array(''=>'-','0'=>'No','1'=>'Si');
+			$get_uploaded = $this -> input -> get('uploaded');
+			echo form_dropdown ('uploaded',$options,($get_uploaded===false) ? '' : $get_uploaded, 'id="uploaded"');
+			?>
+			</div>
+			<div class="field">
+			<?php 
+			echo form_label('Tipo di pratica', 'is_digital'); 
+			$options = array(''=>'-','0'=>'Cartacea','1'=>'Digitale');
+			$get_is_digital = $this -> input -> get('is_digital');
+			echo form_dropdown ('is_digital',$options,($get_is_digital===false) ? '' : $get_is_digital, 'id="is_digital"');
+			?>
+			</div>
+			<!--
+			<div class="field">
+			<?php 
+			echo form_label('Stato integrazioni', 'stato'); 
+			$options = array(''=>'-','0' => 'Non richieste', '1' => 'In attesa','2'=>'In valutazione','3'=>'Integrazione accettata','4'=>'Integrazione rifiutata');
+			$get_integrazioni = $this -> input -> get('per_page');
+			echo form_dropdown ('',$options,($get_integrazioni===false) ? '' : $get_integrazioni, 'id="integrazioni"');
+			?>
+			</div>
+			-->
+			<div class="field">
+			<?php 
+			echo form_label('White list', 'stmt_wl'); 
+			$options = array(''=>'-','0'=>'No','1'=>'Si');
+			$get_white_list = $this -> input -> get('stmt_wl');
+			echo form_dropdown ('stmt_wl',$options,($get_white_list===false) ? '' : $get_white_list, 'id="stmt_wl"');
+			?>
+			</div>
 			<div class="field">
 			<?php 
 			echo form_label('Mostra', 'mostra'); 
-			$options = array('25'=>'25','50'=>'50','100'=>'100','5000'=>'Tutte');
+			$options = array('25'=>'25','50'=>'50','100'=>'100','500'=>'500');
 			$get_mostra = $this -> input -> get('mostra');
 			if ($get_mostra=='')
 			$get_mostra=$this -> input -> get('per_page');
@@ -43,20 +78,19 @@
 			</div>
 			<div class="field">
                 <label>&nbsp;</label>
-                <?php echo form_submit('submit', 'filtra'); ?>
-             </div>
-        </div>
+                <?php echo form_submit('submit', 'Applica filtro'); ?>
+            </div>
+       </div>
     </form>
 </div>
 <? echo form_open('admin/update') ?>
 <table class="elenco admin">
 	<tr>
 	    <th class="id"></th>
-        <th><?php query_link('ID', "ID"); ?> / <?php query_link('ragione_sociale', "Ragione Sociale"); ?></th>
+        <th><?php //query_link('codice_istanza', "Ordina imprese"); ?></th>
         <th></th>
         <th colspan="3"></th>
 	</tr>
-	
 <?php foreach ($statements as $item): 
 
 ?>
@@ -65,109 +99,187 @@
 	<tr>
 	    <td class="id">
 	       
-	        <!--
-			<label for="unlock_<?php echo $item['id']; ?>"><a class="button unlock" name="<?php echo "{$item['id']}"; ?>" id="<?php echo "button[{$item['id']}]"; ?>">sblocca</a></label>
-	        <br>
-			<?php if(($item['pubblicato'] == "1")) : ?>
-			<label for="spec_<?php echo $item['id']; ?>"><a class="button spec" title="PEC spubblicazione" name="<?php echo "{$item['id']}"; ?>" id="<?php echo "button_spec[{$item['id']}]"; ?>">AVVISO DI SPUBBLICAZIONE</a></label>
-			<div id="finestra_spec" title="AVVISO DI SPUBBLICAZIONE">
-			
-			</div>
-			
-			<?php else: ?>
-			<label for="pec_<?php echo $item['id']; ?>"><a class="button pec" title="PEC pubblicazione" name="<?php echo "{$item['id']}"; ?>" id="<?php echo "button_pec[{$item['id']}]"; ?>">AVVISO DI PUBBLICAZIONE</a></label>
-			
-			<div id="finestra_pec" title="AVVISO DI PUBBLICAZIONE">
-			
-			</div>
-			<label for="pec_np<?php echo $item['id']; ?>"><a class="button pecnp" title="PEC non pubblicazione" name="<?php echo "{$item['id']}"; ?>" id="<?php echo "button_pecnp[{$item['id']}]"; ?>">AVVISO DI NON PUBBLICAZIONE</a></label>
-			
-			<div id="finestra_pec_np" title="AVVISO DI NON PUBBLICAZIONE">
-			
-			</div>
-			
-			<?php endif; ?>
-			
-			<div id="finestra_messaggio" title="ESITO INVIO PEC">
-			
-			</div>
-			
-			<br>
-			<?php if(is_admin()): ?>
-			<?php if ($item['hidden']=='0') { ?>
-			<a class="button blue ext" href="<?php echo site_url(array('admin', 'nascondi_imprese',$item['id'])); ?>">NASCONDI</a>
-			<?php } elseif ($item['hidden']=='1') { ?>
-			<a class="button blue ext" href="<?php echo site_url(array('admin')); ?>">RIPRISTINA</a>
-			<?php } 
-			endif;
-			?>
-			
-		</td>-->
+	        
 		<td class="id">
 		<?php if ($item['is_digital']=='1') { ?>
-		 <a class="button red ext" href="<?php echo site_url(array('admin', 'view', $item['ID'])); ?>">Scarica PDF</a>
-		  <a class="button red ext" href="<?php echo site_url(array('admin', 'view', $item['ID'])); ?>">Scarica CSV DIA</a>
-			<?php if ($item['uploaded']=='1') { ?>
-			<a class="button red ext" href="<?php echo base_url(array('uploads', $item['ID']. "_" . get_year($item['ID']) . ".p7m")); ?>">Scarica Carta di identità</a>
-	        <?php } 
+		 <a class="button ext" href="<?php echo site_url(array('admin', 'view', $item['ID'])); ?>">Scarica PDF</a>
+			<?php if ($item['uploaded']=='1') { 
 			?>
-			<a class="button red ext" href="<?php echo site_url(array('admin', 'load', $item['ID'])); ?>">Vedi form compilata</a>
-		<?php } ?>
+			<a class="button ext" href="<?php echo base_url(array('uploads', "CI_".$item['codice_istanza'].".pdf")); ?>">Scarica Carta di identità</a>
+			 
+			 
+			 <!--
+			 <?php if ($item['stato']=='2') { ?>
+			<a class="button green" href="<?php echo site_url(array('admin', 'view', $item['ID'])); ?>">Visualizza integrazioni</a>
+			<?php } 
+			else {
+			?>
+			<a class="button green" href="<?php echo site_url(array('admin', 'view', $item['ID'])); ?>">Richiedi integrazioni</a>
+			
+			
+			<?php 
+			} ?>-->
+	       <?php
+		
+			} 
+		}
+		
+	?>
 		
 		<label for="unlock_<?php echo $item['ID']; ?>"><a class="button unlock" name="<?php echo "{$item['ID']}"; ?>" id="<?php echo "button[{$item['ID']}]"; ?>">Attiva modifiche</a></label>
-		<?php if ($item['stato']=='1') { ?>
-		<a class="button green ext">Iscritto</a>
 		
-		
-		
-		 <?php } elseif ($item['stato']=='2') {  ?>
-		 
-		 <a class="button orange ext">Iscritto provvisoriamente</a>
-		
-		<?php } else { ?>
-		
-		<a class="button red ext">In richiesta</a>
-		
-		<?php }  ?>
 		<!--	
 		<label for="ap<?php echo $item['ID']; ?>"><a class="button red ext" title="Avvio procedimento" name="<?php echo "{$item['ID']}"; ?>" id="<?php echo "ap[{$item['ID']}]"; ?>">NOTIFICA AVVIO DEL PROCEDIMENTO</a></label>
 		<label for="sol_pref_30_<?php echo $item['ID']; ?>"><a class="button red ext" title="Primo sollecito prefettura" name="<?php echo "{$item['ID']}"; ?>" id="<?php echo "sol_pref_30_[{$item['ID']}]"; ?>">PRIMO SOLLECITO PREFETTURA</a></label>
 		<label for="sol_pref_75_<?php echo $item['ID']; ?>"><a class="button red ext" title="Secondo sollecito prefettura" name="<?php echo "{$item['ID']}"; ?>" id="<?php echo "sol_pref_75_[{$item['ID']}]"; ?>">SECONDO SOLLECITO PREFETTURA</a></label>
 		-->
+		
+		
 		</td>
 		
-        <td>(<?php echo sprintf("%05d",$item['ID']); ?>) <?php echo $item['ragione_sociale']; ?><br/>
-		    <?php query_link('ragione_sociale', "Ragione Sociale"); ?>: <?php echo $item['ragione_sociale']; ?><br/>
-			<?php query_link('ragione_sociale', "Forma giuridica"); ?></br>
-            <?php query_link('partita_iva', "Partita IVA"); ?>: <?php echo $item['partita_iva']; ?><br/>
-            <?php query_link('codice_fiscale', "Codice Fiscale"); ?>: <?php echo $item['codice_fiscale']; ?><br/>
-			<?php query_link('sl_comune', "Sede legale"); ?>: <?php echo $item['sl_via'].' '.$item['sl_civico'].' - '.$item['sl_cap'].' '.$item['sl_comune'] ;?><br/>
-			<?php query_link('ragione_sociale', "Email"); ?></br>
-			<?php query_link('ragione_sociale', "PEC"); ?></br>
-			<?php query_link('ragione_sociale', "Numero di telefono"); ?></br>
+		<?php if ($item['is_digital']=='0') { ?>
+		 <td>
+		     <?php echo "<b>"."RAGIONE SOCIALE : "."</b>";?> <?php echo $item['ragione_sociale']; ?><br/>
+            <?php echo "<b>"."PARTITA IVA : "."</b>";?> <?php echo $item['partita_iva']; ?><br/>
+             <?php echo "<b>"."CODICE FISCALE : "."</b>";?> <?php echo $item['codice_fiscale']; ?><br/>
+			<?php echo "<b>"."SEDE LEGALE : "."</b>";?> <?php echo $item['sl_via'].' '.$item['sl_civico'].' - '.$item['sl_cap'].' '.$item['sl_comune'] ;?></br><br/>
+		    <?php echo "<b>"."STATO PRATICA : "."</b>";?> <?php 
+			if ($item['stato']=='0')
+			echo "In richiesta";
+			else if ($item['stato']=='1')
+			echo "Iscritto";
+			else
+			echo "Iscritto provvisoriamente"
+			?>
 			
+			</td>	
+			
+			
+		<?php	
+		}
+		else { ?>
+		
+			<td>
+			<?php echo "<b>".$item['codice_istanza']."</b>"; ?><br/><br/>
+			<?php echo "<b>"."RICHIEDENTE : "."</b>";?> <?php echo $item['titolare_nome'].' '.$item['titolare_cognome']; ?><br/>
+		    <?php echo "<b>"."RAGIONE SOCIALE : "."</b>";?> <?php echo $item['ragione_sociale']; ?><br/>
+            <?php echo "<b>"."PARTITA IVA : "."</b>";?> <?php echo $item['partita_iva']; ?><br/>
+            <?php echo "<b>"."CODICE FISCALE : "."</b>";?> <?php echo $item['codice_fiscale']; ?><br/>
+			<?php echo "<b>"."SEDE LEGALE : "."</b>";?> <?php echo $item['sl_via'].' '.$item['sl_civico'].' - '.$item['sl_cap'].' '.$item['sl_comune'] ;?><br/>
+			<?php echo "<b>"."PEC : "."</b>";?><?php echo $item['impresa_pec'];?></br>
+			<?php echo "<b>"."RECAPITO TELEFONICO : "."</b>";?><?php echo $item['sl_telefono'];?></br><br/>
+			<?php echo "<b>"."STATO PRATICA : "."</b>";?> <?php 
+			if ($item['stato']=='0')
+			echo "In richiesta";
+			else if ($item['stato']=='1')
+			echo "Iscritto";
+			else
+			echo "Iscritto provvisoriamente"
+			?>
 			
 			</td>
+		<?php	
+		}	 ?>
         <td class="left">
-           
-            <?php 
-                if($item['uploaded_at'] != "0000-00-00 00:00:00"):
-                query_link('uploaded_at', "caricato il "); 
-                echo format_date($item['uploaded_at']);
-                endif; 
-            ?> <br/>
-			
-			
-        </td>
-	    <td class="smallbox">
-	        <div class="field">
-	            <label for="stato<?php echo $item['ID']; ?>"><?php query_link('stato', "Stato"); ?></label> 
+		 <div class="stato">
+            <label for="stato<?php echo $item['ID']; ?>"><b>Cambia stato pratica</b></label> 
                 <?php  
                    //$options = array('0' => 'no', '1' => 'si', '2' => 'non conforme');
                    $options = $legenda['stato'];
                    echo form_dropdown("stato[{$item['ID']}]", $options, $item['stato'], "class=\"stato\" id=\"stato{$item['ID']}\""); 
                    ?>
-           </div>
+		</div>
+	
+            <?php 
+                if($item['uploaded_at'] != NULL):
+                //query_link('uploaded_at', "Procedura terminata "); 
+                echo "<b>"."PROCEDURA TERMINATA IL : "."</b>";
+				echo format_date($item['uploaded_at']);
+                endif; 
+            ?> <br/><br/>
+			
+			 <?php 
+                if($item['iscritti_prov_at'] != NULL):
+                //query_link('iscritti_prov_at', "Iscritto provvisoriamente il ");
+				echo "<b>"."ISCRITTO PROVVISORIAMENTE IL : "."</b>";				
+                echo format_date($item['iscritti_prov_at']);
+                endif; 
+            ?> <br/><br/>
+			 <?php 
+                if($item['iscritti_at'] != NULL):
+                //query_link('iscritti_at', "Iscritto il "); 
+				echo "<b>"."ISCRITTO IL : "."</b>";
+                echo format_date($item['iscritti_at']);
+                endif; 
+            ?> <br/>
+			
+			
+        </td>
+		
+		
+	    <td class="smallbox">
+	       
+	           
+         
+		<?php if ( ($item['iscritti_prov_at'])!=NULL ) { ?>
+		<div class="field">
+		 <label for="iscritti_prov_at<?php echo $item['ID']; ?>"><?php query_link ('iscritti_prov_at',"Data di iscrizione provvisoria");?></label>
+		 <input type="text" id="iscritti_prov_at<?php echo $item['ID']; ?>" name = "iscritti_prov_at[<?php echo $item['ID']; ?>]" value= <?php echo format_date($item['iscritti_prov_at']);?>>
+		 </div>
+		<?php 
+		}
+		else { ?>
+		<div class="field">
+		 <label for="iscritti_prov_at<?php echo $item['ID']; ?>"><?php query_link ('iscritti_prov_at',"Data di iscrizione provvisoria");?></label>
+		 <input type="text" id="iscritti_prov_at<?php echo $item['ID']; ?>" name = "iscritti_prov_at[<?php echo $item['ID']; ?>]" value= <?php echo ""; ?>>
+		</div> 
+		<?php }
+		if ( ($item['iscritti_prov_scadenza'])!=NULL ) { ?> 
+		<div class="field">
+		 <label for="iscritti_prov_scadenza<?php echo $item['ID']; ?>"><?php query_link ('iscritti_prov_scadenza',"Scadenza iscrizione provvisoria");?></label>
+		 <input type="text" id="iscritti_prov_scadenza<?php echo $item['ID']; ?>" name = "iscritti_prov_scadenza[<?php echo $item['ID']; ?>]" value= <?php echo format_date($item['iscritti_prov_scadenza']);?>>
+		</div>
+		<?php 
+		}
+		else { ?>
+		<div class="field">
+		 <label for="iscritti_prov_scadenza<?php echo $item['ID']; ?>"><?php query_link ('iscritti_prov_scadenza',"Scadenza iscrizione provvisoria");?></label>
+		 <input type="text" id="iscritti_prov_scadenza<?php echo $item['ID']; ?>" name = "iscritti_prov_scadenza[<?php echo $item['ID']; ?>]" value= <?php echo "";?>>
+		</div>
+		<?php }
+		?>
+
+		
+		<?php if ( ($item['iscritti_at'])!=NULL ) { ?>
+		<div class="field">
+		 <label for="iscritti_at<?php echo $item['ID']; ?>"><?php query_link ('iscritti_at',"Data di iscrizione");?></label>
+		 <input type="text" id="iscritti_at<?php echo $item['ID']; ?>" name = "iscritti_at[<?php echo $item['ID']; ?>]" value= <?php echo format_date($item['iscritti_at']);?>>
+		 </div>
+		<?php 
+		}
+		else { ?>
+		<div class="field">
+		 <label for="iscritti_at<?php echo $item['ID']; ?>"><?php query_link ('iscritti_at',"Data di iscrizione");?></label>
+		 <input type="text" id="iscritti_at<?php echo $item['ID']; ?>" name = "iscritti_at[<?php echo $item['ID']; ?>]" value= <?php echo ""; ?>>
+		</div> 
+		<?php }
+		if ( ($item['iscritti_scadenza'])!=NULL ) { ?> 
+		<div class="field">
+		 <label for="iscritti_scadenza<?php echo $item['ID']; ?>"><?php query_link ('iscritti_scadenza',"Scadenza iscrizione");?></label>
+		 <input type="text" id="iscritti_scadenza<?php echo $item['ID']; ?>" name = "iscritti_scadenza[<?php echo $item['ID']; ?>]" value= <?php echo format_date($item['iscritti_scadenza']);?>>
+		</div>
+		<?php 
+		}
+		else { ?>
+		<div class="field">
+		 <label for="iscritti_scadenza<?php echo $item['ID']; ?>"><?php query_link ('iscritti_scadenza',"Scadenza iscrizione");?></label>
+		 <input type="text" id="iscritti_scadenza<?php echo $item['ID']; ?>" name = "iscritti_scadenza[<?php echo $item['ID']; ?>]" value= <?php echo "";?>>
+		</div>
+		<?php }
+		?>
+		
+		
+		   
 		   <!--
 		     <div class="field">
 	            <label for="avvio_proc_sent<?php echo $item['ID']; ?>"><?php query_link('avvio_proc_sent', "Avvio del procedimento"); ?></label> 
@@ -177,25 +289,22 @@
                    echo form_dropdown("avvio_proc_sent[{$item['ID']}]", $options, $item['avvio_proc_sent'], "class=\"avvio_proc_sent\" id=\"avvio_proc_sent{$item['ID']}\""); 
                    ?>
            </div>
-		   -->
-		     <div class="field">
-	            <label for="uploaded<?php echo $item['ID']; ?>"><?php query_link('uploaded', "Carta di identità"); ?></label> 
+		      
+		    <div class="field">
+	            <label for="integrazioni<?php echo $item['ID']; ?>"><?php query_link('uploaded', "Stato integrazioni"); ?></label> 
                 <?php  
-                   $options = array('0' => 'no', '1' => 'si');
-                   
-                   echo form_dropdown("uploaded[{$item['ID']}]", $options, $item['uploaded'], "class=\"uploaded\" id=\"uploaded{$item['ID']}\""); 
-                   ?>
-           </div>
-		     <div class="field">
-	            <label for="digital<?php echo $item['ID']; ?>"><?php query_link('is_digital', "Tipo di invio"); ?></label> 
-                <?php  
-                   $options = array('0' => 'Cartaceo', '1' => 'Digitale');
+                   $options = array('0' => 'Non richieste', '1' => 'In attesa','2'=>'In valutazione','3'=>'Integrazione accettata','4'=>'Integrazione rifiutata');
                 
-                   echo form_dropdown("is_digital[{$item['ID']}]", $options, $item['is_digital'], "class=\"is_digital\" id=\"is_digital{$item['ID']}\""); 
+                   echo form_dropdown("stato[{$item['ID']}]", $options, $item['stato'], "class=\"stato\" id=\"stato{$item['ID']}\""); 
                    ?>
            </div>
+		   -->
 		   
 		</td>
+		  
+		  
+		  
+		
 		<!--
        <td class="smallbox">  
 	    <div class="field">
@@ -237,6 +346,7 @@
 		  <input type="text" id="pref_scadenza_30<?php echo $item['ID']; ?>" name = "pref_scadenza_30[<?php echo $item['ID']; ?>]" value= <?php echo format_date($item['pref_scadenza_30']);?>>
 		  <?php }
 		  ?>
+		  
 		</div>
 		<div class="field">
                 <label for="pref_soll_30_sent<?php echo $item['ID']; ?>"><?php query_link('pref_soll_30_sent', "Sollecito 30 GG"); ?></label>
@@ -263,78 +373,80 @@
                    echo form_dropdown("pref_soll_75_sent[{$item['ID']}]", $options, $item['pref_soll_75_sent'], "class=\"pref_soll_75_sent\" id=\"pref_soll_75_sent{$item['ID']}\""); 
                    ?>
             </div>-->
+			
+	
+
+
+
+	
 	<td class="smallbox"> 
 	  <div class="field">
-	            <label for="wl<?php echo $item['ID']; ?>"><?php query_link('stmt_wl', "White list"); ?></label> 
+	            <label for="uploaded<?php echo $item['ID']; ?>">
+				<?php //query_link('uploaded', "Carta di identità"); ?>
+				<?php echo "Carta di identità" ?>
+				</label> 
+                <?php  
+                   $options = array('0' => 'no', '1' => 'si');
+                   
+                   echo form_dropdown("uploaded[{$item['ID']}]", $options, $item['uploaded'], "class=\"uploaded\" id=\"uploaded{$item['ID']}\""); 
+                   ?>
+           </div>
+		     <div class="field">
+	            <label for="digital<?php echo $item['ID']; ?>">
+				<?php //query_link('is_digital', "Tipo di invio"); ?>
+				<?php echo "Tipo di pratica" ?>
+				</label> 
+                <?php  
+                   $options = array('0' => 'Cartacea', '1' => 'Digitale');
+                
+                   echo form_dropdown("is_digital[{$item['ID']}]", $options, $item['is_digital'], "class=\"is_digital\" id=\"is_digital{$item['ID']}\""); 
+                   ?>
+           </div>
+	  <div class="field">
+	            <label for="wl<?php echo $item['ID']; ?>">
+				<?php //query_link('stmt_wl', "White list"); ?>
+				<?php echo "White list" ?>
+				</label> 
                 <?php  
                    $options = array('0' => 'no', '1' => 'si');
                    
                    echo form_dropdown("stmt_wl[{$item['ID']}]", $options, $item['stmt_wl'], "class=\"stmt_wl\" id=\"stmt_wl{$item['ID']}\""); 
                    ?>
            </div>
-		<div class="field">
-		         <label for="protocollo_struttura<?php echo $item['ID']; ?>"><?php query_link('protocollo_struttura', "Numero protocollo domanda"); ?></label>
-                 <?php echo form_input("protocollo_struttura[{$item['ID']}]",$item['protocollo_struttura'],"protocollo_struttura[{$item['ID']}]"); ?>
+		   <div class="field">
+	            <label for="protocollato<?php echo $item['ID']; ?>">
+				<?php //query_link('protocollato', "Protocollato"); ?>
+				<?php echo "Protocollato" ?>
+				</label> 
+                <?php  
+                   $options = array('0' => 'no', '1' => 'si');
                    
-            </div>
+                   echo form_dropdown("protocollato[{$item['ID']}]", $options, $item['protocollato'], "class=\"protocollato\" id=\"protocollato{$item['ID']}\""); 
+                   ?>
+           </div>
+		<div class="field">
+		         <label for="protocollo_struttura<?php echo $item['ID']; ?>">
+				 <?php //query_link('protocollo_struttura', "Numero protocollo domanda"); ?>
+				 <?php echo "Numero protocollo domanda" ?>
+				 </label>
+                 <input type="text" id="protocollo_struttura<?php echo $item['ID']; ?>" name = "protocollo_struttura[<?php echo $item['ID']; ?>]" value= <?php echo $item['protocollo_struttura'];?>>
+				 <?php //echo form_input("protocollo_struttura[{$item['ID']}]",$item['protocollo_struttura'],"protocollo_struttura[{$item['ID']}]"); ?>
+                   
+        </div>
+		<div class="field">
+		         <label for="fascicolo_struttura<?php echo $item['ID']; ?>">
+				 <?php //query_link('fascicolo_struttura', "Numero fascicolo domanda"); ?>
+				  <?php echo "Numero fascicolo domanda" ?>
+				 </label>
+                 <input type="text" id="fascicolo_struttura<?php echo $item['ID']; ?>" name = "fascicolo_struttura[<?php echo $item['ID']; ?>]" value= <?php echo $item['fascicolo_struttura'];?>>
+				 <?php //echo form_input("fascicolo_struttura[{$item['ID']}]",$item['fascicolo_struttura'],"fascicolo_struttura[{$item['ID']}]"); ?>
+                   
+        </div>
 	  </td>
 	  
 	  
 	  
-       <!-- <td class="smallbox">
-            <div class="field">
-                <label for="bis_<?php echo $item['id']; ?>"><?php query_link('5bis', "5bis"); ?></label>
-                <?php  
-                   $options = $legenda['5bis'];
-                   echo form_dropdown("5bis[{$item['id']}]", $options, $item['5bis'], "class=\"5bis\" id=\"bis_{$item['id']}\""); 
-                   ?>
-            </div>
-            <div class="field">
-                <label for="protesti_<?php echo $item['id']; ?>"><?php query_link('protesti', "Protesti"); ?></label>
-                <?php  
-                   $options = $legenda['protesti'];
-                   echo form_dropdown("protesti[{$item['id']}]", $options, $item['protesti'], "class=\"protesti\" id=\"protesti_{$item['id']}\""); 
-                   ?>
-            </div>
-		
-		<div class="field">
-		 <label for="protesti_scadenza<?php echo $item['id']; ?>"><?php query_link ('protesti_scadenza',"Data di scadenza(Protesti)");?></label>
-		 
-		 <?php if ((strtotime($item['protesti_scadenza'])) < (strtotime(date("Y-m-d H:i:s"))) && (($item['protesti_scadenza']) ) != '0000-00-00 00:00:00') { ?> 
-		 <input type="text" style="background-color:red" id="protesti_scadenza<?php echo $item['id']; ?>" name = "protesti_scadenza[<?php echo $item['id']; ?>]" value= <?php echo format_date($item['protesti_scadenza']); ?>>
-		 <?php } else { ?>
-		 <input type="text" id="protesti_scadenza<?php echo $item['id']; ?>" name = "protesti_scadenza[<?php echo $item['id']; ?>]" value= <?php echo format_date($item['protesti_scadenza']);?>>
-		 
-		 <?php 
-		 }
-		?>
-		</div>
-        </td>
-        <td class="smallbox">
-            <div class="field" style="min-height: 32px">
-                <label for="pubblicato_<?php echo $item['id']; ?>"><?php query_link('pubblicato', "Pubblicato?"); ?></label>
-                <?php echo form_checkbox('pubblicato', "pubblicato[{$item['id']}]", $item['pubblicato'], "id=\"pubblicato_{$item['id']}\""); ?>
-            </div>
-             <div class="field">
-                <label for="antimafia_<?php echo $item['id']; ?>"><?php query_link('antimafia', "Antimafia"); ?></label>
-                <?php
-                   $options = $legenda['antimafia'];
-                   echo form_dropdown("antimafia[{$item['id']}]", $options, $item['antimafia'], "class=\"antimafia\" id=\"antimafia_{$item['id']}\""); 
-                ?>
-            </div>
-		<div class="field">
-		<label for="antimafia_scadenza<?php echo $item['id']; ?>"><?php query_link ('antimafia_scadenza',"Data di scadenza(Antimafia)");?></label>
-		 <?php if ((strtotime($item['antimafia_scadenza'])) < (strtotime(date("Y-m-d H:i:s"))) && (($item['antimafia_scadenza']) ) != '0000-00-00 00:00:00') { ?> 
-		 <input type="text" style="background-color:red" id="antimafia_scadenza<?php echo $item['id']; ?>" name = "antimafia_scadenza[<?php echo $item['id']; ?>]" value= <?php echo format_date($item['antimafia_scadenza']);?>>
-		<?php } else { ?>
-		 <input type="text" id="antimafia_scadenza<?php echo $item['id']; ?>" name = "antimafia_scadenza[<?php echo $item['id']; ?>]" value= <?php echo format_date($item['antimafia_scadenza']);?>>
-		
-		
-		<?php 
-		}
-		?>
-		</div>
-        </td>-->
+      
 
 		
     </tr>

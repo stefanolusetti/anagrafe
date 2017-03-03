@@ -124,8 +124,7 @@ f_checkbox_print($impresa_settore_terra, 'Estrazione, fornitura e trasporto di t
 f_checkbox_print($impresa_settore_bitume, 'Confezionamento, fornitura e trasporto di calcestruzzo e di bitume');
 f_checkbox_print($impresa_settore_nolo, 'Noli a freddo e a caldo di macchinari');
 f_checkbox_print($impresa_settore_ferro, 'Fornitura di ferro lavorato');
-f_checkbox_print($impresa_settore_autotrasporto, 'Autotrasporto conto terzi');
-f_checkbox_print($impresa_settore_guardiana, 'Guardiania dei cantieri');
+f_checkbox_print($impresa_settore_autotrasporto, 'Guardiania dei cantieri');
 f_checkbox_print($impresa_settore_nessuno, 'Nessuna delle precedenti');
 
 ?><hr class="resizer" /><h2>Partecipazioni (anche minoritarie) in altre imprese o società (anche fiduciarie)</h2><?php

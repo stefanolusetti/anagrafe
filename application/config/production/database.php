@@ -52,9 +52,9 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'anagrafe';
-$db['default']['password'] = 'vKQ8eVswYtrBNWRF';
-$db['default']['database'] = 'anagrafe';
+$db['default']['username'] = 'merito';
+$db['default']['password'] = 'rermerito';
+$db['default']['database'] = 'merito';
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

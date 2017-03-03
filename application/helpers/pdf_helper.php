@@ -495,7 +495,7 @@ function email_message_new($doc){
     <b>ATTENZIONE:</b> Non rispondere a questa PEC. Seguire le istruzioni per concludere l’iscrizione.
     </p>
     <p>
-      Gentile {$doc['titolare_nome']} {$doc['titolare_cognome']},<br />Per completare la domanda di iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di caricare la scansione di un suo documento di identità in corso di validità tramite la funzione disponibile al seguente indirizzo web: </p>
+      Gentile {$doc['titolare_nome']} {$doc['titolare_cognome']},<br />Per completare la domanda di iscrizione all'Anagrafe Antimafia degli Esecutori, La preghiamo di collegarsi al seguente indirizzo web:</p>
     <p><a href=\"{$url}\">{$url}</a></p>
     <p>
       <b>Attenzione:</b>
@@ -578,7 +578,7 @@ function send_thanks_mail($doc) {
   else if ( 'production' == ENVIRONMENT ) {
     $CI->email->to('anagrafeantimafiasisma@pec.interno.it');
     //$CI->email->cc(array('luigi.carbone@interno.it', 'info@certhidea.it'));
-    $CI->email->cc(array('dp@certhidea.it'));
+    $CI->email->cc(array('info@certhidea.it'));
     $CI->email->subject(sprintf(
       "%s %s %s %s",
       $doc['ragione_sociale'],

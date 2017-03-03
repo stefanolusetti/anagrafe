@@ -224,7 +224,7 @@ class Users extends CI_Controller {
         
         if(empty($params))
         {
-            $data = $this -> Admin_model -> findlog(FALSE, $offset, $limit);
+            $data = $this -> admin_model -> findlog(FALSE, $offset, $limit);
             $config['uri_segment'] = 3;
             $config['base_url'] = site_url('/users/logs/');
             $config['total_rows'] = $data['rowcount'];
@@ -234,7 +234,7 @@ class Users extends CI_Controller {
             unset($params['submit']);
             unset($params['per_page']);
             $params['created_at'] = partial_parse_date($params['created_at']); 
-			$data = $this -> Admin_model -> findlog($params, $this->input->get("per_page"), $limit);
+			$data = $this -> admin_model -> findlog($params, $this->input->get("per_page"), $limit);
             $config['base_url'] = site_url("/users/logs/?user_id={$params['user_id']}&created_at={$params['created_at']}");
             $config['total_rows'] = $data['rowcount'];
             $config['page_query_string'] = TRUE;

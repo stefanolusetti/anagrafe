@@ -34,7 +34,7 @@
 		<div id="header">
 			<div class="header-container">
            <div id="governo">
-              <a href="http://www.interno.gov.it/it" title="Governo Italiano" target="blank" ><img src="<?php echo base_url('assets/images/logo-gov.svg'); ?>" alt="Governo Italiano"/>
+              <a href="http://www.governo.it/" title="Governo Italiano" target="blank" ><img src="<?php echo base_url('assets/images/logo-gov.svg'); ?>" alt="Governo Italiano"/>
 				<span>Ministero dell'Interno
 				</span>
 				<h3>
@@ -45,7 +45,7 @@
 			</div>
 			<h1>
 				Anagrafe Antimafia degli Esecutori
-				<span>&nbsp;</span>
+			<span>ANAGRAFE ANTIMAFIA DEGLI ESECUTORI</span>
 			</h1>
 
 		</div>
