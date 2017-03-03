@@ -186,6 +186,39 @@ class Admin extends CI_Controller {
     $this->load->view('templates/footer');
   }
 
+  public function mailtemplate($idDichiarazione, $type = 0, $idTemplate = 0) {
+    $template = $this->admin_model->get_mail_template($type, $idTemplate);
+    $esecutore = $this->admin_model->get_item((int)$idDichiarazione);
+    if ( isset( $template[0]['body'] ) ) {
+      $placeholders = array();
+      $values = array();
+      foreach ( array_keys($esecutore) AS $col ) {
+        $placeholders[] = "%$col%";
+        $values[] = $esecutore[$col];
+      }
+      $body = str_replace($placeholders, $values, $template[0]['body']);
+    }
+    else {
+      $body = '';
+    }
+    $pec_prefettura = $this->admin_model->get_mail_tos($esecutore['sl_prov']);
+
+    if ( isset($pec_prefettura[0]) ) {
+      $prefettura = sprintf(
+        "Prefettura di %s <%s>",
+        $pec_prefettura[0]['nome'],
+        $pec_prefettura[0]['pec']
+      );
+    }
+    else {
+      $prefettura = '';
+    }
+
+    $data = array( 'text' => $body, 'prefettura' => $prefettura );
+    header('Content-Type: application/json');
+    echo json_encode( $data );
+  }
+
   /**
    * lists.
    *
@@ -224,6 +257,24 @@ class Admin extends CI_Controller {
     $offset = $this->input->get('per_page');
     $data = $this->admin_model->search_esecutori($criteria['params'], $criteria['order_by'], $offset, $limit);
 
+    $data['irm_templates'] = array();
+    $templates = $this->admin_model->get_mail_templates(0);
+    // Addittional things?
+    foreach($templates AS $t) {
+      $data['irm_templates'][$t['id']] = $t['name'];
+    }
+
+    $tos = array();
+    $pec_list = $this->admin_model->get_mail_tos();
+    foreach ( $pec_list AS $pec ) {
+      $tos[] = sprintf(
+        "Prefettura di %s <%s>",
+        $pec['nome'],
+        $pec['pec']
+      );
+    }
+    $data['pecs'] = $tos;
+
     $config['per_page'] = $limit;
     $config['uri_segment'] = 3;
     $config['page_query_string'] = true;
@@ -233,6 +284,7 @@ class Admin extends CI_Controller {
     unset($data['statements']['rowcount']);
     $this->load->view('elenco/header');
     $this->load->view('templates/headbar');
+    $this->load->view('admin/mailer-js');
     $this->load->view('admin/index', $data);
     $this->load->view('templates/footer');
   }

@@ -1,0 +1,58 @@
+#modal-fog{
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.cth_modal{
+  display: none;
+  width: 80%;
+  height: 80%;
+  position: fixed;
+  border: 1px solid #666;
+  background-color: #fafafa;
+  top: 10%;
+  left: 10%;
+  border-radius: 4px;
+}
+
+.cth_modal .inner{
+  padding: 20px;
+}
+
+.cth_modal .inner h3 {
+  margin: 0;
+  padding: 0;
+  border-bottom: 2px solid #333;
+  background-color: transparent;
+}
+
+.cth_modal .inner .m-row {
+  clear: both;
+  padding: 6px;
+}
+.cth_modal .inner .m-row .m-field{}
+.cth_modal .inner .m-row .m-field .inner{
+  padding: 0 5px;
+}
+.cth_modal .inner .m-row .m-field.half{
+  float: left;
+  width: 50%;
+}
+.cth_modal .inner .m-row .m-field label{
+  font-weight: normal;
+  display: block;
+  font-size: 14px;
+}
+.cth_modal .inner .m-row .m-field input{
+  width: 100%;
+}
+
+.cth_modal .inner .m-row .m-field textarea{
+  width: 100%;
+  min-height: 300px;
+}
