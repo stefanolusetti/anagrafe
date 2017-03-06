@@ -29,6 +29,7 @@ class Admin extends CI_Controller {
     $this->load->helper('pdf');
     $this->load->helper('form');
     $this->load->helper('application');
+    $this->load->helper('admin_mailer');
     $this->load->library('email');
   }
 
@@ -256,6 +257,30 @@ class Admin extends CI_Controller {
     $criteria = set_search_querystring_esecutori();
     $offset = $this->input->get('per_page');
     $data = $this->admin_model->search_esecutori($criteria['params'], $criteria['order_by'], $offset, $limit);
+
+    if ( isset( $_POST['irm-to'] ) ) {
+      // non usiamo $this->input->post('irm-to') perchè fa casino con l'email tra <>
+      $mailToSend = array(
+        'to' => $_POST['irm-to'],
+        'from' => 'ninzo',
+        'subject' => $this->input->post('irm-subject'),
+        'text' => $this->input->post('irm-text'),
+        'attachments' => $_FILES['irm_attachments']
+      );
+      $invio = sendMailRequest($mailToSend);
+      if ( true == $invio ) {
+        $data['actionMessage'] = array(
+          'type' => 'irm success',
+          'msg' => 'Email inviata correttamente.'
+        );
+      }
+      else {
+        $data['actionMessage'] = array(
+          'type' => 'irm error',
+          'msg' => 'Si è verificato un errore nell\'invio della mail. Controllare i dati inseriti e riprovare.'
+        );
+      }
+    }
 
     $data['irm_templates'] = array();
     $templates = $this->admin_model->get_mail_templates(0);

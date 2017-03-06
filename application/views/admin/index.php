@@ -7,7 +7,11 @@
 <?php endif; ?>
 
 </ul>
-
+<?php
+if ( isset($actionMessage) ) {
+  printf('<div class="action-message %s">%s</div>', $actionMessage['type'], $actionMessage['msg']);
+}
+?>
 <div id="searchbar">
     <?php
     $legenda = legenda();
@@ -469,7 +473,7 @@ if ( '1' == $item['is_digital'] ) {
 <div id="infoRequestModal" class="cth_modal">
   <div class="inner">
     <h3>Richiesta Integrazioni</h3>
-    <form method="post" enctype="multipart/form-data" name="irm" id="irm">
+    <form method="post" enctype="multipart/form-data" name="irm" id="irm" action="/admin/?<?php echo $_SERVER['QUERY_STRING']; ?>">
       <div class="m-row">
         <!--
         <div class="m-field half">

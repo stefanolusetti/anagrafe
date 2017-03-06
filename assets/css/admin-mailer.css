@@ -56,3 +56,20 @@
   width: 100%;
   min-height: 300px;
 }
+
+
+.action-message{
+  border-width: 3px;
+  border-style: solid;
+  padding: 20px;
+}
+.action-message.success{
+  border-color: #3A9241;
+  background-color: #BBFFC1;
+  color: #1C771A;
+}
+.action-message.error{
+  border-color: #923E3A;
+  background-color: #FFBBC0;
+  color: #771F1A;
+}

@@ -238,10 +238,6 @@ function send_pec_pubblicazione(button) {
     $('.unlock').each(function(){
         sblocca(this)
 
-		if (window.console && 'function' === typeof window.console.log) {
-		window.console.log('applico_sblocca');
-		}
-
     })
     $('table.elenco.admin').find('select').attr('disabled', 'disabled');
     $('table.elenco.admin').find('input').attr('disabled', 'disabled');
