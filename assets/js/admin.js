@@ -10,7 +10,6 @@ $(document).ready(function() {
 		aggiorna_input('iscritti_at')
 		aggiorna_input('iscritti_prov_at')
 		aggiorna_input('iscritti_prov_scadenza')
-		aggiorna_input('dia_scadenza')
 		aggiorna_input('protocollo_struttura')
 		aggiorna_input('fascicolo_struttura')
 
@@ -83,42 +82,37 @@ function aggiorna_select(nomecampo){
 }
 
 function aggiorna_input(nomecampo){
+  $("input." + nomecampo).on('input change', function ( ) {
+    campo = this;
+    var options = {};
+    name = $(this).attr('name');
+    id = $(this).attr('id');
+    stato = $(this).val();
+    options[name] = stato;
+    if ( window.console && 'function' === typeof window.console.log ) {
+      window.console.log (name + ":" + stato + ":" + nomecampo );
+      window.console.log ("aggiorna_input");
+    }
 
-     $("input." + nomecampo).on('input change',function(){
-        campo = this
-        var options = {}
-        name = $(this).attr('name')
-		id = $(this).attr('id')
-        stato = $(this).val()
-        options[name] = stato
+    if ( ( nomecampo == 'iscritti_at') && ( stato != "" ) ) {
+      id_substring = id.substring(11);
+      var date_iscritti = $("input#"+"iscritti_at"+id_substring).datepicker("getDate");
+      $("input#"+"iscritti_scadenza" + id_substring)
+        .datepicker("setDate", new Date(date_iscritti.getFullYear()+1,date_iscritti.getMonth(), date_iscritti.getDate()));
+      $("input#"+"iscritti_scadenza"+id_substring).change();
+    }
 
-		if (window.console && 'function' === typeof window.console.log) {
-		window.console.log (name + ":" + stato + ":" + nomecampo )
-		window.console.log ("aggiorna_input")
-		}
+    if ( ( nomecampo == 'iscritti_prov_at' )  && ( stato != "" ) ) {
+      id_substring = id.substring(16)
+      var date_iscritti_prov = $("input#"+"iscritti_prov_at"+id_substring).datepicker("getDate");
+      $("input#"+"iscritti_prov_scadenza"+id_substring).datepicker("setDate", new Date(date_iscritti_prov.getFullYear()+1,date_iscritti_prov.getMonth(), date_iscritti_prov.getDate()));
+      $("input#"+"iscritti_prov_scadenza"+id_substring).change();
+    }
 
-		if ((nomecampo == 'iscritti_at') && ( stato != "")){
-		id_substring = id.substring(11)
-		var date_iscritti = $("input#"+"iscritti_at"+id_substring).datepicker("getDate");
-		$("input#"+"iscritti_scadenza"+id_substring).datepicker("setDate", new Date(date_iscritti.getFullYear()+1,date_iscritti.getMonth(), date_iscritti.getDate()))
-		$("input#"+"iscritti_scadenza"+id_substring).change();
-		}
-
-		if ((nomecampo == 'iscritti_prov_at')  && ( stato != "")) {
-		id_substring = id.substring(16)
-		var date_iscritti_prov = $("input#"+"iscritti_prov_at"+id_substring).datepicker("getDate");
-		$("input#"+"iscritti_prov_scadenza"+id_substring).datepicker("setDate", new Date(date_iscritti_prov.getFullYear()+1,date_iscritti_prov.getMonth(), date_iscritti_prov.getDate()))
-		$("input#"+"iscritti_prov_scadenza"+id_substring).change();
-		}
-
-
-
-		timeoutId = setTimeout(function() {
-		$.post("/admin/update", options);
-		}, 1000);
-
-})
-
+    timeoutId = setTimeout(function() {
+      $.post("/admin/update", options);
+    }, 1000);
+  });
 }
 
 
@@ -283,8 +277,6 @@ function scadenza(nome) {
       changeYear: true});
 	$( "#iscritti_prov_scadenza"+ nome).datepicker({dateFormat: 'dd/mm/yy',changeMonth: true,
       changeYear: true});
-	$( "#dia_scadenza"+ nome).datepicker({dateFormat: 'dd/mm/yy',changeMonth: true,
-      changeYear: true});
 
 
 	  //aggiorna_input('protocollo_struttura')
@@ -296,4 +288,3 @@ function scadenza(nome) {
 	//aggiorna_datepicker('iscritti_prov_scadenza'+nome);
 
 	}
-	
