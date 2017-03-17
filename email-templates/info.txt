@@ -1,0 +1,3 @@
+<li style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; list-style-position: inside; margin: 0 0 0 5px;">
+  <strong style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">Art. 8 (Interventi di immediata esecuzione)</strong>
+</li>

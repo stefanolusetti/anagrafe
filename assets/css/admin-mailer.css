@@ -52,7 +52,7 @@
   width: 100%;
 }
 
-.cth_modal .inner .m-row .m-field textarea{
+.cth_modal .inner .m-row .m-field textarea.text{
   width: 100%;
   min-height: 300px;
 }
@@ -72,4 +72,13 @@
   border-color: #923E3A;
   background-color: #FFBBC0;
   color: #771F1A;
+}
+
+#infoRequestModal .action-message{
+  padding: 10px;
+}
+
+#irm-to{
+  height: 40px;
+  width: 100%;
 }

@@ -1,242 +1,27 @@
 $(document).ready(function() {
 
-	aggiorna_select('stato')
-	aggiorna_select('uploaded')
-	aggiorna_select('is_digital')
-	aggiorna_select('stmt_wl')
-	aggiorna_select('protocollato')
-	aggiorna_input('protocollo_struttura')
-	aggiorna_input('fascicolo_struttura')
+		aggiorna_select('stato')
+		aggiorna_select('uploaded')
+		aggiorna_select('is_digital')
+		aggiorna_select('stmt_wl')
+		aggiorna_select('protocollato')
+		aggiorna_input('iscritti_at')
+		aggiorna_input('iscritti_scadenza')
+		aggiorna_input('iscritti_at')
+		aggiorna_input('iscritti_prov_at')
+		aggiorna_input('iscritti_prov_scadenza')
+		aggiorna_input('dia_scadenza')
+		aggiorna_input('protocollo_struttura')
+		aggiorna_input('fascicolo_struttura')
 
 
-	/*
-	$('.pec').each(function() {
-		send_pec_pubblicazione(this);
-
-		}
-
-	)
-
-function send_pec_pubblicazione(button) {
-
-		$(button).click(function(){
-
-		var options = {}
-		//name = $(button).attr('name')
-		//id = $(button).attr('id')
-		//options[id] = name
-
-        name = $(this).parents('tr').find('textarea').attr('name')
-        data = $(this).parents('tr').find('textarea').val();
-        options[name] = data
-
-
-
-		//$.post("/merito/index.php/admin/costruisci_finestra",options);
-
-		$('#finestra_pec').load("/merito/index.php/admin/costruisci_finestra",options);
-
-
-		$('#finestra_pec').dialog("open");
-		});
-
-
-
-
-		$('#finestra_pec').dialog({
-
-
-        modal: true,
-        autoOpen: false,
-		width:'500px',
-        buttons: {
-            "Chiudi": function() {
-                $( '#finestra_pec' ).dialog( "close" );
-                },
-            'Invia PEC': function(){
-
-				var options = {}
-				options[name] = data
-
-				$.post("/merito/index.php/admin/pec_pubblicazione",options, function(dati){
-                if(dati == "MESSAGGIO_OK"){
-
-					$('#finestra_messaggio').html('La mail è stata inviata correttamente');
-					$('#finestra_messaggio').dialog({
-							modal: true,
-							autoOpen: true,
-							width:'500px'
-					})
-
-					} else {
-					$('#finestra_messaggio').html("Si sono verificati errori nell'invio della mail");
-					$('#finestra_messaggio').dialog({
-							modal: true,
-							autoOpen: true,
-							width:'500px'
-					})
-
-                }
-				})
-
-
-				$( '#finestra_pec' ).dialog( "close" );
-
-
-
-                }
-
-            }
-
-        });
-
-
-
-	}
-
-	$('.spec').each(function() {
-		send_pec_spubblicazione(this);
-
-		}
-
-	)
-
-	$('.pecnp').each(function() {
-		send_pec_non_pubblicazione(this);
-
-		}
-
-	)
-
-
-	function send_pec_spubblicazione(button) {
-
-		$(button).click(function(){
-
-		var options = {}
-		name = $(this).parents('tr').find('textarea').attr('name')
-        data = $(this).parents('tr').find('textarea').val();
-        options[name] = data
-
-		window.console.log(options);
-
-		$('#finestra_spec').load("/merito/index.php/admin/costruisci_finestra",options);
-
-
-		$('#finestra_spec').dialog("open");
-		});
-
-		$('#finestra_spec').dialog({
-
-
-        modal: true,
-        autoOpen: false,
-		width:'500px',
-        buttons: {
-            "Chiudi": function() {
-                $( '#finestra_spec' ).dialog( "close" );
-                },
-            'Invia PEC': function(){
-
-				var options = {}
-				options[name] = data
-				window.console.log(options);
-				$.post("/merito/index.php/admin/pec_spubblicazione",options, function(dati){
-                if(dati == "MESSAGGIO_OK"){
-
-					$('#finestra_messaggio').html('La mail è stata inviata correttamente');
-					$('#finestra_messaggio').dialog({
-							modal: true,
-							autoOpen: true,
-							width:'500px'
-					})
-
-					} else {
-					$('#finestra_messaggio').html("Si sono verificati errori nell'invio della mail");
-					$('#finestra_messaggio').dialog({
-							modal: true,
-							autoOpen: true,
-							width:'500px'
-					})
-
-                }
-				})
-
-
-				$( '#finestra_spec' ).dialog( "close" );
-
-                }
-            }
-        });
-
-	}
-
-	function send_pec_non_pubblicazione(button) {
-
-		$(button).click(function(){
-
-		var options = {}
-		name = $(this).parents('tr').find('textarea').attr('name')
-        data = $(this).parents('tr').find('textarea').val();
-        options[name] = data
-
-		window.console.log(options);
-
-		$('#finestra_pec_np').load("/merito/index.php/admin/costruisci_finestra",options);
-
-
-		$('#finestra_pec_np').dialog("open");
-		});
-
-		$('#finestra_pec_np').dialog({
-
-
-        modal: true,
-        autoOpen: false,
-		width:'500px',
-        buttons: {
-            "Chiudi": function() {
-                $( '#finestra_pec_np' ).dialog( "close" );
-                },
-            'Procedi': function(){
-
-				var options = {}
-				options[name] = data
-				window.console.log(options);
-				$.post("/merito/index.php/admin/pec_non_pubblicazione",options, function(dati){
-                if(dati == "MESSAGGIO_OK"){
-
-					$('#finestra_messaggio').html('La mail è stata inviata correttamente');
-					$('#finestra_messaggio').dialog({
-							modal: true,
-							autoOpen: true,
-							width:'500px'
-					})
-
-					} else {
-					$('#finestra_messaggio').html("Si sono verificati errori nell'invio della mail");
-					$('#finestra_messaggio').dialog({
-							modal: true,
-							autoOpen: true,
-							width:'500px'
-					})
-
-                }
-				})
-
-
-				$( '#finestra_pec_np' ).dialog( "close" );
-
-                }
-            }
-        });
-
-	}
-
-	*/
 
     $('.unlock').each(function(){
         sblocca(this)
+
+		if (window.console && 'function' === typeof window.console.log) {
+		window.console.log('applico_sblocca');
+		}
 
     })
     $('table.elenco.admin').find('select').attr('disabled', 'disabled');
@@ -255,38 +40,6 @@ function send_pec_pubblicazione(button) {
 
 })
 
-
-
-
-
-	/*
-
-function aggiorna_checkbox(nomecampo){
-    $("[name="+ nomecampo +"]").change(function(){
-        campo = this
-        var options = {}
-        name = $(this).val();
-        stato = $(this).attr('checked') ? 1 : 0
-        options[name] = stato
-		if (window.console && 'function' === typeof window.console.log) {
-		window.console.log(name + ":" + stato+ ":" + campo)
-		}
-        $.post("/merito/index.php/admin/update", options, function(data){
-                if(data == "OK"){
-                    $(campo).parent('.field').css('opacity', '0.2')
-                    $(campo).parent('.field').animate({opacity: 1}, 300, function(){})
-                } else {
-                    //alert('errore del server, record non aggiornato')
-                }
-        })
-    })
-
-
-
-
-}
-
-*/
 
 
 function aggiorna_select(nomecampo){
@@ -315,12 +68,14 @@ function aggiorna_select(nomecampo){
 		aggiorna_datepicker_change("iscritti_at"+id_substring,1,"iscritti_at")
 		aggiorna_datepicker_change("iscritti_scadenza"+id_substring,1,"iscritti_scadenza")
 		window.console.log(nomecampo + ":" + stato + ":" + id_substring)
+		window.console.log ("aggiorna_select")
 		}
 	if  ( nomecampo == 'stato' &&(stato=='2')) {
 	id_substring = id.substring(5)
 		aggiorna_datepicker_change("iscritti_prov_at"+id_substring,2,"iscritti_prov_at")
 		aggiorna_datepicker_change("iscritti_prov_scadenza"+id_substring,2,"iscritti_prov_scadenza")
 		window.console.log(nomecampo + ":" + stato + ":" + id_substring)
+		window.console.log ("aggiorna_select")
 		}
 	})
 
@@ -329,8 +84,7 @@ function aggiorna_select(nomecampo){
 
 function aggiorna_input(nomecampo){
 
-
- $("input").not('.dontUpdate').on('input change',function(){
+     $("input." + nomecampo).on('input change',function(){
         campo = this
         var options = {}
         name = $(this).attr('name')
@@ -339,25 +93,31 @@ function aggiorna_input(nomecampo){
         options[name] = stato
 
 		if (window.console && 'function' === typeof window.console.log) {
-		window.console.log (name + ":" + stato )
+		window.console.log (name + ":" + stato + ":" + nomecampo )
+		window.console.log ("aggiorna_input")
+		}
+
+		if ((nomecampo == 'iscritti_at') && ( stato != "")){
+		id_substring = id.substring(11)
+		var date_iscritti = $("input#"+"iscritti_at"+id_substring).datepicker("getDate");
+		$("input#"+"iscritti_scadenza"+id_substring).datepicker("setDate", new Date(date_iscritti.getFullYear()+1,date_iscritti.getMonth(), date_iscritti.getDate()))
+		$("input#"+"iscritti_scadenza"+id_substring).change();
+		}
+
+		if ((nomecampo == 'iscritti_prov_at')  && ( stato != "")) {
+		id_substring = id.substring(16)
+		var date_iscritti_prov = $("input#"+"iscritti_prov_at"+id_substring).datepicker("getDate");
+		$("input#"+"iscritti_prov_scadenza"+id_substring).datepicker("setDate", new Date(date_iscritti_prov.getFullYear()+1,date_iscritti_prov.getMonth(), date_iscritti_prov.getDate()))
+		$("input#"+"iscritti_prov_scadenza"+id_substring).change();
 		}
 
 
+
 		timeoutId = setTimeout(function() {
-        // Runs 1 second (1000 ms) after the last change
-        $.post("/admin/update_protocollo", options);
+		$.post("/admin/update", options);
 		}, 1000);
 
-
-
-
-
-
-	})
-
-
-
-
+})
 
 }
 
@@ -375,12 +135,14 @@ function aggiorna_datepicker_change(nome_idcampo,flag,nomecampo){
 		$("input#"+nome_idcampo).change();
 		$('table.elenco tr td.smallbox .field').find("input#"+nome_idcampo).removeAttr('disabled');
 		window.console.log(nome_idcampo + ":" + flag)
+		window.console.log ("aggiorna_datepicker_change")
 		}
 		if((nomecampo == "iscritti_scadenza")) {
 		$("input#"+nome_idcampo).datepicker("setDate", new Date(d.getFullYear()+1,d.getMonth(), d.getDate()))
 		$("input#"+nome_idcampo).change();
 		$('table.elenco tr td.smallbox .field').find("input#"+nome_idcampo).removeAttr('disabled');
 		window.console.log(nome_idcampo + ":" + flag)
+		window.console.log ("aggiorna_datepicker_change")
 		}
 		}
 
@@ -392,12 +154,14 @@ function aggiorna_datepicker_change(nome_idcampo,flag,nomecampo){
 		$("input#"+nome_idcampo).change();
 		$('table.elenco tr td.smallbox .field').find("input#"+nome_idcampo).removeAttr('disabled');
 		window.console.log(nome_idcampo + ":" + flag)
+		window.console.log ("aggiorna_datepicker_change")
 		}
 		if((nomecampo == "iscritti_prov_scadenza")) {
 		$("input#"+nome_idcampo).datepicker("setDate", new Date(d.getFullYear()+1,d.getMonth(), d.getDate()))
 		$("input#"+nome_idcampo).change();
 		$('table.elenco tr td.smallbox .field').find("input#"+nome_idcampo).removeAttr('disabled');
-
+		window.console.log(nome_idcampo + ":" + flag)
+		window.console.log ("aggiorna_datepicker_change")
 		}
 
 }
@@ -405,9 +169,10 @@ function aggiorna_datepicker_change(nome_idcampo,flag,nomecampo){
 		}
 
 
-
+/*
 
 function aggiorna_datepicker (nome_idcampo) {
+
 $("input#"+nome_idcampo).change(
 		function(){
 		campo = this
@@ -416,7 +181,8 @@ $("input#"+nome_idcampo).change(
         var options = {}
         options[name] = data
 		if (window.console && 'function' === typeof window.console.log) {
-		window.console.log(name + ":" + data)
+		window.console.log(name + ":" + data + ":" + options[name])
+		window.console.log ("aggiorna_datepicker")
 		}
 
 		$.post("/admin/update", options, function(data){
@@ -429,8 +195,10 @@ $("input#"+nome_idcampo).change(
         })
    })
 
+
 }
 
+  */
 
 function sblocca(button){
     /*$(elemento).click(function(){
@@ -448,9 +216,7 @@ function sblocca(button){
 
 
 
-		if (window.console && 'function' === typeof window.console.log) {
-		window.console.log('sblocca')
-		}
+
         $(this).parents('tr').find('select').removeAttr('disabled')
 
 		$(this).parents('tr').find('input').removeAttr('disabled')
@@ -464,6 +230,7 @@ function sblocca(button){
         blocca(this)
 
 		scadenza(name)
+
 
 	})
 }
@@ -488,7 +255,7 @@ function blocca(elemento){
 		window.console.log(name + ":" + data)
 		}
 
-		$.post("/admin/update_protocollo", options);
+		//$.post("/admin/update_protocollo", options);
 
 
 
@@ -516,17 +283,17 @@ function scadenza(nome) {
       changeYear: true});
 	$( "#iscritti_prov_scadenza"+ nome).datepicker({dateFormat: 'dd/mm/yy',changeMonth: true,
       changeYear: true});
-	aggiorna_datepicker('iscritti_at'+nome);
-    aggiorna_datepicker('iscritti_prov_at'+nome);
-	aggiorna_datepicker('iscritti_scadenza'+nome);
-	aggiorna_datepicker('iscritti_prov_scadenza'+nome);
+	$( "#dia_scadenza"+ nome).datepicker({dateFormat: 'dd/mm/yy',changeMonth: true,
+      changeYear: true});
+
+
+	  //aggiorna_input('protocollo_struttura')
+	  //aggiorna_input('fascicolo_struttura')
+
+	//aggiorna_datepicker('iscritti_at'+nome);
+    //aggiorna_datepicker('iscritti_prov_at'+nome);
+	//aggiorna_datepicker('iscritti_scadenza'+nome);
+	//aggiorna_datepicker('iscritti_prov_scadenza'+nome);
 
 	}
-
-
-/*
-
-
-
-
-*/
+	

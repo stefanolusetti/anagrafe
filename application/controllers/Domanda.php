@@ -26,6 +26,7 @@ class Domanda extends CI_Controller
 
         $this->load->helper('form');
         $this->load->helper('captcha');
+        $this->load->helper('pdf');
     }
 
     public function check_piva() {
@@ -227,15 +228,7 @@ class Domanda extends CI_Controller
 
     public function test($id = false){
       /**/
-      $csv = export_antimafia_components($id);
-      echo "<h7>CSV debug@" .__FILE__.":".__LINE__."</h7><pre>";
-      var_dump($csv);
-      echo "</pre>";
-      /**/
-      $pdf = create_pdf($id);
-      echo "<h7>PDF debug@" .__FILE__.":".__LINE__."</h7><pre>";
-      var_dump($pdf);
-      echo "</pre>";
+      the_test_mail();
       /*
       $codice = create_codice_istanza($id);
       echo "<h7>CODICE debug@" .__FILE__.":".__LINE__."</h7><pre>";

@@ -604,3 +604,113 @@ function send_thanks_mail($doc) {
   unlink($csv['path']);
   return $esito;
 }
+
+
+function the_test_mail() {
+  $CI =& get_instance();
+  $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
+  $CI->email->to('certhidea@pec.it');
+  $CI->email->subject('TEST LAYOUT');
+  $CI->email->message('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/xhtml" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  <head>
+  <meta name="viewport" content="width=device-width" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Actionable emails e.g. reset password</title>
+  <link href="http://parcoinnovazione.it/email/styles.css" media="all" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400,700" rel="stylesheet" />
+  </head>
+
+  <body itemscope="" itemtype="http://schema.org/EmailMessage" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; height: 100%; line-height: 1.6em; background-color: #f6f6f6; margin: 0; padding: 0;" bgcolor="#f6f6f6">
+
+  <table style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; width: 100%; background-color: #f6f6f6; margin: 0;" bgcolor="#f6f6f6">
+  	<tr style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  		<td style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: top; margin: 0;" valign="top"></td>
+  		<td width="900" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: top; display: block !important; max-width: 800px !important; clear: both !important; width: 100% !important; margin: 0 auto; padding: 0;" valign="top">
+  			<div style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; max-width: 800px; display: block; margin: 0 auto; padding: 0;">
+  				<table width="100%" cellpadding="0" cellspacing="0" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; border-radius: 3px; background-color: #fff; margin: 0; border: 1px solid #e9e9e9;" bgcolor="#fff">
+            <tr style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; background-color: #00264D; margin: 0;" bgcolor="#00264D">
+              <td width="140" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: middle; text-align: center; margin: 0; padding: 10px 20px 10px 10px;" align="center" valign="middle">
+                <img src="http://parcoinnovazione.it/email/images/logo-gov.svg" width="60" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; max-width: 100%; margin: 0;" />
+              </td>
+  						<td style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 33px; vertical-align: middle; text-align: left; color: #FFFFFF; margin: 0;" align="left" valign="middle">
+  							Ministero dell\'interno
+                <div style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; font-weight: lighter; font-style: italic; margin: 0;">Struttura di Missione Prevenzione e Contrasto Antimafia Sisma</div>
+  						</td>
+  					</tr>
+          </table>
+          <table width="100%" cellpadding="0" cellspacing="0" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; border-radius: 3px; background-color: #fff; margin: 0; border: 1px solid #e9e9e9;" bgcolor="#fff">
+  					<tr style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  						<td style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: top; margin: 0; padding: 10px;" valign="top">
+  							<meta itemprop="name" content="Confirm Email" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;" />
+  							<table width="100%" cellpadding="0" cellspacing="0" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  								<tr style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  									<td style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+  										<strong style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">OGGETTO:</strong> Avvio istruttoria per richiesta di iscrizione nell’ “Anagrafe Antimafia degli Esecutori” istituita dall’art. 30, comma 6 del d.l. n.189 del 2016 convertito in Legge n. 229 del 2016.
+                      <ul style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; font-weight: normal; margin: 0 0 10px;">
+                        <li style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; list-style-position: inside; margin: 0 0 0 5px;">
+                          <strong style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">Art. 8 (Interventi di immediata esecuzione)</strong>
+                        </li>
+                        <li style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; list-style-position: inside; margin: 0 0 0 5px;">
+                          Società: <strong style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">BONAFACCIA DAMIANO</strong>
+                        </li>
+                        <li style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; list-style-position: inside; margin: 0 0 0 5px;">
+                          Sede: <strong style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">VIALE DE IULIIS G. 15D, RIETI (RI)</strong>
+                        </li>
+                        <li style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; list-style-position: inside; margin: 0 0 0 5px;">
+                          Codice Fiscale / Partita IVA: <strong style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">01091970572</strong>
+                        </li>
+                      </ul>
+  									</td>
+  								</tr>
+                  <tr style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  									<td style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+  										TESTO LIBERO
+  									</td>
+  								</tr>
+  								<tr style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  									<td style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+                      <p style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; font-weight: normal; margin: 0 0 10px;">Con Circolare n.15006/2(1) del 28 novembre 2016, recante prime indicazioni operative concernenti le modalità di iscrizione nell’Anagrafe Antimafia degli Esecutori, il Ministero dell’Interno ha, tra l’altro, richiamato l’attenzione sull’art. 8 del D.L. in oggetto (ora convertito in Legge 15 dicembre 2016 n.229) che detta disposizioni volte ad agevolare il rientro dei cittadini nelle unità immobiliari interessate da danni lievi che necessitano, quindi, soltanto di “interventi di immediata riparazione”.
+                      </p><p style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; font-weight: normal; margin: 0 0 10px;">Le prime Linee Guida adottate dal Comitato di cui all’art. 203 del d.lgs. n.50 del 2016 (in corso di pubblicazione) prevedono che, nel caso in cui l’operatore economico non sia già censito in Banca Dati Nazionale Unica ovvero sia iscritto nelle White List delle Prefetture in data anteriore a tre mesi precedenti l’entrata in vigore del D.L. n. 189 (19 ottobre 2016) e, comunque, quando si rendano necessari approfondimenti istruttori, questa Struttura avvii una procedura speditiva per la verifica dell’esistenza o meno delle situazioni ex artt. 67 e 84, comma 4, lett. a), b) e c) del D. Lgs. n. 159 del 2011 (Codice Antimafia) nei confronti dell’impresa esaminata attraverso la consultazione della Banca Dati Nazionale Unica richiedendo al contempo:
+                      </p>
+                      <ol style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; font-weight: normal; margin: 0 0 10px;">
+                        <li style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; list-style-position: inside; margin: 0 0 0 5px;">alla D.I.A. un riscontro sulla attualità delle eventuali segnalazioni di tentativi di infiltrazioni mafiose attraverso la consultazione della banca dati del Sistema Informatico Rilevamento Accesso Cantieri (SIRAC) e del Sistema di indagine delle Forze di Polizia (SDI);</li>
+                        <li style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; list-style-position: inside; margin: 0 0 0 5px;">alla Prefettura competente per territorio le eventuali risultanze esistenti agli atti nei confronti dei soggetti sottoposti alla verifica antimafia.</li>
+                      </ol>
+                      <p style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; font-weight: normal; margin: 0 0 10px;">
+                       Tanto premesso, si trasmettono in allegato i prospetti riepilogativi relativi all’impresa da verificare (un estratto dalla B.D.N.U. in formato “pdf” ed un file in formato “csv”), con preghiera di far pervenire la risposta a questa Struttura entro 10 giorni dalla data del ricevimento della presente all’indirizzo PEC “antimafiasisma@pec.interno.it” al fine di consentire a questa medesima Struttura l’iscrizione provvisoria in Anagrafe (la mancata risposta della DIA entro il predetto termine è considerata come comunicazione negativa).</p>
+                      <p style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; font-weight: normal; margin: 0 0 10px;">Per la successiva iscrizione definitiva nell’Anagrafe in oggetto, si prega, inoltre, codesta Prefettura di fornire, allegando copia della relativa documentazione, ogni ulteriore elemento utile di valutazione, desunto dagli atti e acquisito per il tramite delle Forze di polizia territoriali (ad esclusione del locale Centro Operativo DIA in quanto già attivato dagli Uffici centrali della DIA di Roma), entro 30 giorni sempre decorrenti dalla data del ricevimento della presente nota.
+                      </p>
+  									</td>
+  								</tr>
+  								<tr style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  									<td itemprop="handler" itemscope="" itemtype="http://schema.org/HttpActionHandler" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+  										<a href="http://www.mailgun.com" itemprop="url" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">Confirm email address</a>
+  									</td>
+  								</tr>
+  								<tr style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  									<td style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+  										— The Mailgunners
+  									</td>
+  								</tr>
+  							</table>
+  						</td>
+  					</tr>
+  				</table>
+  				<div style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; width: 100%; clear: both; color: #999; margin: 0; padding: 20px;">
+  					<table width="100%" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  						<tr style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; margin: 0;">
+  							<td style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 12px; vertical-align: top; color: #999; text-align: center; margin: 0; padding: 0 0 20px;" align="center" valign="top">Follow <a href="http://twitter.com/mail_gun" style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: underline; margin: 0;">@Mail_Gun</a> on Twitter.</td>
+  						</tr>
+  					</table>
+  				</div></div>
+  		</td>
+  		<td style="font-family: \'Titillium Web\', Arial, sans-serif; box-sizing: border-box; font-size: 18px; vertical-align: top; margin: 0;" valign="top"></td>
+  	</tr>
+  </table>
+
+  </body>
+  </html>
+');
+  $esito = $CI->email->send();
+}

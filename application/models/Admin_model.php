@@ -13,38 +13,7 @@ class Admin_model extends CI_Model {
         $this->load->helper('pdf');
     }
 
-  public function get_mail_tos($provincia = false) {
-    if ( false == $provincia ) {
-      $prefetture = $this->db->from('province_pec')->get();
-    }
-    else {
-      $prefetture = $this->db->from('province_pec')->where('sigla', $provincia)->get();
-    }
-    return $prefetture->result_array();
-  }
 
-  public function get_mail_template ($type = 0, $idTemplate = 0) {
-    $type = (int)$type;
-    $idTemplate = (int)$idTemplate;
-    if ( 0 != $idTemplate ) {
-      $query = $this->db->from('mail_templates')->where('id', $idTemplate)->limit(1)->get();
-    }
-    else {
-      $query = $this->db->from('mail_templates')->where('type', $type)->order_by('weight')->limit(1)->get();
-    }
-    return $query->result_array();
-  }
-
-  public function get_mail_templates ($type = 0) {
-    $type = (int)$type;
-    $query = $this->db->from('mail_templates')->where('type', $type)->order_by('weight')->get();
-    return $query->result_array();
-  }
-
-  public function get_item($id) {
-    $qhr = $this->db->get_where('esecutori', array('ID' => $id));
-    return $qhr->row_array();
-  }
 
 	public function add_data ($data_user) {
 		$this->db->insert('esecutori', $data_user);
@@ -658,8 +627,6 @@ else {
 	  return $result;
 	}
 
-
-
 	public function find_scadenze_protesti() {
 
 	  $query = $this->db
@@ -1004,5 +971,46 @@ else {
         $result['logs'] = $query->result_array();
         $result['rowcount'] = $rowcount;
         return $result;
+    }
+
+
+    public function get_mail_tos($provincia = false) {
+      if ( false == $provincia ) {
+        $prefetture = $this->db->from('province_pec')->get();
+      }
+      else {
+        $prefetture = $this->db->from('province_pec')->where('sigla', $provincia)->get();
+      }
+      return $prefetture->result_array();
+    }
+
+    public function impostaAvvioProcDia ($id_esecutore, $data) {
+      return $this->db->where('id', $id_esecutore)->update('esecutori', array('avvio_proc_dia' => 1, 'dia_scadenza' => $data));
+    }
+    public function impostaAvvioProcOE ($id_esecutore, $data) {
+      return $this->db->where('id', $id_esecutore)->update('esecutori', array('avvio_proc_oe' => $data));
+    }
+
+    public function get_mail_template ($type = 0, $idTemplate = 0) {
+      $type = (int)$type;
+      $idTemplate = (int)$idTemplate;
+      if ( 0 != $idTemplate ) {
+        $query = $this->db->from('mail_templates')->where('id', $idTemplate)->limit(1)->get();
+      }
+      else {
+        $query = $this->db->from('mail_templates')->where('type', $type)->order_by('weight')->limit(1)->get();
+      }
+      return $query->result_array();
+    }
+
+    public function get_mail_templates ($type = 0) {
+      $type = (int)$type;
+      $query = $this->db->from('mail_templates')->where('type', $type)->order_by('weight')->get();
+      return $query->result_array();
+    }
+
+    public function get_item($id) {
+      $qhr = $this->db->get_where('esecutori', array('ID' => $id));
+      return $qhr->row_array();
     }
 }

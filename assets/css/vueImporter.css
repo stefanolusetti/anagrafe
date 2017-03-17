@@ -1,0 +1,173 @@
+@charset "UTF-8";
+/* Make clicks pass-through */
+#nprogress {
+  pointer-events: none; }
+
+#nprogress .bar {
+  background: #2294dd;
+  height: 2px;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2000; }
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #2294dd, 0 0 5px #2294dd;
+  display: block;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  width: 100px;
+  opacity: 1;
+  transform: rotate(3deg) translate(0, -4px); }
+
+/* Remove these to get rid of the spinner */
+#nprogress .spinner {
+  display: block;
+  position: fixed;
+  z-index: 2000;
+  top: 15px;
+  right: 15px; }
+
+#nprogress .spinner-icon {
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: solid 2px transparent;
+  border-top-color: #2294dd;
+  border-left-color: #2294dd;
+  border-radius: 50%;
+  -webkit-animation: nprogress-spinner 400ms linear infinite;
+  animation: nprogress-spinner 400ms linear infinite; }
+
+.nprogress-custom-parent {
+  overflow: hidden;
+  position: relative; }
+
+.nprogress-custom-parent #nprogress .spinner,
+.nprogress-custom-parent #nprogress .bar {
+  position: absolute; }
+
+@-webkit-keyframes nprogress-spinner {
+  0% {
+    -webkit-transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg); } }
+@keyframes nprogress-spinner {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+body {
+  color: #222223;
+  font-family: "Fira Sans", sans-serif;
+  font-size: 1.8em;
+  font-weight: 400;
+  margin-bottom: 60px; }
+  body.development #rejigRoot::before {
+    width: 10px;
+    height: 10px;
+    content: "X";
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+    font-size: 0;
+    border-width: 2px 0 0 2px;
+    border-style: solid;
+    border-color: rgba(168, 0, 0, 0.5); }
+
+h1 {
+  margin: 5px; }
+
+#main-wrapper {
+  min-height: 300px; }
+
+blockquote {
+  font-size: 1em; }
+
+footer.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5; }
+
+.insults {
+  font-weight: 400;
+  color: #696969;
+  font-size: 0.8em;
+  font-style: italic;
+  padding: 5px 5px 5px 10px;
+  margin: 5px 0;
+  border-left: 2px solid #d8d8d8; }
+
+/*
+ █████  ██      ███████ ██████  ████████ ██ ███████ ██    ██
+██   ██ ██      ██      ██   ██    ██    ██ ██       ██  ██
+███████ ██      █████   ██████     ██    ██ █████     ████
+██   ██ ██      ██      ██   ██    ██    ██ ██         ██
+██   ██ ███████ ███████ ██   ██    ██    ██ ██         ██
+*/
+.alertify-notifier .ajs-message {
+  border-radius: 2px;
+  border: none;
+  text-align: left;
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 200;
+  padding: 10px;
+  font-size: 0.8em; }
+  .alertify-notifier .ajs-message.ajs-error {
+    text-shadow: 1px 1px 0 rgba(61, 61, 61, 0.7);
+    background-color: rgba(206, 35, 35, 0.95); }
+  .alertify-notifier .ajs-message.ajs-success {
+    text-shadow: 1px 1px 0 rgba(61, 61, 61, 0.7);
+    background-color: rgba(32, 74, 42, 0.95); }
+  .alertify-notifier .ajs-message.ajs-warning {
+    background-color: rgba(245, 222, 111, 0.85);
+    color: #333;
+    text-shadow: 1px 1px 0 rgba(61, 61, 61, 0.2); }
+  .alertify-notifier .ajs-message.ajs-info {
+    color: #333;
+    background-color: #C6E4EA;
+    text-shadow: 1px 1px 0 rgba(61, 61, 61, 0.2); }
+
+/*
+███████  ██████  ██████  ███    ███ ███████
+██      ██    ██ ██   ██ ████  ████ ██
+█████   ██    ██ ██████  ██ ████ ██ ███████
+██      ██    ██ ██   ██ ██  ██  ██      ██
+██       ██████  ██   ██ ██      ██ ███████
+*/
+form input[type="checkbox"] {
+  width: 1em;
+  height: 1em; }
+form .checkbox label {
+  font-weight: 400;
+  font-size: 1em;
+  text-transform: none;
+  font-style: normal; }
+form label {
+  margin-bottom: 0;
+  font-weight: 700;
+  font-size: 0.7em;
+  text-transform: uppercase;
+  font-style: italic; }
+form .forgot {
+  font-weight: 700;
+  font-size: 1em;
+  font-style: italic; }
+form .info-block {
+  font-family: "Fira Mono", monospace;
+  display: block;
+  font-weight: 200;
+  color: #696969;
+  font-size: 0.8em;
+  border-left: 2px solid #8B8B8E;
+  border-radius: 2px 0 0 2px;
+  padding: 4px 4px 4px 10px;
+  margin: 5px 0; }
+
+/*# sourceMappingURL=vueImporter.css.map */
