@@ -7,7 +7,11 @@
 <?php endif; ?>
 
 </ul>
-
+<?php
+if (isset($actionMessage)) {
+    printf('<div class="action-message %s">%s</div>', $actionMessage['type'], $actionMessage['msg']);
+}
+?>
 <div id="searchbar">
     <?php
     $legenda = legenda();
