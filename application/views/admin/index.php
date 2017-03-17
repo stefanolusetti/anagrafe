@@ -299,7 +299,28 @@ if (isset($actionMessage)) {
 		 <input type="text" class="iscritti_scadenza" id="iscritti_scadenza<?php echo $item['ID']; ?>" name = "iscritti_scadenza[<?php echo $item['ID']; ?>]" value= <?php echo "";?>>
 		</div>
 		<?php }
-		?>
+    if ( ($item['dia_scadenza'])!=NULL ) {
+      if ((strtotime($item['dia_scadenza'])) < (strtotime(date("Y-m-d H:i:s"))) ) { ?>
+        <div class="field">
+        <label for="dia_scadenza<?php echo $item['ID']; ?>"><?php query_link ('dia_scadenza',"Scadenza richiesta informazioni");?></label>
+        <input type="text" style="background-color:red" class="dia_scadenza" id="dia_scadenza<?php echo $item['ID']; ?>" name = "dia_scadenza[<?php echo $item['ID']; ?>]" value= <?php echo format_date($item['dia_scadenza']);?>>
+        </div>
+      <?php }
+    else {
+    ?>
+      <div class="field">
+      <label for="dia_scadenza<?php echo $item['ID']; ?>"><?php query_link ('dia_scadenza',"Scadenza richiesta informazioni");?></label>
+      <input type="text" class="dia_scadenza" id="dia_scadenza<?php echo $item['ID']; ?>" name = "dia_scadenza[<?php echo $item['ID']; ?>]" value= <?php echo format_date($item['dia_scadenza']);?>>
+      </div>
+    <?php
+      }
+    }
+    else { ?>
+    <div class="field">
+    <label for="dia_scadenza<?php echo $item['ID']; ?>"><?php query_link ('dia_scadenza',"Scadenza richiesta informazioni");?></label>
+    <input type="text" class="dia_scadenza" id="dia_scadenza<?php echo $item['ID']; ?>" name = "dia_scadenza[<?php echo $item['ID']; ?>]" value= <?php echo "";?>>
+    </div>
+    <?php } ?>
 
 
 
