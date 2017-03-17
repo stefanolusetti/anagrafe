@@ -1260,6 +1260,16 @@ form.preview label.errormsg{
 }
 
 
-.stato{
-margin-bottom:20px;
+.statofieldwrapper{
+  margin-bottom:20px;
+}
+
+select.stato{
+  width: 93px;
+}
+
+td.middlebox{}
+
+.sl_wrapper{
+  width: 250px;
 }

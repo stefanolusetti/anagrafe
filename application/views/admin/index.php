@@ -121,7 +121,7 @@
 			} ?>-->
 	       <?php
 
-			} 
+			}
       printf(
         '<a class="button green" data-action="info-request" data-item="%s">Richiesta Informazioni DIA / GICERIC / Prefettura</a>',
         $item['ID']
@@ -147,6 +147,7 @@
 
 		<?php if ($item['is_digital']=='0') { ?>
 		 <td>
+<div class="sl_wrapper">
 		     <?php echo "<b>"."RAGIONE SOCIALE : "."</b>";?> <?php echo $item['ragione_sociale']; ?><br/>
             <?php echo "<b>"."PARTITA IVA : "."</b>";?> <?php echo $item['partita_iva']; ?><br/>
              <?php echo "<b>"."CODICE FISCALE : "."</b>";?> <?php echo $item['codice_fiscale']; ?><br/>
@@ -159,7 +160,7 @@
 			else
 			echo "Iscritto provvisoriamente"
 			?>
-
+</div>
 			</td>
 
 
@@ -168,6 +169,7 @@
 		else { ?>
 
 			<td>
+        <div class="sl_wrapper">
 			<?php echo "<b>".$item['codice_istanza']."</b>"; ?><br/><br/>
 			<?php echo "<b>"."RICHIEDENTE : "."</b>";?> <?php echo $item['titolare_nome'].' '.$item['titolare_cognome']; ?><br/>
 		    <?php echo "<b>"."RAGIONE SOCIALE : "."</b>";?> <?php echo $item['ragione_sociale']; ?><br/>
@@ -184,12 +186,12 @@
 			else
 			echo "Iscritto provvisoriamente"
 			?>
-
+</div>
 			</td>
 		<?php
 		}	 ?>
-        <td class="left">
-		 <div class="stato">
+        <td class="left middlebox">
+		 <div class="statofieldwrapper">
             <label for="stato<?php echo $item['ID']; ?>"><b>Cambia stato pratica</b></label>
                 <?php
                    //$options = array('0' => 'no', '1' => 'si', '2' => 'non conforme');
