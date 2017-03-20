@@ -238,7 +238,7 @@ class Admin extends CI_Controller {
                 }
 
                 // Sede legale.
-                preg_match_all('@(.*)(,)( [0-9]+(\/[a-zA-Z]+)?)@', $indirizzo, $computed_address);
+                preg_match_all('@(.*)( [0-9]+(\/[a-zA-Z]+)?)@', $indirizzo, $computed_address);
                 if ( isset($computed_address[2][0]) && !empty( $computed_address[2][0] ) ) {
                   $data_user['sl_via'] = $computed_address[1][0];
                   $data_user['sl_civico'] = $computed_address[3][0];
