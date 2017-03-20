@@ -92,16 +92,14 @@ class Admin extends CI_Controller {
 
       $body = '';
       if ( 0 == $type ) {
+        $prefettura = 'DIA <dia.ocap.rm@pecps.interno.it>, GICERIC <dipps.dcpcsegreteriatecnica@pecps.interno.it>';
         $pec_prefettura = $this->admin_model->get_mail_tos($esecutore['sl_prov']);
         if ( isset($pec_prefettura[0]) ) {
-          $prefettura = sprintf(
-            "Prefettura di %s <%s>",
+          $prefettura .= sprintf(
+            ", Prefettura di %s <%s>",
             $pec_prefettura[0]['nome'],
             $pec_prefettura[0]['pec']
           );
-        }
-        else {
-          $prefettura = '';
         }
       }
       else {
@@ -562,8 +560,8 @@ class Admin extends CI_Controller {
               );
             }
 
-            $tos[] = 'DIA <dia@example.com>';
-            $tos[] = 'GICERIC <giceric@example.com>';
+            $tos[] = 'DIA <dia.ocap.rm@pecps.interno.it>';
+            $tos[] = 'GICERIC <dipps.dcpcsegreteriatecnica@pecps.interno.it>';
 
             $data['pecs'] = $tos;
 
