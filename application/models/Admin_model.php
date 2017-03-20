@@ -15,19 +15,34 @@ class Admin_model extends CI_Model {
 
 
 
-	public function add_data ($data_user) {
-		$this->db->insert('esecutori', $data_user);
-	}
+  public function add_data ($data_user) {
+    $this->db->insert('esecutori', $data_user);
+    return $this->db->insert_id();
+  }
 
-	public function check_upload ($data_user) {
-		 $query = $this->db
-                        ->from('esecutori')
-						->where('partita_iva',$data_user['partita_iva'])
-                        ->get();
-		$result = $query->result_array();
-		return ($result);
-	}
+  public function check_upload ($data_user) {
+    $query = $this->db->from('esecutori')->where( 'partita_iva', $data_user['partita_iva'] )->get();
+    $result = $query->result_array();
+    return ($result);
+  }
 
+  public function match_tipo_societa ( $tipo ) {
+    $query = $this->db->from('imprese_forme_giuridiche')->where( 'valore', $tipo )->get();
+    $result = $query->result_array();
+    return $result;
+  }
+
+  public function match_provincia ( $estesa ) {
+    $query = $this->db->from('province_pec')->where( 'nome', $estesa )->get();
+    $result = $query->result_array();
+    return $result;
+  }
+
+  public function save_bdna_log( $data ) {
+    // really codeigniter doesnt do this?
+    $data['event'] = addslashes($data['event']);
+    return $this->db->insert('bdna_upload_log', $data);
+  }
 
 	public function find_items_esecutori_iscritti ($ask, $offset = 0, $limit = 25) {
 		$id_stato = array('1', '2');

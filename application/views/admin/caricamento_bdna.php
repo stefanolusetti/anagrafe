@@ -1,11 +1,11 @@
 <ul class="submenu">
     <li> <a href="<?php echo site_url("/admin"); ?>">Istruttoria domande</a> </li>
 <?php if(is_admin()): ?>
-	<li class="selected">
-        Caricamento esecutore
+	<li>
+        <a href="<?php echo site_url("/admin/caricamento_esecutore"); ?>">Caricamento esecutore</a>
     </li>
-    <li>
-          <a href="<?php echo site_url("/admin/caricamento_bdna"); ?>">Caricamento esecutore CSV</a>
+    <li class="selected">
+          Caricamento esecutore CSV
       </li>
 <?php endif; ?>
 
@@ -17,12 +17,12 @@
 
 
 ?>
-<h3>Procedere al caricamento del file generato da BDNA</h3>
+<h3>Procedere al caricamento del file CSV generato da BDNA</h3>
 <div id="searchbar">
-    <?php echo form_open_multipart("admin/caricamento_esecutore") ?>
+    <?php echo form_open_multipart("admin/caricamento_bdna") ?>
         <div class="fieldarea">
             <div class="field">
-                <label for='submit'>Selezionare il file Excel generato da BDNA</label>
+                <label for='submit'>Selezionare il file CSV generato da BDNA</label>
                 <?php echo form_upload('userfile'); ?>
             </div>
             <div class="field">

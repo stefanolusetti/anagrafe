@@ -4,6 +4,9 @@
 	<li>
         <a href="<?php echo site_url("/admin/caricamento_esecutore"); ?>">Caricamento esecutore</a>
     </li>
+    <li>
+          <a href="<?php echo site_url("/admin/caricamento_bdna"); ?>">Caricamento esecutore CSV</a>
+      </li>
 <?php endif; ?>
 
 </ul>

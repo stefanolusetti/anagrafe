@@ -172,7 +172,161 @@ class Admin extends CI_Controller {
      * Pagina caricamento imprese da parte di Struttura (Modificato SL)
      */
 
+  /**
+   * file-upload
+   *
+   * Funzione Caricamento imprese da parte di Struttura (Modificato SL)
+   * */
+  public function caricamento_bdna() {
+    $this -> simpleuserauth -> require_admin();
+    $data = array();
+    if(ENVIRONMENT == 'development') {
+      $this->output->enable_profiler(TRUE);
+    }
+    if ($this->input->post() ) {
+      $config['allowed_types'] = '*';
+      $config['upload_path'] = './file_bdna/';
+      $config['overwrite'] = FALSE;
+      //$config['file_name'] = $item['id']. "_" . get_year($item['data_firma']) . ".xlsx";
+      $this->load->library('upload', $config);
 
+      if( $this->upload->do_upload('userfile') ) {
+        $file = $_FILES['userfile']['tmp_name'];
+        $importCsvErrors = array();
+        $fh = fopen($file, 'rb');
+        // dont like fgetcsv
+        while ( $line = fgetss($fh) ) {
+          $row = explode('|', $line);
+          if ( 'CODICE-FISCALE' != $row[0] ) {
+            $codice_fiscale =     $row[0];
+            $partita_iva =        $row[1];
+            $tipo_societa =       $row[2];
+            $ragione_sociale =    $row[3];
+            $nazione =            $row[4];
+            $provincia =          $row[5];
+            $comune =             $row[6];
+            $indirizzo =          $row[7];
+            $cap =                $row[8];
+            $bdna =               $row[9];
+            $stato =             $row[10];
+            $uploaded_at = date("Y-m-d H:i:s");
+            $created_at = date("Y-m-d H:i:s");
+            try { // everythings bad will be catched.
+              if ( isset($partita_iva) && isset($stato) && isset($ragione_sociale) ) {
+                $data_user = array(
+                  'created_at' => $created_at,
+                  'codice_fiscale' => $codice_fiscale,
+                  'partita_iva' => $partita_iva,
+                  'ragione_sociale' => $ragione_sociale,
+                  'sl_comune' => $comune,
+                  'sl_cap' => $cap,
+                  'bdna_protocollo' => $bdna
+                );
+                // Grind values
+                $forma_giuridica = $this->admin_model->match_tipo_societa( $tipo_societa );
+                if ( !empty( $forma_giuridica ) ) {
+                  $data_user['forma_giuridica_id'] = $forma_giuridica[0]['forma_giuridica_id'];
+                }
+                else {
+                  $data_user['forma_giuridica_id'] = NULL;
+                }
+
+                $get_provincia = $this->admin_model->match_provincia( $provincia );
+                if ( !empty( $get_provincia ) ) {
+                  $data_user['sl_prov'] = $get_provincia[0]['sigla'];
+                }
+                else {
+                  $data_user['sl_prov'] = NULL;
+                }
+
+                // Sede legale.
+                preg_match_all('@(.*)(,)( [0-9]+(\/[a-zA-Z]+)?)@', $indirizzo, $computed_address);
+                if ( isset($computed_address[2][0]) && !empty( $computed_address[2][0] ) ) {
+                  $data_user['sl_via'] = $computed_address[1][0];
+                  $data_user['sl_civico'] = $computed_address[3][0];
+                }
+                else {
+                  $data_user['sl_via'] = $indirizzo;
+                  $data_user['sl_civico'] = 'SNC';
+                }
+                $data_user['stato'] = 0;
+
+
+                $check_upload = $this->admin_model->check_upload($data_user);
+                $array_shift = array_shift($check_upload);
+                if ( $array_shift['partita_iva'] == NULL ) {
+                  $new_esecutore_id = $this->admin_model->add_data($data_user);
+                  if ( $new_esecutore_id ) {
+                    $this->admin_model->save_bdna_log(array(
+                      'created_at' => date("Y-m-d H:i:s"),
+                      'esecutore_id' => $new_esecutore_id,
+                      'csv_data' => $line,
+                      'event' => 'insert'
+                    ));
+                  }
+                  $data['msg_ok'] = 'Il caricamento è avvenuto con successo';
+                }
+                else {
+                  $this->admin_model->save_bdna_log(array(
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'esecutore_id' => 0,
+                    'csv_data' => $line,
+                    'event' => 'duplicate'
+                  ));
+                  $importCsvErrors[] =  sprintf(
+                    'Attenzione! Operatore economico %s con partita IVA %s già presente in banca dati',
+                    $array_shift['ragione_sociale'],
+                    $array_shift['partita_iva']
+                  );
+                }
+              }
+              else {
+                $this->admin_model->save_bdna_log(array(
+                  'created_at' => date("Y-m-d H:i:s"),
+                  'esecutore_id' => 0,
+                  'csv_data' => $line,
+                  'event' => 'missing fields'
+                ));
+                $importCsvErrors[] = sprintf(
+                  "<p>Attenzione! Verificare il file caricato. Alcuni dati obbligatori risultano non presenti</p><pre>Partita Iva: %s\nRagione Sociale: %s\nStato: %s</pre>",
+                  isset($partita_iva) ? $partita_iva : '-',
+                  isset($ragione_sociale) ? $ragione_sociale : '-',
+                  isset($stato) ? $stato : '-'
+                );
+              }
+            } catch (Exception $e){
+              $this->admin_model->save_bdna_log(array(
+                'created_at' => date("Y-m-d H:i:s"),
+                'esecutore_id' => 0,
+                'csv_data' => $line,
+                'event' => 'exception'
+              ));
+              $importCsvErrors[] = $e->getMessage();
+            }
+          }
+        }
+
+
+        if ( empty($importCsvErrors) ) {
+          $data['msg_ok'] = 'Il caricamento è avvenuto con successo.';
+        }
+        else {
+          $data['msg'] = sprintf(
+            "<p>Attenzione! Sono presenti alcuni errori:</p><ul><li>%s</li></ul>",
+            implode('</li><li>', $importCsvErrors)
+          );
+        }
+      }
+      else {
+        $data['msg'] = 'File non corretto';
+      }
+    }
+    $this->load->view('templates/header');
+    $this->load->view('templates/headbar');
+    //$this -> load -> view('domanda/uploaded');
+    $this->load->view('admin/caricamento_bdna', $data);
+    $this->load->view('templates/footer');
+  }
 
 	/**
      * file-upload
