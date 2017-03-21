@@ -52,10 +52,59 @@ class Admin extends CI_Controller {
 		//$this->db->where('id',$id);
 		//$this->db->update('esecutori',$data_hidden);
         $this -> lists();
+    }
+
+    public function ajax_irm(){
+      $data = array();
+      if ( isset( $_POST['irm-to'] ) ) {
+        // non usiamo $this->input->post('irm-to') perchè fa casino con l'email tra <>
+        $mailToSend = array(
+          'to' => $_POST['irm-to'],
+          'from' => 'ninzo',
+          'subject' => $this->input->post('irm-subject'),
+          'text' => $this->input->post('irm-text'),
+          'attachments' => $_FILES['irm_attachments']
+        );
+        $invio = sendMailRequest($mailToSend);
+        if ( true == $invio ) {
+          $this->admin_model->impostaAvvioProcDia(
+            (int)$this->input->post('irm-esid'),
+            date('Y-m-d 00:00:42', strtotime('today + 11 days'))
+          );
+          $data['msg'] = 'PEC inviata correttamente.';
+        }
+        else {
+          $data['msg'] = 'Si è verificato un errore durante l\'invio della mail';
+        }
+      }
+
+      if ( isset( $_POST['psm-to'] ) ) {
+        $esecutore = $this->admin_model->get_item((int)$this->input->post('psm-esid'));
+        // non usiamo $this->input->post('psm-to') perchè fa casino con l'email tra <>
+        $mailToSend = array(
+          'to' => $_POST['psm-to'],
+          'from' => 'ninzo',
+          'subject' => $this->input->post('psm-subject'),
+          'text' => $this->input->post('psm-text'),
+          'attachments' => $_FILES['psm_attachments'],
+          'esecutore' => $esecutore
+        );
+        $invio = sendMailRequest($mailToSend, 2);
+        if ( true == $invio ) {
+          $this->admin_model->impostaAvvioProcOE(
+            (int)$this->input->post('psm-esid'),
+            date('Y-m-d 00:00:42')
+          );
+          $data['msg'] = 'PEC inviata correttamente.';
+        }
+        else {
+          $data['msg'] = 'Si è verificato un errore durante l\'invio della mail';
+        }
+      }
 
 
-
-
+      header('Content-Type: application/json');
+      echo json_encode( $data );
     }
 
     public function mailtemplate($idDichiarazione, $type = 0, $idTemplate = 0) {
@@ -477,64 +526,6 @@ class Admin extends CI_Controller {
         $offset = $this -> input -> get('per_page');
 
         $data = $this -> admin_model -> search_esecutori($criteria['params'],$criteria['order_by'], $offset, $limit);
-
-            if ( isset( $_POST['irm-to'] ) ) {
-              // non usiamo $this->input->post('irm-to') perchè fa casino con l'email tra <>
-              $mailToSend = array(
-                'to' => $_POST['irm-to'],
-                'from' => 'ninzo',
-                'subject' => $this->input->post('irm-subject'),
-                'text' => $this->input->post('irm-text'),
-                'attachments' => $_FILES['irm_attachments']
-              );
-              $invio = sendMailRequest($mailToSend);
-              if ( true == $invio ) {
-                $this->admin_model->impostaAvvioProcDia(
-                  (int)$this->input->post('irm-esid'),
-                  date('Y-m-d 00:00:42', strtotime('today + 11 days'))
-                );
-                $data['actionMessage'] = array(
-                  'type' => 'irm success',
-                  'msg' => 'Email inviata correttamente'
-                );
-              }
-              else {
-                $data['actionMessage'] = array(
-                  'type' => 'irm error',
-                  'msg' => 'Si è verificato un errore nell\'invio della mail. Controllare i dati inseriti e riprovare.'
-                );
-              }
-            }
-
-            if ( isset( $_POST['psm-to'] ) ) {
-              $esecutore = $this->admin_model->get_item((int)$this->input->post('psm-esid'));
-              // non usiamo $this->input->post('psm-to') perchè fa casino con l'email tra <>
-              $mailToSend = array(
-                'to' => $_POST['psm-to'],
-                'from' => 'ninzo',
-                'subject' => $this->input->post('psm-subject'),
-                'text' => $this->input->post('psm-text'),
-                'attachments' => $_FILES['psm_attachments'],
-                'esecutore' => $esecutore
-              );
-              $invio = sendMailRequest($mailToSend, 2);
-              if ( true == $invio ) {
-                $this->admin_model->impostaAvvioProcOE(
-                  (int)$this->input->post('psm-esid'),
-                  date('Y-m-d 00:00:42')
-                );
-                $data['actionMessage'] = array(
-                  'type' => 'psm success',
-                  'msg' => 'Email inviata correttamente'
-                );
-              }
-              else {
-                $data['actionMessage'] = array(
-                  'type' => 'psm error',
-                  'msg' => 'Si è verificato un errore nell\'invio della mail. Controllare i dati inseriti e riprovare.'
-                );
-              }
-            }
 
             $data['irm_templates'] = array();
             $templates = $this->admin_model->get_mail_templates(0);

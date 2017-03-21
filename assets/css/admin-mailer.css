@@ -8,6 +8,13 @@
   background-color: rgba(0,0,0,0.4);
 }
 
+a.button.myblue, table.elenco tr td a.button.myblue{
+  background-color: #0649ad;
+}
+a.button.myblue.alreadysent, table.elenco tr td a.button.myblue.alreadysent{
+  background-color: #009933;
+}
+
 .cth_modal{
   display: none;
   width: 80%;
@@ -81,4 +88,26 @@
 #irm-to{
   height: 40px;
   width: 100%;
+}
+
+
+.cth_modal .loading{
+  position: absolute;
+  display: none;
+  width: 100%;
+  height: 100%;
+  margin: -20px;
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #000;
+  text-align: center;
+  border-radius: 3px;
+  font-size: 40px;
+  font-weight: bold;
+}
+.cth_modal .loading .inner{
+  display: table-cell;
+  vertical-align: middle;
+}
+.cth_modal .loading.active{
+  display: table;
 }

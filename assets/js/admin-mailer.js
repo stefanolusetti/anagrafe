@@ -25,8 +25,22 @@ jQuery(document).ready(function() {
   });
 
   jQuery("#irm-si").on('click', function() {
-    // do stuff before submit the form.
-    jQuery("#irm").submit();
+    var formData = new FormData(document.getElementById('irm'));
+    jQuery(".loading." + window._currentModal).addClass('active');
+    jQuery.ajax({
+        url: '/admin/ajax_irm',
+        type: 'POST',
+        data: formData,
+        success: function (data) {
+          jQuery(".loading." + window._currentModal + " .inner").html(data.msg);
+          jQuery("#" + window._currentEsecutore + "-dia").addClass('alreadysent');
+          window.setTimeout(closeModal, 2000, window._currentModal);
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+    return false;
   });
 
 
@@ -40,8 +54,22 @@ jQuery(document).ready(function() {
   });
 
   jQuery("#psm-si").on('click', function() {
-    // do stuff before submit the form.
-    jQuery("#psm").submit();
+    var formData = new FormData(document.getElementById('psm'));
+    jQuery(".loading." + window._currentModal).addClass('active');
+    jQuery.ajax({
+        url: '/admin/ajax_irm',
+        type: 'POST',
+        data: formData,
+        success: function (data) {
+          jQuery(".loading." + window._currentModal + " .inner").html(data.msg);
+          jQuery("#" + window._currentEsecutore + "-oe").addClass('alreadysent');
+          window.setTimeout(closeModal, 2000, window._currentModal);
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+    return false;
   });
 
   jQuery("#modal-fog").on('click', function() {
@@ -159,21 +187,27 @@ function requestInfoModal(updateTos) {
 
 function openModal( modalID ) {
   if ( null == window._currentModal ) {
-    jQuery("#modal-fog").css('display', 'block');
-    jQuery("#" + modalID).css('display', 'block');
-    window._currentModal = modalID;
-    jQuery(".esid").val(window._currentEsecutore);
+    jQuery("#modal-fog").css({ display: 'block', opacity: 0 });
+    jQuery("#" + modalID).css({ display: 'block', opacity: 0 });
+
+    jQuery("#modal-fog, #" + modalID).animate({ opacity: 1 }, 250, function(){
+      jQuery(".loading." + modalID).removeClass('active');
+      window._currentModal = modalID;
+      jQuery(".esid").val(window._currentEsecutore);
+    });
   }
   else {
     console.info('██'.repeat(10) + "\t" +  'modal already open.' + "\t" + '██'.repeat(10));
   }
 }
-
 function closeModal (modalID) {
   // logic?
-  jQuery("#modal-fog").css('display', 'none');
-  jQuery("#" + modalID).css('display', 'none');
-  window._currentModal = null;
-  window._currentEsecutore = null;
+  jQuery("#modal-fog, #" + modalID).animate({ opacity: 0 }, 250, function(){
+    jQuery("#modal-fog").css('display', 'none');
+    jQuery("#" + modalID).css('display', 'none');
+    jQuery(".loading." + modalID + " .inner").html('Invio in corso<hr />Attendere prego...');
+    window._currentModal = null;
+    window._currentEsecutore = null;
+  });
   jQuery(".esid").val('');
 }
