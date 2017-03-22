@@ -91,7 +91,24 @@ class Domanda extends CI_Controller
         if ( false !== $confirm ) {
           $this->dichiarazione_model->markEmailSent($confirm);
           $doc = $this->dichiarazione_model->get_document($confirm);
-          send_welcome_email($doc['ID']);
+          $sent = send_welcome_email($doc['ID']);
+
+          if ( !$sent ) {
+            $mail_error = $this->email->print_debugger();
+            send_error_mail(
+              'errore send_thanks_mail',
+              array(
+                'the error' => $mail_error,
+                'id (tmp)' => $doc['id'],
+                'impresa_pec' => $doc['impresa_pec'],
+                'partita_iva' => $doc['partita_iva'],
+                'ragione_sociale' => $doc['ragione_sociale'],
+                'titolare_cognome' => $doc['titolare_cognome'],
+                'titolare_nome' => $doc['titolare_nome']
+              )
+            );
+          }
+
           $this->load->view('templates/header', array());
           $this->load->view('templates/headbar');
           $this->parser->parse(
@@ -251,7 +268,19 @@ class Domanda extends CI_Controller
    ██    ███████ ███████    ██ ██████   ██████  ███████ ██████   ██████   ██████
 */
 
-    public function test($id = false){ }
+    public function test($id = false) {
+      $cioccia = $this->config->item('email');
+      /*
+      ██████  ███████ ██████  ██    ██  ██████
+      ██   ██ ██      ██   ██ ██    ██ ██
+      ██   ██ █████   ██████  ██    ██ ██   ███
+      ██   ██ ██      ██   ██ ██    ██ ██    ██
+      ██████  ███████ ██████   ██████   ██████
+      */
+      echo "<h7>CIOCCIA! debug@" .__FILE__.":".__LINE__."</h7><pre>";
+      var_dump($cioccia);
+      echo "</pre>";
+    }
 
 /*
 ██    ██ ██████  ██       ██████   █████  ██████
@@ -277,7 +306,9 @@ class Domanda extends CI_Controller
           $this->db->where('ID', $item['ID'])->update( 'esecutori',
             array('stato' => 0, 'uploaded' => 1, 'uploaded_at' => date('Y-m-d H:i:s'))
           );
-          if ( send_thanks_mail($item) ) {
+          //$sendmail = send_thanks_mail($item);
+          $sendmail = the_test_mail();
+          if ( true == $sendmail ) {
             $this->db->where('ID', $item['ID'])->update( 'esecutori',
               array('is_sent_last' => 1, 'is_sent_last_date' => date('Y-m-d H:i:s'))
             );
@@ -287,6 +318,14 @@ class Domanda extends CI_Controller
             $this->load->view('templates/footer');
           }
           else {
+            $mail_error = $this->email->print_debugger();
+            send_error_mail(
+              'errore send_thanks_mail',
+              array(
+                'mail_error' => $mail_error,
+                'item' => $item['codice_istanza']
+              )
+            );
             $this->load->view('templates/header');
             $this->load->view('templates/headbar');
             $this->parser->parse('domanda/uploaded-system-error', $item);

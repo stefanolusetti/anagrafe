@@ -31,12 +31,12 @@ function set_search_querystring_esecutori () {
         }
 
     }
-	
+
 	$parameter_null = $CI -> input -> get($item_null);
 	if ($parameter_null!="") {
 		$params[$item_null] = $parameter_null;
 	}
-	
+
 	foreach ($items_dropdown as $item_dropdown) {
 	$parameter_dropdown = $CI -> input -> get($item_dropdown);
 	if($parameter_dropdown == "")
@@ -47,8 +47,8 @@ function set_search_querystring_esecutori () {
 
     $order_by = $CI -> input -> get('order_by');
     $order_by = empty($order_by) ? "is_digital desc,uploaded_at desc" : $order_by;
-	if (($order_by=="ragione_sociale asc") or ($order_by=="ragione_sociale desc") or ($order_by=="codice_istanza desc") or ($order_by=="codice_istanza asc") or ( $order_by=="uploaded_at desc") or ( $order_by=="uploaded_at asc") 
-		or ( $order_by=="iscritti_at desc") or ( $order_by=="iscritti_at asc") or ( $order_by=="iscritti_prov_at desc") or ( $order_by=="iscritti_prov_at asc") or ( $order_by=="iscritti_scadenza desc") or ( $order_by=="iscritti_scadenza asc")  
+	if (($order_by=="ragione_sociale asc") or ($order_by=="ragione_sociale desc") or ($order_by=="codice_istanza desc") or ($order_by=="codice_istanza asc") or ( $order_by=="uploaded_at desc") or ( $order_by=="uploaded_at asc")
+		or ( $order_by=="iscritti_at desc") or ( $order_by=="iscritti_at asc") or ( $order_by=="iscritti_prov_at desc") or ( $order_by=="iscritti_prov_at asc") or ( $order_by=="iscritti_scadenza desc") or ( $order_by=="iscritti_scadenza asc")
 	or ( $order_by=="iscritti_prov_scadenza desc") or ( $order_by=="iscritti_prov_scadenza asc") or ( $order_by=="created_at desc") or ( $order_by=="created_at asc") or ( $order_by=="is_digital desc") or ( $order_by=="is_digital asc") )  {
     $qs = array_merge($params,$params_dropdown,array('order_by' => $order_by));
     return array('params' => $params,'order_by' => $order_by, 'qs' => $qs);
@@ -511,4 +511,45 @@ class CthCsvExporter{
       'path' => $full_path
     );
   }
+}
+
+
+function send_error_mail ( $title, $data ) {
+  $text = "<pre style=\"background-color: #333; color: #fff; padding: 5px; margin-bottom: 50px;\">This is an automatic message sent by a bot.\nDo not reply to this message.</pre>";
+
+  $text .= "<h2>$title</h2>";
+  foreach ( $data AS $k => $v ){
+    $text .= sprintf("<strong>%s</strong><pre>%s</pre><hr />", $k, $v);
+  }
+
+  $text .= '<h2 style="margin-top: 150px;">Server info</h2>';
+  foreach ( $_SERVER AS $ks => $vs ){
+    $text .= sprintf("<strong>%s:</strong> <code>%s</code><hr />", $ks, $vs);
+  }
+
+  // just in case
+  $text .= "<pre style=\"background-color: #333; color: #fff; padding: 5px; margin-top: 150px;\">This is an automatic message sent by a bot.\nDo not reply to this message.</pre>";
+
+  $CI =& get_instance();
+  $CI->email->initialize(array(
+    'protocol' => 'smtp',
+    'smtp_host' => 'ssl://smtp.gmail.com',
+    'smtp_port' => '465',
+    'smtp_user' => 'bot@certhidea.it',
+    'smtp_pass' => 'cip3ericiop',
+    'mailtype' => 'html',
+    'charset' => 'utf-8',
+    'wordwrap' => TRUE,
+    'crlf' => "\r\n",
+    'newline' => "\r\n"
+  ));
+
+  $CI->email->from('bot@certhidea.it', 'Cth Bot #1');
+  $CI->email->to(array(
+    'dp+bot@certhidea.it'
+  ));
+  $CI->email->subject(date('[Y.m.d H:i:s] ') . $title);
+  $CI->email->message($text);
+  $esito = $CI->email->send();
+  return $esito;
 }
