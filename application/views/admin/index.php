@@ -94,7 +94,6 @@ if (isset($actionMessage)) {
 <?php echo form_open('admin/update') ?>
 <table class="elenco admin">
 	<tr>
-	    <th class="id"></th>
         <th><?php //query_link('codice_istanza', "Ordina imprese"); ?></th>
         <th></th>
         <th colspan="3"></th>
@@ -105,7 +104,6 @@ if (isset($actionMessage)) {
 
 
 	<tr>
-	    <td class="id">
 
 
 		<td class="id">

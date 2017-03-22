@@ -75,6 +75,14 @@ function mainEventHandlers(){
     addOffice(e);
   });
 
+  jQuery('#has_soas').on('change', function(e){
+    e.preventDefault();
+    if ( false == jQuery(e.target).is(':checked') ) {
+      jQuery("#soas_list select").val('');
+      jQuery("#soas_list input[type='checkbox']").attr('checked', false).trigger('change');
+    }
+  });
+
   jQuery(".company_fields").change(function(e){
     if (
       jQuery("#impresa_settore_trasporto").is(':checked')

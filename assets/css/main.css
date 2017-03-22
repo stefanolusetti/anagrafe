@@ -1088,6 +1088,12 @@ form .inpreview-chk .fake-checkbox.size-2{
   text-align: right;
   padding: 4px 5px;
 }
+form .inpreview-chk .fake-checkbox.size-3{
+  width: auto;
+  text-align: left;
+  padding: 4px 10px;
+  display: inline-block;
+}
 .impresa{
   margin-bottom: 15px;
   background-color: #EFEFEF;
@@ -1272,4 +1278,26 @@ td.middlebox{}
 
 .sl_wrapper{
   width: 250px;
+}
+
+
+.soa-desc{
+  display: block;
+  width: 525px;
+  overflow: hidden;
+  float: left;
+  font-size: 14px;
+}
+.soa-val{
+  float: right;
+  margin-top: -62px;
+}
+
+
+#soas_list .field.inpreview.checkbox {
+  height: 57px;
+}
+
+table.elenco tr td.id{
+  width: 20px;
 }

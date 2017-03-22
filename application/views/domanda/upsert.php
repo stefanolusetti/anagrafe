@@ -143,6 +143,58 @@ titolare_res_cap
     'Oggetto Sociale',
     'maxlen500'
   );
+?><hr class="resizer" /><h2>ATTESTAZIONE SOA</h2>Specificare l'eventuale possesso di attestazione SOA, ed in caso affermativo quale/i<?php
+/*
+███████  ██████   █████  ███████
+██      ██    ██ ██   ██ ██
+███████ ██    ██ ███████ ███████
+     ██ ██    ██ ██   ██      ██
+███████  ██████  ██   ██ ███████
+*/
+f_checkbox_edit(
+  $formdata,
+  'has_soas',
+  'Possesso attestazione SOA',
+  'elToggler ',
+  'data-el="soas_list"'
+);
+echo '<div id="soas_list" class="' . $classes['soas_list'] . '">';
+
+
+
+foreach ($formdata['soas_list'] AS $soa) {
+  f_checkbox_edit(
+    $formdata,
+    'soa[' . $soa['id'] . ']',
+    sprintf(
+      '<strong style="width: 85px; text-align: left; display: block; margin-right: 10px; float: left;">%s</strong> <div class="soa-desc">%s</div>',
+      $soa['codice'],
+      $soa['denominazione']
+    ),
+    'elToggler',
+    'data-el="soa_importo_' . $soa['id'] . '"'
+  );
+
+
+  if ( isset ( $formdata['soa[' . $soa['id'] . ']'] ) ) {
+    echo '<div class="soa-val" id="soa_importo_'.$soa['id'].'">';
+  }
+  else {
+    echo '<div id="soa_importo_'.$soa['id'].'" class="hidden soa-val">';
+  }
+
+  f_select_edit(
+    $formdata,
+    'soas_value_' . $soa['id'],
+    'Importo*',
+    $formdata['soas_values'],
+    '',
+    array()
+  );
+  echo '</div><div class="resizer"></div>';
+}
+
+echo '</div>';
 ?><hr class="resizer" /><h2>L'impresa opera in uno dei seguenti settori:</h2><?php
 /*
 ███████ ███████ ████████ ████████  ██████  ██████  ██

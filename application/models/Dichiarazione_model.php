@@ -33,6 +33,7 @@ class Dichiarazione_model extends CI_Model
         $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id']);
       }
       $doc['imprese_partecipate'] = $this->get_item_imprese_partecipate($id);
+      $doc['soas'] = $this->get_doc_soas($id);
       return $doc;
     } catch(Exception $e){
       return false;
@@ -48,6 +49,7 @@ class Dichiarazione_model extends CI_Model
         $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_tmp_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id']);
       }
       $doc['imprese_partecipate'] = $this->get_tmp_imprese_partecipate($id);
+      $doc['soas'] = $this->get_tmp_doc_soas($id);
       return $doc;
     } catch(Exception $e){
       return false;
@@ -63,6 +65,7 @@ class Dichiarazione_model extends CI_Model
           $doc['anagrafiche_antimafia'][$i]['familiari'] = $this->get_tmp_item_familiars($doc['anagrafiche_antimafia'][$i]['anagrafica_id']);
         }
         $doc['imprese_partecipate'] = $this->get_tmp_imprese_partecipate($doc['ID']);
+        $doc['soas'] = $this->get_tmp_doc_soas($doc['ID']);
         return $doc;
       }
       else {
@@ -71,6 +74,15 @@ class Dichiarazione_model extends CI_Model
     } catch(Exception $e){
       return false;
     }
+  }
+
+  public function get_tmp_doc_soas( $docId ){
+    $qhr = $this->db->query('SELECT s.*, t.valore FROM tmp_esecutori_soas t INNER JOIN soas s ON s.id = t.soa_id WHERE t.esecutore_id = ' . (int)$docId);
+    return $qhr->result_array();
+  }
+  public function get_doc_soas( $docId ){
+    $qhr = $this->db->query('SELECT s.*, t.valore FROM esecutori_soas t INNER JOIN soas s ON s.id = t.soa_id WHERE t.esecutore_id = ' . (int)$docId);
+    return $qhr->result_array();
   }
 
   public function get_item($id) {
@@ -187,6 +199,7 @@ class Dichiarazione_model extends CI_Model
     $data['numero_partecipazioni'] = $data['numero_partecipazioni'] == '' ? 0 : $data['numero_partecipazioni'];
     $data['numero_anagrafiche'] = $this->input->post('numero_anagrafiche') != null ? $this->input->post('numero_anagrafiche') : 0;
     $data['stmt_wl'] = $data['stmt_wl'] == '1' ? 1 : 0;
+    $data['has_soas'] = $this->input->post('has_soas') == '1' ? 1 : 0;
     $data['interesse_lavori'] = $this->input->post('interesse_lavori') == '1' ? 1 : 0;
     $data['interesse_servizi'] = $this->input->post('interesse_servizi') == '1' ? 1 : 0;
     $data['interesse_forniture'] = $this->input->post('interesse_forniture') == '1' ? 1 : 0;
@@ -252,6 +265,7 @@ class Dichiarazione_model extends CI_Model
           $data,
           "ID = " . $istanza_id
         );
+        $this->db->delete('tmp_esecutori_soas', array('esecutore_id' => $istanza_id));
         $doc_id = $istanza_id;
       }
 
@@ -291,6 +305,18 @@ class Dichiarazione_model extends CI_Model
                 'piva' => strtoupper($office['piva']),
               )
             );
+          }
+        }
+
+        $soas = $this->input->post('soa');
+        if ( $soas ) {
+          foreach ( $soas AS $idSoa => $uselessValue ) {
+            $soa_value = $this->input->post("soas_value_" . $idSoa);
+            $this->db->insert('tmp_esecutori_soas', array(
+              'esecutore_id' => $doc_id,
+              'soa_id' => $idSoa,
+              'valore' => $soa_value
+            ));
           }
         }
 
@@ -385,6 +411,9 @@ class Dichiarazione_model extends CI_Model
     $doc['created_at'] = date('Y-m-d H:i:s');
     $_anagrafiche = $doc['anagrafiche_antimafia'];
     $_imprese_partecipate = $doc['imprese_partecipate'];
+    $_soas = $doc['soas'];
+
+    unset($doc['soas']);
     unset($doc['anagrafiche_antimafia']);
     unset($doc['imprese_partecipate']);
 
@@ -434,6 +463,19 @@ class Dichiarazione_model extends CI_Model
           $this->db->insert('esecutori_imprese_partecipate', $impresa_partecipata);
         }
       }
+      // soas
+      if ( !empty( $_soas ) ) {
+        foreach ( $_soas AS $soa ) {
+
+          $this->db->insert('esecutori_soas', array(
+            'esecutore_id' => $doc_id,
+            'soa_id' => $soa['id'],
+            'valore' => $soa['valore']
+          ));
+
+        }
+      }
+
       $this->db->trans_commit();
       set_error_handler($curr_error_handler);
       return $doc_id;

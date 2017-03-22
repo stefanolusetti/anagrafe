@@ -166,11 +166,11 @@ function f_checkbox_edit($object, $key, $label, $classes = '', $attrs = '') {
       <div class="resizer"></div>
       </div>',
     $attrs,
-    $key,
     $idField,
+    $key,
     $classes,
     $checked,
-    $key,
+    $idField,
     $label,
     $errore
   );

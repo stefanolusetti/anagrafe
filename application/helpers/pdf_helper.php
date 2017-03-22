@@ -354,6 +354,31 @@ function create_pdf($id) {
     }
 
 /*
+███████  ██████   █████  ███████
+██      ██    ██ ██   ██ ██
+███████ ██    ██ ███████ ███████
+     ██ ██    ██ ██   ██      ██
+███████  ██████  ██   ██ ███████
+*/
+    $soas_data = array(
+      'soas_box' => '',
+      'id_istanza' => $id,
+      'id_anno' => $id_anno,
+      'has_soas' => $doc['has_soas'] == 1 ? 'Yes' : 'No'
+    );
+    if ( !empty( $doc['soas']) ) {
+      foreach ( $doc['soas'] AS $soa ) {
+        $soas_data['soas_box'] .= sprintf(
+          "%s - %s - %s\n",
+          $soa['codice'],
+          $soa['denominazione'],
+          $soa['valore']
+        );
+      }
+    }
+    $_pages[] = array( 'file' => 'soas.pdf', 'data' => $soas_data );
+
+/*
 ██████  ██ ███████ ██████  ██ ██       ██████   ██████   ██████
 ██   ██ ██ ██      ██   ██ ██ ██      ██    ██ ██       ██    ██
 ██████  ██ █████   ██████  ██ ██      ██    ██ ██   ███ ██    ██

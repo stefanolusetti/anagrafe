@@ -117,6 +117,19 @@ $impresa_data_costituzione
   f_text_print($rea_num, 'Numero di R.E.A.*');
   f_text_print(date('d/m/Y', strtotime($impresa_data_costituzione)), 'Data costituzione società (nel formato gg/mm/aaaa)*');
   f_textarea_print($impresa_soggetto_sociale, 'Oggetto Sociale');
+?><hr class="resizer" /><h3>ATTESTAZIONE SOA</h3><?php
+if ( isset( $soas ) ) {
+  foreach ($soas as $key => $value) {
+    printf(
+      '<div class="field inpreview inpreview-chk"><div class="fake-checkbox size-3">%s</div><label> <strong>%s</strong></label><div class="resizer"></div></div>',
+      $value['codice'],
+      $value['valore']
+    );
+  }
+}
+else {
+  echo '<h1>NO SOASSSSS</h1>';
+}
 ?><hr class="resizer" /><h3>L'impresa opera in uno dei seguenti settori:</h3><?php
 f_checkbox_print($impresa_settore_trasporto, 'Trasporto di materiali a discarica conto terzi');
 f_checkbox_print($impresa_settore_rifiuti, 'Trasporto e smaltimento di rifiuti');

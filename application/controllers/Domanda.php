@@ -165,9 +165,11 @@ class Domanda extends CI_Controller
           'interesse_forniture' => 'no',
           'interesse_servizi' => 'no',
           'interesse_interventi' => 'no',
+          'has_soas' => 'no',
           'istanza_id' => 0,
           'has_partecipazioni' => 0
         );
+        $data['soas'] = array();
       }
       $render = true;
     }
@@ -206,6 +208,30 @@ class Domanda extends CI_Controller
       $classes['interesse_servizi'] = '1' == is_checked($data, 'interesse_servizi') ? '' : 'hidden';
       $classes['interesse_forniture'] = '1' == is_checked($data, 'interesse_forniture') ? '' : 'hidden';
       $classes['interesse_interventi'] = '1' == is_checked($data, 'interesse_interventi') ? '' : 'hidden';
+      $classes['soas_list'] = '1' == is_checked($data, 'has_soas') ? '' : 'hidden';
+
+      $data['soas_list'] = $this->dichiarazione_model->get_soas();
+
+      if ( !empty( $data['soas'] ) ) {
+        foreach ( $data['soas'] AS $sidx => $sValue ) {
+          $data['soa[' . $sValue['id'] . ']'] = 1;
+          $data['soas_value_' . $sValue['id']] = $sValue['valore'];
+          unset($data['soas'][$sidx]);
+        }
+      }
+
+      $data['soas_values'] = array(
+        'I fino a euro 258.000' => 'I fino a euro 258.000',
+        'II fino a euro 516.000' =>'II fino a euro 516.000',
+        'III fino a euro 1.033.000' => 'III fino a euro 1.033.000',
+        'III bis fino a euro 1.500.000' => 'III bis fino a euro 1.500.000',
+        'IV fino a euro 2.582.000' => 'IV fino a euro 2.582.000',
+        'IV bis fino a euro 3.500.000' => 'IV bis fino a euro 3.500.000',
+        'V fino a euro 5.165.000' => 'V fino a euro 5.165.000',
+        'VI fino a euro 10.329.000' => 'VI fino a euro 10.329.000',
+        'VII fino a euro 15.494.000' => 'VII fino a euro 15.494.000',
+        'VIII oltre euro 15.494.000' => 'VIII oltre euro 15.494.000'
+      );
 
       $shapes = opzioni_forma_giuridica_id();
       $shapes[0] = 'Altro';
@@ -215,7 +241,6 @@ class Domanda extends CI_Controller
       $this->parser->parse('domanda/upsert', array('formdata' => $data));
       $this->load->view('templates/footer');
     }
-
   }
 
 /*
@@ -226,16 +251,7 @@ class Domanda extends CI_Controller
    ██    ███████ ███████    ██ ██████   ██████  ███████ ██████   ██████   ██████
 */
 
-    public function test($id = false){
-      /**/
-      the_test_mail();
-      /*
-      $codice = create_codice_istanza($id);
-      echo "<h7>CODICE debug@" .__FILE__.":".__LINE__."</h7><pre>";
-      var_dump($codice);
-      echo "</pre>";
-      /**/
-    }
+    public function test($id = false){ }
 
 /*
 ██    ██ ██████  ██       ██████   █████  ██████
