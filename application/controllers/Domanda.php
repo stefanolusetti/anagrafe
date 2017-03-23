@@ -92,11 +92,10 @@ class Domanda extends CI_Controller
           $this->dichiarazione_model->markEmailSent($confirm);
           $doc = $this->dichiarazione_model->get_document($confirm);
           $sent = send_welcome_email($doc['ID']);
-
           if ( !$sent ) {
             $mail_error = $this->email->print_debugger();
             send_error_mail(
-              'errore send_thanks_mail',
+              'errore /confirm - send_thanks_mail',
               array(
                 'the error' => $mail_error,
                 'id (tmp)' => $doc['id'],
@@ -306,8 +305,7 @@ class Domanda extends CI_Controller
           $this->db->where('ID', $item['ID'])->update( 'esecutori',
             array('stato' => 0, 'uploaded' => 1, 'uploaded_at' => date('Y-m-d H:i:s'))
           );
-          //$sendmail = send_thanks_mail($item);
-          $sendmail = the_test_mail();
+          $sendmail = send_thanks_mail($item);
           if ( true == $sendmail ) {
             $this->db->where('ID', $item['ID'])->update( 'esecutori',
               array('is_sent_last' => 1, 'is_sent_last_date' => date('Y-m-d H:i:s'))
@@ -320,7 +318,7 @@ class Domanda extends CI_Controller
           else {
             $mail_error = $this->email->print_debugger();
             send_error_mail(
-              'errore send_thanks_mail',
+              'errore /upload - send_thanks_mail',
               array(
                 'mail_error' => $mail_error,
                 'item' => $item['codice_istanza']

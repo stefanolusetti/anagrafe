@@ -511,7 +511,21 @@ function send_welcome_email($id) {
     'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $doc['did'] . '-'.date("Y").'.pdf'
   );
   */
-  $esito = $CI->email->send();
+
+  $max_attempts = 3;
+  $attempts = 0;
+  $esito = false;
+  while ( $attempts < $max_attempts && false == $esito ) {
+    $esito = $CI->email->send( false );
+    if ( false == $esito ) {
+      send_error_mail('send_welcome_email attempt ' . $attempts, array(
+        'id' => $id,
+        'pec' => $doc['impresa_pec']
+      ));
+      sleep(1);
+    }
+    $attempts++;
+  }
   return $esito;
 }
 
@@ -580,55 +594,87 @@ function send_thanks_mail($doc) {
     'attachment',
     'domanda-iscrizione-anagrafe_antimafia_esecutori-' . $codice . '.pdf'
   );
-  $esito = $CI->email->send();
 
+  $max_attempts = 3;
+  $attempts = 0;
+  $esito = false;
+  while ( $attempts < $max_attempts && false == $esito ) {
+    $esito = $CI->email->send( false );
+    if ( false == $esito ) {
+      send_error_mail('send_welcome_email | oe mail | attempt ' . $attempts, array(
+        'id' => $doc['ID'],
+        'pec' => $doc['impresa_pec'],
+        'allegato' => $fileinfo['path']
+      ));
+      sleep(1);
+    }
+    $attempts++;
+  }
   $CI->email->clear(TRUE);
 
+  if ( true == $esito ) {
+    // Email interna
+    $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
+    //@debug
+    if ( 'development' == ENVIRONMENT ) {
+      $CI->email->to('dp@certhidea.it');
+      $CI->email->subject(sprintf(
+        "[DEBUG] - Domanda iscrizione anagrafica antimafia %s %s %s %s",
+        $doc['ragione_sociale'],
+        $doc['partita_iva'],
+        $doc['codice_fiscale'],
+        $codice
+      ));
+    }
+    else if ( 'production' == ENVIRONMENT ) {
+      $CI->email->to('anagrafeantimafiasisma@pec.interno.it');
+      //$CI->email->cc(array('luigi.carbone@interno.it', 'info@certhidea.it'));
+      $CI->email->cc(array('info@certhidea.it'));
+      $CI->email->subject(sprintf(
+        "%s %s %s %s",
+        $doc['ragione_sociale'],
+        $doc['partita_iva'],
+        $doc['codice_fiscale'],
+        $codice
+      ));
+    }
 
+    $CI->email->message("in allegato CSV e PDF");
+    $CI->email->attach(
+      $fileinfo['path'],
+      'attachment',
+      $codice . '.pdf'
+    );
+    $CI->email->attach(
+      $csv['path'],
+      'attachment',
+      $codice . '.csv'
+    );
 
+    $max_attempts = 3;
+    $attempts = 0;
+    $esito = false;
+    while ( $attempts < $max_attempts && false == $esito ) {
+      $esito = $CI->email->send( false );
+      if ( false == $esito ) {
+        send_error_mail('send_welcome_email | internal mail | attempt ' . $attempts, array(
+          'id' => $doc['ID'],
+          'pec' => $doc['impresa_pec'],
+          'filepath' => $fileinfo['path'],
+          'csvpath' => $csv['path']
+        ));
+        sleep(1);
+      }
+      $attempts++;
+    }
 
-  // Email interna
-  $CI->email->from('anagrafeantimafiasisma@pec.interno.it', 'Struttura di Missione del Ministero dell\'Interno');
-  //@debug
-
-  if ( 'development' == ENVIRONMENT ) {
-    $CI->email->to('dp@certhidea.it');
-    $CI->email->subject(sprintf(
-      "[DEBUG] - Domanda iscrizione anagrafica antimafia %s %s %s %s",
-      $doc['ragione_sociale'],
-      $doc['partita_iva'],
-      $doc['codice_fiscale'],
-      $codice
-    ));
+    unlink($fileinfo['path']);
+    unlink($csv['path']);
+    return $esito;
   }
-  else if ( 'production' == ENVIRONMENT ) {
-    $CI->email->to('anagrafeantimafiasisma@pec.interno.it');
-    //$CI->email->cc(array('luigi.carbone@interno.it', 'info@certhidea.it'));
-    $CI->email->cc(array('info@certhidea.it'));
-    $CI->email->subject(sprintf(
-      "%s %s %s %s",
-      $doc['ragione_sociale'],
-      $doc['partita_iva'],
-      $doc['codice_fiscale'],
-      $codice
-    ));
+  else{
+    return false;
   }
-
-  $CI->email->message("in allegato CSV e PDF");
-  $CI->email->attach(
-    $fileinfo['path'],
-    'attachment',
-    $codice . '.pdf'
-  );
-  $CI->email->attach(
-    $csv['path'],
-    'attachment',
-    $codice . '.csv'
-  );
-  $esito = $CI->email->send();
-  unlink($fileinfo['path']);
-  unlink($csv['path']);
-  return $esito;
 }
 
 
