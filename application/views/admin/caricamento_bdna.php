@@ -1,11 +1,8 @@
 <ul class="submenu">
     <li> <a href="<?php echo site_url("/admin"); ?>">Istruttoria domande</a> </li>
 <?php if(is_admin()): ?>
-	<li>
-        <a href="<?php echo site_url("/admin/caricamento_esecutore"); ?>">Caricamento esecutore</a>
-    </li>
     <li class="selected">
-          Caricamento esecutore CSV
+          CSV BDNA
       </li>
 <?php endif; ?>
 
