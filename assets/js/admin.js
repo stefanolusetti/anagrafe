@@ -10,6 +10,7 @@ $(document).ready(function() {
 		aggiorna_input('iscritti_at')
 		aggiorna_input('iscritti_prov_at')
 		aggiorna_input('iscritti_prov_scadenza')
+		aggiorna_input('dia_scadenza')
 		aggiorna_input('protocollo_struttura')
 		aggiorna_input('fascicolo_struttura')
 
@@ -276,6 +277,8 @@ function scadenza(nome) {
 	$( "#iscritti_scadenza"+ nome).datepicker({dateFormat: 'dd/mm/yy',changeMonth: true,
       changeYear: true});
 	$( "#iscritti_prov_scadenza"+ nome).datepicker({dateFormat: 'dd/mm/yy',changeMonth: true,
+      changeYear: true});
+	  $( "#dia_scadenza"+ nome).datepicker({dateFormat: 'dd/mm/yy',changeMonth: true,
       changeYear: true});
 
 

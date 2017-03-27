@@ -34,6 +34,7 @@ jQuery(document).ready(function() {
         success: function (data) {
           jQuery(".loading." + window._currentModal + " .inner").html(data.msg);
           jQuery("#" + window._currentEsecutore + "-dia").addClass('alreadysent');
+		  jQuery("#" + window._currentEsecutore + "-dia").html('Richiesta Informazioni inviata');
           window.setTimeout(closeModal, 2000, window._currentModal);
         },
         cache: false,
@@ -63,6 +64,7 @@ jQuery(document).ready(function() {
         success: function (data) {
           jQuery(".loading." + window._currentModal + " .inner").html(data.msg);
           jQuery("#" + window._currentEsecutore + "-oe").addClass('alreadysent');
+		  jQuery("#" + window._currentEsecutore + "-oe").html('Comunicazione avvio istruttoria inviata');
           window.setTimeout(closeModal, 2000, window._currentModal);
         },
         cache: false,

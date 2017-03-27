@@ -72,6 +72,14 @@ if (isset($actionMessage)) {
 			</div>
 			<div class="field">
 			<?php
+            echo form_label('Bando Scuola', 'protocollato');
+            $options = array('' => '-', '0' => 'No', '1' => 'Si');
+            $bs = $this->input->get('protocollato');
+            echo form_dropdown('protocollato', $options, ($bs === false) ? '' : $bs, 'id="bs"');
+            ?>
+			</div>
+			<div class="field">
+			<?php
             echo form_label('Mostra', 'mostra');
             $options = array('25' => '25', '50' => '50', '100' => '100', '500' => '500');
             $get_mostra = $this->input->get('mostra');
@@ -136,7 +144,7 @@ if (isset($actionMessage)) {
 
     if ( $item['avvio_proc_dia'] ) {
       printf(
-        '<a class="button myblue alreadysent" data-action="info-request" data-item="%s" id="%s-dia">Richiesta Informazioni DIA / GICERIC / Prefettura</a>',
+        '<a class="button myblue alreadysent" data-action="info-request" data-item="%s" id="%s-dia">Richiesta Informazioni inviata</a>',
         $item['ID'],
         $item['ID']
       );
@@ -151,7 +159,7 @@ if (isset($actionMessage)) {
 
     if ( $item['avvio_proc_oe'] ) {
       printf(
-        '<a class="button myblue alreadysent" data-action="proc-request" data-item="%s" id="%s-oe">Comunicazione avvio istruttoria</a>',
+        '<a class="button myblue alreadysent" data-action="proc-request" data-item="%s" id="%s-oe">Comunicazione avvio istruttoria inviata</a>',
         $item['ID'],
         $item['ID']
       );
@@ -628,6 +636,16 @@ if (isset($actionMessage)) {
                    $options = array('0' => 'no', '1' => 'si');
 
                    echo form_dropdown("protocollato[{$item['ID']}]", $options, $item['protocollato'], "class=\"protocollato\" id=\"protocollato{$item['ID']}\"");
+                   ?>
+           </div>
+		    <div class="field">
+	            <label for="bs<?php echo $item['ID']; ?>">
+				<?php echo 'Bando Scuola' ?>
+				</label>
+                <?php
+                   $options = array('0' => 'no', '1' => 'si');
+
+                   echo form_dropdown("bs[{$item['ID']}]", $options, $item['protocollato'], "class=\"bs\" id=\"bs{$item['ID']}\"");
                    ?>
            </div>
 		<div class="field">
