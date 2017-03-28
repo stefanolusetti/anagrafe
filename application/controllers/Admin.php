@@ -54,16 +54,26 @@ class Admin extends CI_Controller {
         $this -> lists();
     }
 
+    public function admin_mailer_upload () {
+      if ( isset( $_FILES['admin_mailer_file'] ) ) {
+        $tmpFilename = uniqid();
+        if ( move_uploaded_file( $_FILES['admin_mailer_file']['tmp_name'],  FCPATH . "/mailer-uploads/$tmpFilename" ) ) {
+          $data = array('tmpname' => $tmpFilename, 'realname' => $_FILES['admin_mailer_file']['name']);
+          header('Content-Type: application/json');
+          echo json_encode( $data );
+        }
+      }
+    }
+
     public function ajax_irm(){
       $data = array();
       if ( isset( $_POST['irm-to'] ) ) {
         // non usiamo $this->input->post('irm-to') perchè fa casino con l'email tra <>
         $mailToSend = array(
           'to' => $_POST['irm-to'],
-          'from' => 'ninzo',
           'subject' => $this->input->post('irm-subject'),
           'text' => $this->input->post('irm-text'),
-          'attachments' => $_FILES['irm_attachments']
+          'attachments' => $_POST['irm-files']
         );
         $invio = sendMailRequest($mailToSend);
         if ( true == $invio ) {
@@ -86,7 +96,7 @@ class Admin extends CI_Controller {
           'from' => 'ninzo',
           'subject' => $this->input->post('psm-subject'),
           'text' => $this->input->post('psm-text'),
-          'attachments' => $_FILES['psm_attachments'],
+          'attachments' => $_POST['psm-files'],
           'esecutore' => $esecutore
         );
         $invio = sendMailRequest($mailToSend, 2);
@@ -225,7 +235,7 @@ class Admin extends CI_Controller {
    * Funzione Caricamento imprese da parte di Struttura (Modificato SL)
    * */
   public function caricamento_bdna() {
-    $this -> simpleuserauth -> require_admin();
+    $this->simpleuserauth->require_login();
     $data = array();
     if(ENVIRONMENT == 'development') {
       $this->output->enable_profiler(TRUE);
@@ -486,90 +496,76 @@ class Admin extends CI_Controller {
 
 
 
-    /**
-     * lists
-     *
-     * Mostra l'elenco delle domande di iscrizione con i relativi controlli di istruttoria
-     *
-     * @param int   $offset   Se fornito utilizzato per la paginazione
-     *
-     */
-
-    public function lists($offset = 0)
-    {
-        if(ENVIRONMENT == 'development')
-            $this->output->enable_profiler(TRUE);
-        $this -> simpleuserauth -> require_login();
-        $this->load->library('pagination');
-
-		$search_params = $this->input->get(NULL, TRUE);
-
-		/*
-		if ($this -> input -> get('mostra') == ""){
-		if ($this -> input -> get('per_page') == "")
-		$limit = 25;
-
-
-		else $limit = $this -> input -> get('per_page');
-		}
-		else
-        $limit = $this -> input -> get('mostra');
-
-		*/
-		if ($this -> input -> get('mostra') == "")
-		$limit=25;
-		else
-		$limit = $this -> input -> get('mostra');
-
-        $criteria = set_search_querystring_esecutori();
-
-        $offset = $this -> input -> get('per_page');
-
-        $data = $this -> admin_model -> search_esecutori($criteria['params'],$criteria['order_by'], $offset, $limit);
-
-            $data['irm_templates'] = array();
-            $templates = $this->admin_model->get_mail_templates(0);
-            // Addittional things?
-            foreach($templates AS $t) {
-              $data['irm_templates'][$t['id']] = $t['name'];
-            }
-
-            $data['psm_templates'] = array();
-            $templates = $this->admin_model->get_mail_templates(1);
-            // Addittional things?
-            foreach($templates AS $t) {
-              $data['psm_templates'][$t['id']] = $t['name'];
-            }
-
-            $tos = array();
-            $pec_list = $this->admin_model->get_mail_tos();
-            foreach ( $pec_list AS $pec ) {
-              $tos[] = sprintf(
-                "Prefettura di %s <%s>",
-                $pec['nome'],
-                $pec['pec']
-              );
-            }
-
-            $tos[] = 'DIA <dia.ocap.rm@pecps.interno.it>';
-            $tos[] = 'GICERIC <dipps.dcpcsegreteriatecnica@pecps.interno.it>';
-
-            $data['pecs'] = $tos;
-
-
-            $config['per_page'] = $limit;
-            $config['uri_segment'] = 3;
-            $config['page_query_string'] = true;
-            $config['base_url'] = site_url('/admin/lists/?'.htmlentities(http_build_query($criteria['qs']).'&mostra='.$limit));
-            $config['total_rows'] = $data['count'];
-            $this->pagination->initialize($config);
-            unset($data['statements']['rowcount']);
-            $this->load->view('elenco/header');
-            $this->load->view('templates/headbar');
-            $this->load->view('admin/mailer-js');
-            $this->load->view('admin/index', $data);
-            $this->load->view('templates/footer');
+  /**
+   * lists
+   *
+   * Mostra l'elenco delle domande di iscrizione con i relativi controlli di istruttoria
+   *
+   * @param int   $offset   Se fornito utilizzato per la paginazione
+   *
+   */
+  public function lists( $offset = 0 ) {
+    if ( ENVIRONMENT == 'development' ) {
+      $this->output->enable_profiler(TRUE);
     }
+    $this->simpleuserauth->require_login();
+    $this->load->library('pagination');
+    $search_params = $this->input->get(NULL, TRUE);
+
+    if ($this -> input -> get('mostra') == "") {
+      $limit=25;
+    }
+    else {
+      $limit = $this -> input -> get('mostra');
+    }
+
+    $criteria = set_search_querystring_esecutori();
+    $offset = $this -> input -> get( 'per_page' );
+    $data = $this -> admin_model -> search_esecutori( $criteria['params'],$criteria['order_by'], $offset, $limit );
+    $data['irm_templates'] = array();
+    $templates = $this->admin_model->get_mail_templates( 0 );
+
+    // Addittional things?
+    foreach($templates AS $t) {
+      $data['irm_templates'][ $t['id'] ] = $t['name'];
+    }
+
+    $data['psm_templates'] = array();
+    $templates = $this->admin_model->get_mail_templates(1);
+    // Addittional things?
+    foreach ( $templates AS $t ) {
+      $data['psm_templates'][$t['id']] = $t['name'];
+    }
+
+    $tos = array();
+    $pec_list = $this->admin_model->get_mail_tos();
+    foreach ( $pec_list AS $pec ) {
+      $tos[] = sprintf(
+        "Prefettura di %s <%s>",
+        $pec['nome'],
+        $pec['pec']
+      );
+    }
+
+    $tos[] = 'DIA <dia.ocap.rm@pecps.interno.it>';
+    $tos[] = 'GICERIC <dipps.dcpcsegreteriatecnica@pecps.interno.it>';
+
+    $data['pecs'] = $tos;
+
+
+    $config['per_page'] = $limit;
+    $config['uri_segment'] = 3;
+    $config['page_query_string'] = true;
+    $config['base_url'] = site_url('/admin/lists/?'.htmlentities(http_build_query($criteria['qs']).'&mostra='.$limit));
+    $config['total_rows'] = $data['count'];
+    $this->pagination->initialize($config);
+    unset($data['statements']['rowcount']);
+    $this->load->view('elenco/header');
+    $this->load->view('templates/headbar');
+    $this->load->view('admin/mailer-js');
+    $this->load->view('admin/index', $data);
+    $this->load->view('templates/footer');
+  }
 
     /**
      * view

@@ -203,6 +203,12 @@ class Domanda extends CI_Controller
         if ($temp) {
           redirect('/domanda/anteprima/' . $temp['hash'] . '/' . $temp['id']);
         }
+        else {
+          $this->load->view('templates/header_upsert', array() );
+          $this->load->view('templates/headbar');
+          $this->parser->parse( 'domanda/dberror', array() );
+          $this->load->view('templates/footer');
+        }
       }
     }
 
@@ -407,13 +413,26 @@ class Domanda extends CI_Controller
       //'interesse_interventi'
     );
     $any_selected = false;
+    $too_long = false;
     foreach ( $attivita AS $att ) {
       if ( '1' == $this->input->post($att) ) {
+        $tipo_key = $att . '_tipo';
+        $importo_key = $att . '_importo';
+        if ( 250 < strlen( $this->input->post( $tipo_key ) ) ) {
+          $too_long = true;
+        }
+        if ( 250 < strlen( $this->input->post( $importo_key ) ) ) {
+          $too_long = true;
+        }
         $any_selected = true;
       }
     }
-    if ( false == $any_selected ) {
+    if ( false === $any_selected ) {
       $this->form_validation->set_message('check_attivita_upsert', 'Indicare almeno un valore tra Lavori, Servizi o Forniture.');
+      return false;
+    }
+    if ( true === $too_long ) {
+      $this->form_validation->set_message('check_attivita_upsert', 'Lunghezza massima di Tipologia e Importo è di 250 caratteri.');
       return false;
     }
     return true;

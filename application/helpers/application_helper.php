@@ -553,3 +553,13 @@ function send_error_mail ( $title, $data ) {
   $esito = $CI->email->send();
   return $esito;
 }
+
+
+function count_terminals ( $a ) {
+  if ( !is_array($a) ) {
+    return 1;
+  }
+  else {
+    return array_reduce($a, function($carry, $item) {return $carry + count_terminals($item);}, 0);
+  }
+}

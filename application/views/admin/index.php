@@ -698,10 +698,10 @@ endforeach ?>
   <div class="inner">
     <div class="loading infoRequestModal">
       <div class="inner">
-        Invio in corso<hr />Attendere prego...
+        Invio in corso<br /><br /><br />Attendere prego...
       </div>
     </div>
-    <h3>S.I.S.M.A.2016. RICHIESTA INFORMAZIONI</h3>
+    <h3>RICHIESTA INFORMAZIONI DIA / GICERIC / PREFETTURA</h3>
     <form method="post" enctype="multipart/form-data" name="irm" id="irm" action="/admin/?<?php echo $_SERVER['QUERY_STRING']; ?>">
       <div id="irm-warning"></div>
       <input type="hidden" name="irm-esid" value="" class="esid" id="irm-esid"  />
@@ -724,7 +724,9 @@ endforeach ?>
         <div class="m-field">
           <div class="inner">
             <label for="irm-attachments">Allegati :</label>
-            <input type="file" class="dontUpdate" name="irm_attachments[]" multiple />
+            <div id="irm-attachments-dropzone" class="dropzonne"></div>
+            <input type="hidden" name="irm-files" id="irm-files" />
+            <!--<input type="file" class="dontUpdate" name="irm_attachments[]" multiple />-->
           </div>
         </div>
       </div>
@@ -784,7 +786,7 @@ if (isset($irm_templates) && !empty($irm_templates)) {
   <div class="inner">
     <div class="loading procSendModal">
       <div class="inner">
-        Invio in corso<hr />Attendere prego...
+        Invio in corso<br /><br /><br />Attendere prego...
       </div>
     </div>
     <h3>S.I.S.M.A.2016. Avvio Istruttoria</h3>
@@ -810,7 +812,8 @@ if (isset($irm_templates) && !empty($irm_templates)) {
         <div class="m-field">
           <div class="inner">
             <label for="psm-attachments">Allegati :</label>
-            <input type="file" class="dontUpdate" name="psm_attachments[]" multiple />
+            <div id="psm-attachments-dropzone" class="dropzonne"></div>
+            <input type="hidden" name="psm-files" id="psm-files" />
           </div>
         </div>
       </div>

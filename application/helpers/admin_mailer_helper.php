@@ -41,18 +41,24 @@ function sendMailRequest($req, $type = 1) {
   //$tos = array_filter(explode(', ', $req['to']));
   $tos = array(
     'Daniele Certhidea <dp@certhidea.it>',
-    'Stefano Lusetti <stefano.lusetti@certhidea.it>'
+    //'Stefano Lusetti <stefano.lusetti@certhidea.it>'
   );
 
   $CI->email->to($tos);
   $CI->email->subject($req['subject']);
 
+  $file_to_delete = array();
   if ( isset( $req['attachments'] ) && !empty( $req['attachments'] ) ) {
-    foreach ($req['attachments']['tmp_name'] AS $i => $tmp_name) {
+    //58da82d1000b7:021.png|58da82d100c0f:028.png|58da82d116040:014.png|58da82d116ae9:lorem-ipsum-1.pdf|58da82d11d841:035.png|58da82d120fe6:lorem-ipsum-1-2.pdf|58da82d131279:023.png|58da82d1349b9:016.png|58da82d13ed62:040.png|58da82d143b0e:lorem-ipsum-2.pdf|
+    $files = array_filter(explode( '|', $req['attachments'] ));
+
+    foreach ($files AS $i => $tmp_file) {
+      list($machine_name, $real_name) = explode( ':', $tmp_file );
+      $file_to_delete[] = FCPATH . "mailer-uploads/$machine_name";
       $CI->email->attach(
-        $req['attachments']['tmp_name'][$i],
+        FCPATH . "mailer-uploads/$machine_name",
         'attachment',
-        $req['attachments']['name'][$i]
+        $real_name
       );
     }
   }
@@ -200,13 +206,14 @@ function sendMailRequest($req, $type = 1) {
   $esito = $CI->email->send();
 
   $CI->email->clear(TRUE);
+
   // remove the files.
-  if ( isset( $req['attachments'] ) && !empty( $req['attachments'] ) ) {
-    foreach ($req['attachments']['tmp_name'] AS $i => $tmp_name) {
-      if ( "" != $tmp_name ) {
-        unlink($tmp_name);
-      }
+  if ( !empty($file_to_delete) ) {
+    foreach ($file_to_delete AS $tmp_file) {
+      unlink( $tmp_file );
     }
   }
+
   return $esito;
+  //return true;
 }

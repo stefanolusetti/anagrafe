@@ -2,6 +2,7 @@ jQuery(document).ready(function() {
   window._currentModal = null;
   window._currentEsecutore = null;
   window._currentTemplate = 0;
+  window._DropZone = false;
   jQuery("a[data-action]").on('click', function( e ) {
     var elid = jQuery(e.target).attr('data-item');
     var action = jQuery(e.target).attr('data-action');
@@ -197,6 +198,46 @@ function openModal( modalID ) {
       window._currentModal = modalID;
       jQuery(".esid").val(window._currentEsecutore);
     });
+
+    // Dropzone.
+    if ( 'infoRequestModal' == modalID ) {
+      jQuery('#irm-files').val('');
+      window._DropZone = new Dropzone("div#irm-attachments-dropzone", {
+        url: '/admin/admin_mailer_upload',
+        maxFilesize: 2,
+        //thumbnailWidth: 80,
+        //thumbnailHeight: 80,
+        paramName: "admin_mailer_file",
+        dictFileTooBig: "La dimensione massima dei file è di {{maxFilesize}}Mb",
+        success: function ( file, response ) {
+          var string = response.tmpname + ':' + response.realname + '|';
+          jQuery('#irm-files').val(jQuery('#irm-files').val() + string);
+        },
+        error: function ( file, xhr ) {
+          window._DropZone.removeFile(file);
+          alert(xhr);
+        }
+      });
+    }
+    else {
+      jQuery('#psm-files').val('');
+      window._DropZone = new Dropzone("div#psm-attachments-dropzone", {
+        url: '/admin/admin_mailer_upload',
+        maxFilesize: 2,
+        //thumbnailWidth: 80,
+        //thumbnailHeight: 80,
+        paramName: "admin_mailer_file",
+        dictFileTooBig: "La dimensione massima dei file è di {{maxFilesize}}Mb",
+        success: function ( file, response ) {
+          var string = response.tmpname + ':' + response.realname + '|';
+          jQuery('#psm-files').val(jQuery('#psm-files').val() + string);
+        },
+        error: function ( file, xhr ) {
+          window._DropZone.removeFile(file);
+          alert(xhr);
+        }
+      });
+    }
   }
   else {
     console.info('██'.repeat(10) + "\t" +  'modal already open.' + "\t" + '██'.repeat(10));
@@ -207,9 +248,10 @@ function closeModal (modalID) {
   jQuery("#modal-fog, #" + modalID).animate({ opacity: 0 }, 250, function(){
     jQuery("#modal-fog").css('display', 'none');
     jQuery("#" + modalID).css('display', 'none');
-    jQuery(".loading." + modalID + " .inner").html('Invio in corso<hr />Attendere prego...');
+    jQuery(".loading." + modalID + " .inner").html('Invio in corso<br /><br /><br />Attendere prego...');
     window._currentModal = null;
     window._currentEsecutore = null;
+    window._DropZone.destroy();
   });
   jQuery(".esid").val('');
 }

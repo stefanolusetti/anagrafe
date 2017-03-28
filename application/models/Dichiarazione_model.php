@@ -250,9 +250,10 @@ class Dichiarazione_model extends CI_Model
       $data['ip'] = ':' . $_SERVER['HTTP_X_FORWARDED_FOR'];
     }
 
+    //$db_debug = $this->db->db_debug; //save setting
+    //$this->db->db_debug = FALSE;
 
     $this->db->trans_start();
-    $curr_error_handler = set_error_handler('db_transaction_error_handler');
     try {
       if ( '0' == $istanza_id ) {
         $upsert_exec = $this->db->insert('tmp_esecutori', $data);
@@ -372,18 +373,19 @@ class Dichiarazione_model extends CI_Model
           }
         }
       }
+      else {
+        throw new Exception('Si è verificato un errore di sistema.');
+      }
       $this->db->trans_commit();
+      $return_value = array('id' => $doc_id, 'hash' => $confirm_hash);
     }
     catch(Exception $e) {
       $this->db->trans_rollback();
       // @Todo Messaggio?
-      echo '<h1>SI È VERIFICATO UN ERRORE</h1>';
-      //echo $e->getMessage() . '<br />';
-      //echo $e->getLine() . '<br />';
-      //echo $e->getFile() . '<br />';
+      $return_value = false;
     }
-    set_error_handler($curr_error_handler);
-    return array('id' => $doc_id, 'hash' => $confirm_hash);
+    //$this->db->db_debug = $db_debug;
+    return $return_value;
   }
 
   public function markEmailSent($id) {
@@ -423,7 +425,7 @@ class Dichiarazione_model extends CI_Model
     }
 
     $this->db->trans_start();
-    $curr_error_handler = set_error_handler('db_transaction_error_handler');
+    //$curr_error_handler = set_error_handler('db_transaction_error_handler');
     try {
       //$this->db->update('tmp_esecutori')
       $this->db->insert('esecutori', $doc);
@@ -477,7 +479,7 @@ class Dichiarazione_model extends CI_Model
       }
 
       $this->db->trans_commit();
-      set_error_handler($curr_error_handler);
+      //set_error_handler($curr_error_handler);
       return $doc_id;
     }
     catch(Exception $e) {
@@ -498,7 +500,7 @@ class Dichiarazione_model extends CI_Model
       echo $e->getMessage() . '<br />';
       echo $e->getLine() . '<br />';
       echo $e->getFile() . '<br />';
-      set_error_handler($curr_error_handler);
+      //set_error_handler($curr_error_handler);
       return false;
     }
   }

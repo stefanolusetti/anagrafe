@@ -482,6 +482,7 @@ mostra_errore('check_anagrafiche_upsert');
 ██   ██ ██  ██ ██ ██   ██ ██    ██ ██   ██ ██   ██ ██      ██ ██      ██   ██ ██
 ██   ██ ██   ████ ██   ██  ██████  ██   ██ ██   ██ ██      ██  ██████ ██   ██ ███████
 */
+
 $autocomplete_to_enable = array();
 if (isset($formdata['anagrafiche_antimafia']) AND !empty($formdata['anagrafiche_antimafia'])) {
   $a_head = '<div id="anel-!!!" class="anagrafica preview-anagrafica +++ anagrafica-box el-!!!" data-elid="!!!"><a href="#anagrafiche" class="rm removeFamiliar" data-victim="anel-!!!" data-elid="!!!">Rimuovi Anagrafica Componente</a>';
